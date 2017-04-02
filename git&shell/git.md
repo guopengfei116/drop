@@ -375,10 +375,9 @@ SSH是目前较可靠，专为远程登录会话和其他网络服务提供安�
     + ssh git@github.com
 
 ### github个人主页
-- 新建一个仓库，仓库名字：用户名.github.io
-注：一个用户只能拥有一个自己的网站。
-- 往该github仓库中添加代码，注意最好给这些目录中添加一个index.html文件。
-- 直接使用仓库的名字作为网站的地址来访问。
+- 新建一个仓库，仓库名字：username.github.io
+- 往该github仓库中添加代码，注意最好给这些目录中添加一个index.html文件，因为默认会打开它。
+- 直接使用仓库的名字(username.github.io)作为网站的地址来访问。
 
 ### 常用命令汇总
 - git config配置本地仓库
