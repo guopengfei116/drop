@@ -76,6 +76,7 @@ http://api.botue.com/v6/logout
 
 * 数据格式 JSON
 * 数据示例
+* 注意：这个接口返回的code是一个字符串，小心点！！！
 
 ```json
 {
@@ -848,9 +849,9 @@ http://api.botue.com/v6/course/create
 }
 ```
 
-### 基本信息
+### 课程基本信息
 
-> 添加/编辑课程基本信息
+> 添加/编辑课程时要获取的基本信息
 
 #### 地址
 
@@ -1281,7 +1282,7 @@ http://api.botue.com/v6/course/chapter/modify
 }
 ```
 
-### 课时列表
+### 课程列表
 
 > 查看所有课程
 

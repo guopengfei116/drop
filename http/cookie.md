@@ -47,6 +47,56 @@ Cookie作用就类似于这张小票，在web开发中，会经常通过Cookie�
 ### 删除
 - Cookie有一个过期(Expires)设置，如果设置此Cookie过期时间为当前时间之前，那么浏览器就会删除它。
 
+# cookie
+> cookie获取与存储时候的值都为字符串格式。
+
+## 获取
+
+```javascript
+// 获取当前域名当前路径下的所有cookie，包含根路径
+document.cookie
+```
+
+## 设置
+
+```javascript
+// 每次新增一个cookie，默认域名为当前域名，路径为当前路径，过期时间为一次会话
+document.cookie = 'key=val'
+```
+
+```javascript
+// 指定cookie的域名，使用domain配置
+document.cookie = 'key=val; domain=domain'
+```
+
+```javascript
+// 指定cookie的路径，使用path配置
+document.cookie = 'key=val; path=path'
+```
+
+```javascript
+// 指定cookie的有效期，使用expires配置
+document.cookie = 'key=val; expires=expires'
+```
+
+```javascript
+// 新标准下用来指定cookie有效期
+document.cookie = 'key=val; max-age=多少秒'
+```
+
+## 删除
+> cookie是无法直接通过脚本来删除的，只能设置已过期，让cookie有效期为当前会话
+
+```javascript
+// 修改cookie为当前会话，关闭页面就被删除
+document.cookie = 'key=val; expires=-1'
+```
+
+## 补充
+> 设置cookie时可以添加secure配置，指定该cookie只在https下有效会被传输。
+默认该属性配置值为false。
+
+
 ### 格式与配置
 > 设置cookie时，要求是一个字符串。字符串中以分号“;”对cookie键值进行分隔。
 第一对键值用来表示cookie数据，后续键值是对cookie的一些设置。
