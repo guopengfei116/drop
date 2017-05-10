@@ -1,0 +1,159 @@
+<html>
+  <head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>i5ting_ztree_toc:note</title>
+		<link href="toc/style/github-bf51422f4bb36427d391e4b75a1daa083c2d840e.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/style/github2-d731afd4f624c99a4b19ad69f3083cd6d02b81d5.css" media="all" rel="stylesheet" type="text/css"/>
+		<link href="toc/css/zTreeStyle/zTreeStyle.css" media="all" rel="stylesheet" type="text/css"/>
+	  <style>
+		pre {
+		    counter-reset: line-numbering;
+		    border: solid 1px #d9d9d9;
+		    border-radius: 0;
+		    background: #fff;
+		    padding: 0;
+		    line-height: 23px;
+		    margin-bottom: 30px;
+		    white-space: pre;
+		    overflow-x: auto;
+		    word-break: inherit;
+		    word-wrap: inherit;
+		}
+
+		pre a::before {
+		  content: counter(line-numbering);
+		  counter-increment: line-numbering;
+		  padding-right: 1em; /* space after numbers */
+		  width: 25px;
+		  text-align: right;
+		  opacity: 0.7;
+		  display: inline-block;
+		  color: #aaa;
+		  background: #eee;
+		  margin-right: 16px;
+		  padding: 2px 10px;
+		  font-size: 13px;
+		  -webkit-touch-callout: none;
+		  -webkit-user-select: none;
+		  -khtml-user-select: none;
+		  -moz-user-select: none;
+		  -ms-user-select: none;
+		  user-select: none;
+		}
+
+		pre a:first-of-type::before {
+		  padding-top: 10px;
+		}
+
+		pre a:last-of-type::before {
+		  padding-bottom: 10px;
+		}
+
+		pre a:only-of-type::before {
+		  padding: 10px;
+		}
+
+		.highlight { background-color: #ffffcc } /* RIGHT */
+		</style>
+  </head>
+  <body>
+	  <div>
+				<div style='width:25%;'>
+						<ul id="tree" class="ztree" style='width:100%'>
+
+						</ul>
+				</div>
+        <div id='readme' style='width:70%;margin-left:20%;'>
+          	<article class='markdown-body'>
+            	<h1 id="requirejs">requirejs</h1>
+<blockquote>
+<p>这是一个用于模块化开发的库，特点是可以让我们用代码的方式对模块间的依赖进行管理。
+如果一个项目都使用requirejs定义模块，那么会减少很多全局变量。</p>
+</blockquote>
+<h2 id="requirejs-3-">requirejs对外暴露了3个全局变量</h2>
+<ul>
+<li>requirejs、require、define</li>
+<li>其中requirejs与require是同一个函数，该函数有一个config方法，可以对requirejs进行配置</li>
+<li>define是另外一个函数</li>
+</ul>
+<h2 id="require-requirejs-">require(requirejs)</h2>
+<ul>
+<li>作用：用于加载并执行模块，当所有要加载的模块都加载完毕后，执行一个可选回调，这个回调可以接收其他模块回调的返回值</li>
+<li>语法：require([非define模块1, define模块2, define模块3, ...], function(undefined, two, three) {})</li>
+</ul>
+<h2 id="define">define</h2>
+<ul>
+<li>作用：用于定义模块，可以指定该模块的依赖模块，当该模块被加载执行时，会先加载执行所有的依赖，最后执行自己</li>
+<li>语法：define([非define模块1, define模块2, define模块3, ...], function(undefined, two, three) {})</li>
+</ul>
+<h2 id="-">加载模块的注意事项</h2>
+<h3 id="-define-">加载未使用define定义的模块</h3>
+<ul>
+<li>加载这种模块并执行后，传递给require回调的值为undefined</li>
+<li>加载这种模块，最好在require回调上定义一个undefined形参，用于标识传入进来的是undefined</li>
+</ul>
+<h3 id="-define-">加载使用了define定义的模块</h3>
+<ul>
+<li>加载这种模块并执行后，传递给require回调的值为define回调的返回值</li>
+<li>加载这种模块，一定要在require回调上定义形参或者使用arguments，否则无法访问define回调的返回值</li>
+</ul>
+<h2 id="require-config">require.config</h2>
+<ul>
+<li><p>这是一个用于配置requirejs的方法，主要配置模块的加载地址与模块依赖</p>
+<pre><code class="lang-javascript">require.config({
+
+  // 配置所有模块的基础路径，这个基础路径自身相对于引入了requirejs的html文件路径
+  baseUrl: &#39;js/&#39;, 
+
+  // 配置模块地址的别名，以后在define定义模块依赖或者require的时候，直接使用别名即可
+  paths: {
+
+      // key是模块的名字，value是模块的地址，该地址是基于baseUrl的
+      模块别名1: 模块地址1,
+      模块别名2: 模块地址2
+  },
+
+  // 配置非define定义的模块依赖与输出
+  shim: {
+
+      // key是模块的名字，value是可配置项
+      模块名1: {
+
+          // 配置输出到require回调中的值，值为全局变量的名字。
+          exports: &#39;模块名1暴露的全局变量名&#39;，
+
+          // 配置依赖，值为数组，数组里面书写依赖的模块名字
+          deps: [&#39;依赖的模块1&#39;， &#39;依赖的模块2&#39;]
+      }
+  }
+});
+</code></pre>
+</li>
+</ul>
+<h2 id="data-main">data-main</h2>
+<ul>
+<li>引入requirejs的script标签，可以通过data-main属性配置一个入口文件，
+当requirejs加载完毕后，就会优先去加载这个文件。</li>
+</ul>
+
+          	</article>
+        </div>
+		</div>
+  </body>
+</html>
+<script type="text/javascript" src="toc/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="toc/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="toc/js/ztree_toc.js"></script>
+<script type="text/javascript" src="toc_conf.js"></script>
+
+<SCRIPT type="text/javascript" >
+<!--
+$(document).ready(function(){
+    var css_conf = eval(markdown_panel_style);
+    $('#readme').css(css_conf)
+    
+    var conf = eval(jquery_ztree_toc_opts);
+		$('#tree').ztree_toc(conf);
+});
+//-->
+</SCRIPT>
