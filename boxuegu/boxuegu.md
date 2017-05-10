@@ -263,17 +263,17 @@ $('input').on('changeDate', function($e){
 
 - buttonText
     + 设置按钮文本
-    
+
 - buttonClass
     + 设置按钮class属性值，用来控制按钮样式
-    
+
 - auto
     + 配置选取文件后是否自动上传
 
 - onUploadSuccess
     + 文件上传成功的回调
     + 回调接收的第一个参数为文件对象，第二个参数为请求回来的数据
-    
+
 ##### 方法调用
 
 - upload
@@ -315,7 +315,7 @@ var edit = CKEDITOR.replace("ckeditor", config);
 
 - 实例.updateElement
     + 更新编辑内容到文本框的方法
-    
+
 - 实例.setData
     + 设置内容
 
@@ -481,7 +481,7 @@ jcrop.initComponent('Thumbnailer', { width: 130, height: 130 })
             + 修改DocumentRoot为"C:/phpStudy/WWW/boxuegu"
             + 修改ServerName为"boxuegu.com" 
             + 修改ServerAlias为"www.boxuegu.com" 
-    + 3. 修改DNS
+    + 3. 修改本地DNS
         + 打开C:/Windows/System32/drivers/etc/hosts
         + 127.0.0.1 boxuegu.com
         + 127.0.0.1 www.boxuegu.com
@@ -498,6 +498,7 @@ jcrop.initComponent('Thumbnailer', { width: 130, height: 130 })
     + 测试
         1. 抽取页面中head标签内所有的link，放置到html/common/style.html，作为所有页面的公共模块
         2. 使用导入抽取的公共模块
+        <?php include($_SERVER['DOCUMENT_ROOT'].'/html/common/head.html')?>
         3. 浏览器访问www.boxuegu.com验证
 
 - 配置反向代理
