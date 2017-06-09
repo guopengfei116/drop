@@ -1,7 +1,6 @@
 # shell
 - shell单词有壳的意思。
 
-
 # git学习预备知识
 
 ## shell
