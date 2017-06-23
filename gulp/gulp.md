@@ -11,31 +11,51 @@ node是使用js开发服务端的一个开发环境或者平台，npm最初只�
 它通过配置文件(package.json)的方式来定义项目中的依赖，通过命名进行依赖下载、升级与移除。
 随着node的普及，使用npm作为包管理工具也越来越流行，npm也可以管理各种前端所需包了，比如jquery、bootstrap等。
 
-### 安装
+#### 安装
 在node官网下载node安装包，然后在命令行工具中运行node -v 与 npm -v命令验证是否已经安装成功。
 通过在命令行中也可以输入node命令，进入node运行环境，这个环境有点类似与浏览器的控制台，可以运行js脚本。
 
-### 使用场景与演示
+#### cnpm
+cnpm使用的是淘宝网的镜像，在国内下载速度比较快。[官网](https://npm.taobao.org/)
+npm install cnpm -g --registry=https://registry.npm.taobao.org
+
+#### 使用场景与演示
 - 新建一个目录，做为新项目的根。
-- 进入该目录，运行npm init -y，检测目录下是否创建了一个package.json的文件。
-- 然后打开命令行工具，cd切入该目录，运行npm install --save jquery，npm install --save ***。
+- 进入该目录，运行cnpm init -y，检测目录下是否创建了一个package.json的文件。
+- 然后打开命令行工具，cd切入该目录，运行cnpm install --save jquery，npm install --save ***。
     + 加save参数后，npm就会把安装过的包记录在package.json的文件中dependencies属性中。
-    + 默认安装的都是最新版本的包，可以通过**指定要安装包的版本。
+    + 默认安装的都是最新版本的包，可以通过@符号指定要安装包的版本。
 - 查看目录中是否出现node_modules的目录，所有的包都被自动安装到该目录中。
 - 可以编写项目代码了，引入第三方包。
 - 将代码通过git仓库共享，但是不要让git管理node_modules目录。
 - 使用另外一个账户，clone该仓库，然后在根目录中，运行npm install，npm就会根据package中的依赖自动下载依赖包。
 
-### 常用命令
+#### 常用命令
 - 官网[https://www.npmjs.com]
 - npm init
-    + -y参数可以省略中间自定义配置信息的环境，直接生成默认的package.json文件
+    + 初始化npm项目
+    + -y
+        * 可以省略中间自定义配置信息的环境，直接生成默认的package.json文件
 - npm install 包名[@指定版本号]
-    + --save参数可以把安装信息记录在package.json文件中
-    + --production参数让npm根据配置文件中的dependencies属性进行依赖包的安装
-    + -g参数代表除了在项目中安装该包之外，还会在全局进行安装，以后安装就会优先使用本地已下载好的包。
-- npm remove 包名
-    + --save参数可以把包卸载后，同步删除package.json文件中的记录
+    + 安装包
+    + --save
+        * 可以把安装信息记录在package.json文件中的dependencies属性
+    + --save-dev
+        * 可以把安装信息记录在package.json文件中的devDependencies属性
+    + -g 
+        * 全局安装包，一些工具性软件会使用全局安装，安装后可以在任何路径执行该工具所提供的命令。
+- npm uninstall 包名
+    + 卸载包
+    + --save
+        * 卸载后同步删除package.json文件中的dependencies记录
+    + --save-dev
+        * 卸载后同步删除package.json文件中的devDependencies记录
+- npm list
+    + 查看当前目录下已安装的包
+- npm root
+    + 查看当前安装的包的路径
+    + -g
+        * 查看全局安装的包的路径
 
 ### 其他相关工具
 - bower
