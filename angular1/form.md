@@ -99,3 +99,15 @@ console.log('input效验通过：' + $scope.signIn.password.$valid);
 
 ###### $drity
 - 作用：值被修改过
+=======
+#### 表单效验指令
+
+###### ng-required
+- 作用：必填项
+
+###### ng-minlength
+- 作用：最小长度
+
+###### ng-maxlength
+- 作用：最大长度
+>>>>>>> c14977766f48cae268f949132d21df6cd6c88755
