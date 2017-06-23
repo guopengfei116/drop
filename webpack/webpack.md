@@ -100,15 +100,18 @@ module.exports = {
 ```javascript
 output: {
 	path: path.resolve('./dist'),
-	filename: 'js/[name]_build.js'
+	filename: 'js/[name]_build.js',
+	publicPath: ''
 }
 output: {
 	path: path.resolve('./dist'),
-	filename: 'js/[name]_[hash]_build.js'
+	filename: 'js/[name]_[hash]_build.js',
+	publicPath: 'www.online.com/'
 }
 output: {
 	path: path.resolve('./dist'),
-	filename: 'js/[name]_[hash]_[chunkhash]_build.js'
+	filename: 'js/[name]_[hash]_[chunkhash]_build.js',
+	publicPath: 'www.test.com/'
 }
 filename: 'build.js'
 ```
@@ -140,15 +143,15 @@ filename: 'build.js'
     + 构建后文件的名称，默认为原文件名词
     + 同样可以使用name、hash、chunkhash3种占位符
 - inject
-    + 作用：设置构建后的脚本注入页面的位置
+    + 作用：设置构建后的脚本自动注入页面的位置，如果要自定义配置给false即可
     + 可选值：head、body、false
     + 默认值：body
 - minify
     + 作用：压缩html文件
     + 值类型：对象
     + 配置项：
-        * removeComments: 删除注释
-        * f
+        * removeComments: true || false 删除注释
+        * collapseWhitespace: true || false 删除空格
 - hash
     + 作用：
     + 默认值：false
@@ -165,11 +168,15 @@ filename: 'build.js'
     + 作用：如果构建出错是否在页面中打印错误信息
     + 默认值：true
 - chunks
-    + 作用：
+    + 作用：配置页面中可以获取到的chunk
+    + 值类型：数组
+        * 例如：['main', 'main2']
     + 默认值：all
 - excludeChunks
-    + 作用：
-    + 默认值：''
+    + 作用：排除页面中可获取的chunk
+    + 值类型：数组
+        * 例如：['main', 'main2']
+    + 默认值：null
 - xhtml
     + 作用：
     + 默认值：false
@@ -197,25 +204,41 @@ filename: 'build.js'
 
 - 使用数据
     + 作用：传递数据到html文件
-    + 使用：页面中使用ejs模版语法
+    + 使用：页面中可使用ejs模版语法操作数据
 
 - 使用范例
 ```html
 	<html>
 		<head>
+			<%= 获取自定义的属性值 %>
 			<title><%= htmlWebpackPlugin.options.title %></title>
+			<%= 获取构建后入口文件的路径 %>
+			<title><%= htmlWebpackPlugin.files.chunks.abc.entry %></title>
 		</head>
 		<body>
+			<%= 获取自定义的属性值 %>
 			<p><%= htmlWebpackPlugin.options.data %></p>
 		</body>
 	</html>
 ```
 ```javascript
-	new htmlWebpackPlugin({
-		template: 'src/index.html',
-		filename: 'index_[chunkhash].html',
-		inject: 'head',
-		title: '自定义titlle',
-		data: '自定义数据'
-	});
+module.exports = {
+	entry: {
+		main: './src/js/main.js',
+		abc: './src/js/abc.js'
+	},
+	output: {
+		path: path.resolve('./dist/js'),
+		filename: 'build.js'
+	},
+	plugins: [
+		new htmlWebpackPlugin({
+			template: 'src/index.html',
+			filename: 'index_[chunkhash].html',
+			inject: 'head',
+			title: '自定义titlle',
+			data: '自定义数据'
+		});
+	]
+};
 ```
