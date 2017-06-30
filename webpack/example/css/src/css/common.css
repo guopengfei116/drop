@@ -1,0 +1,12 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	background-color: deeppink;
+}
+
+ul, li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
