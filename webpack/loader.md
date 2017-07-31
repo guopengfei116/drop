@@ -34,10 +34,6 @@ rules: [
 ]
 ```
 
-##### 配置
-- presets
-    + es2015
-
 ## css-loader、style-loader
 
 #### 说明
@@ -48,11 +44,11 @@ rules: [
     + 让加载到js中的css在页面中生效
     + 内部调用css-loader生成的模块，得到css文件内容，然后通过style标签插入到页面中让其生效
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev css-loader style-loader
 
-#### 使用
+##### 使用
 ```javascript
 // entry.js
 import './src/css/example.css'
@@ -70,7 +66,7 @@ rules: [
 ]
 ```
 
-#### 非配置方式使用
+##### 非配置方式使用
 ```javascript
 // entry.js
 require('style-loader!css-loader!./src/css/example.css');
@@ -84,13 +80,13 @@ require('style-loader!css-loader!./src/css/example.css');
 - autoprefixer
     + 自动给css3样式添加浏览器前缀
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev postcss-loader
 - 插件安装
     + npm install --save-dev autoprefixer
 
-#### 使用
+##### 使用
 ```javascript
 rules: [
 	{
@@ -115,13 +111,13 @@ rules: [
 #### 说明
 - 把less解析为css
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev less-loader
 - 依赖安装
     + npm install --save-dev less
 
-#### 使用
+##### 使用
 ```javascript
 // entry.js
 import './src/sass/example.sass'
@@ -151,13 +147,13 @@ rules: [
 #### 说明
 - 把sass解析为css
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev sass-loader
 - 依赖安装
     + npm install --save-dev node-sass
 
-#### 使用
+##### 使用
 ```javascript
 // entry.js
 import './src/less/example.less'
@@ -187,11 +183,11 @@ rules: [
 #### 说明
 - 把html文件内容以字符串的形式引入
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev html-loader
 
-#### 使用
+##### 使用
 ```javascript
 // entry.js
 import example from './src/tpl/example.html'
@@ -211,11 +207,11 @@ rules: [
 #### 说明
 - 把ejs模板文件转为函数引入，再需要时调用传入数据即可得到渲染好的模板字符串
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev ejs-loader
 
-#### 使用
+##### 使用
 ```javascript
 // entry.js
 import example from './src/tpl/example.tpl'
@@ -238,13 +234,13 @@ rules: [
 - image-webpack-loader
     + 压缩图片
 
-#### 安装
+##### 安装
 - loader安装
     + npm install --save-dev url-loader image-webpack-loader
 - 依赖安装
     + npm install --save-dev file-loader
 
-#### 使用
+##### 使用
 ```html
 // example.html
 <img src="./img/example.png">
