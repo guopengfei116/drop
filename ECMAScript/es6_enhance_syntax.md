@@ -1,4 +1,4 @@
-# 基础语法增强
+# ES6语法增强
 
 ## ECMAScript6
 > ES6也称为ECMAScript2015，是2015年出版的javaScript国际新标准，
