@@ -120,3 +120,75 @@ module.exports = {
 - xhtml
     + 作用：
     + 默认值：false
+
+# loader
+
+## postcss-loader
+
+#### 说明
+- postcss-loader
+    + 可以借助插件对css文件进行各种后续处理
+- autoprefixer
+    + 自动给css3样式添加浏览器前缀
+
+##### 安装
+- 脚本：npm i postcss-loader autoprefixer -D
+- 备注：除了autoprefixer外，也可以安装其他包处理css
+
+##### 使用
+```javascript
+rules: [
+	{
+		test: /\.css$/,
+		use: [
+			'style-loader',
+			'css-loader',
+			{loader: 'postcss-loader', options: {
+				plugins: function() {
+					return [
+						require('autoprefixer')()
+					];
+				}
+			}}
+		]
+	},
+	{
+		test: /\.less$/,
+		use: [
+			'style-loader',
+			{loader: 'css-loader', options: {importLoaders: 1}},
+			{loader: 'postcss-loader', options: {
+				plugins: function() {
+					return [
+						require('autoprefixer')()
+					];
+				}
+			}},
+			'less-loader'
+		]
+	}
+]
+```
+
+## ejs-loader
+
+#### 说明
+- 把ejs模板文件转为函数引入，再需要时调用传入数据即可得到渲染好的模板字符串
+
+##### 安装
+- npm i ejs-loader -D
+
+##### 使用
+```javascript
+// entry.js
+import example from './src/tpl/example.tpl'
+document.querySelector('body').appendChild(example({name: 'yourself'}));
+```
+```javascript
+rules: [
+	{
+		test: /\.tpl$/,
+		use: 'ejs-loader'
+	}
+]
+```

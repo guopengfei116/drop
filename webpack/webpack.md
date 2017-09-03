@@ -4,52 +4,32 @@
 - webpack是基于nodejs运行的，所以在时候前必须保证本地拥有nodejs运行环境
 
 ## 安装
-- 安装cnpm
-    + npm install -g cnpm --registry=https://registry.npm.taobao.org
-        * 为了保证安装速度与node-sass的安装成功率
-        * 官网：[淘宝NPM镜像](https://npm.taobao.org/)
-- 先全局安装
-    + cnpm i -g webpack
-        * 安装后可以在命令行工具中运行webpack命令执行打包任务
-    + webpack --version
-        * 如果打印出版本号证明安装成功
-- 项目中本地安装
-    + npm init -y
-        * 如果项目中已存在package.json项目描述文件，忽略执行这条命令
-    + cnpm i webpack --save-dev
-        * 安装webpack到项目node_modules目录中，并自动配置package.json中的开发依赖
+- 全局安装
+    + 脚本：`npm i webpack -g`
+    + 全局安装后才可以在命令行中运行webpack命令
+    + 可通过`webpack --version`测试全局是否安装成功
+- 本地安装
+    + 脚本：`npm i webpack -S`
+    + 将来我们开发的项目，会把依赖都配置到package.json中，所以将来还会本地安装
+- 说明：有些时候webpack全局安装一次就够了，但是将来有些插件可能依赖它，所以还要本地安装
 
-## 可能遇到的问题
-- cnpm安装包失败
-    + 可能是因为你的硬盘文件格式为FAT32，
-        * 可以在资源管理器中->右键盘符->属性，查看本地磁盘文件系统，一般为NTFS
-        * 如果是这种情况那就改用npm安装包
-    + 可能是因为你修改过项目文件名导致已安装的包出现错误
-        * 如果有这种情况，删除整个node_modules，重装本地包
-- webpack构建时报错
-    + Error: Cannot find module 'webpack/lib/node/NodeTemplatePlugi
-        * 是因为你没有本地安装webpack
-        * 请运行cnpm install webpack -D
-    + Cannot find module '其他包'
-        * 是因为你安装包的时候，某些包的依赖没有安装成功
-        * 要么手动cnpm i 提示的包名，要么删除整个node_modules，重装本地包
-    + Invalid configuration object.
-        * 是因为你的webpack.config.js配置的某些属性名写错了
-        * 找到configuration has an unknown property 'plugin'.这句话
-        * 这里就是因为把plugins写成了plugin造成的配置不对报错
-- webpack构建时没有产出文件到dist目录
-    + 一般是因为output中的path路径配置有误造成的
-        * 这里咱们使用的是path.resovle(__dirname, './dist');
-        * 千万注意是'./dist'，不是'/dist'
-- npm run xxx后报语法错误
-    + 检测package.json中的scripts属性名是不是写错了
-    + package.json配置文件中不能有注释，并且字符串必须使用双引号包起来
+## 常用命令
+- 打包：
+    + 脚本：`webpack main.js buld.js`
+    + 描述：打包main.js，打包后的文件起名为buld.js
+- 打包并压缩：
+    + 脚本：`webpack main.js buld.js -p`
+    + 描述：添加**-p**参数可以对打包后的文件进行压缩混淆
+- 打包生成sourceMap
+    + 脚本：`webpack main.js buld.js -d`
+    + 描述：添加**-p**参数可以根据打包的文件提供source map，方便浏览器调试
+- 根据配置文件打包
+    + 脚本：`webpack`
+    + 描述：打包规则通过配置文件指定，默认的配置文件名称为webpack.config.js
 
 ## 基本使用
 
-##### 入门
-
-###### 原始开发模式
+#### 原始开发模式
 1. 新建一个jq项目
     + 保证已全局安装过webpack
 2. 项目有如下3个文件
@@ -75,7 +55,7 @@ var $node = $('body');
 console.log($node.width() + ' : ' + $node.width());
 ```
 
-###### 使用webpack
+#### 使用webpack
 1. 把刚才的项目copy一份
 2. 修改main.js文件
     + 通过es6语法导入依赖的jquery模块
@@ -103,9 +83,9 @@ var $node = $('body');
 console.log($node.width() + ' : ' + $node.width());
 ```
 
-##### 进阶
+## 配置文件使用
 
-###### 使用配置文件
+#### 使用配置文件
 1. 把刚才的webpack项目copy一份
     + 删除build.js这里要重新生成
 2. 项目中创建webpack.config.js配置文件
@@ -127,7 +107,7 @@ module.exports = {
 };
 ```
 
-###### 目录规范
+#### 目录规范
 1. 把刚才的webpack项目copy一份
     + 删除build.js这里要重新生成
 2. 新增两个目录
@@ -169,21 +149,29 @@ module.exports = {
 };
 ```
 
-## plugin使用
+# 第三方插件使用
 
-##### html-webpack-plugin
+## 说明
+- webpack有两种插件机制
+- 通过第三方loader实现其他文件类型的打包
+- 通过第三方plugin实现额外处理
+
+## 准备工作
+- npm init -y
+    + 生成package.json项目描述文件
+- npm i webpack -D
+    + 本地安装webpack，第三方插件有依赖
+
+## html-webpack-plugin
+
+#### 说明
+- 这是webpack的一款插件
 - 可自动把构建好的js脚本引入到html中
 
-##### 准备工作
-- 添加package.json配置文件
-- 可运行cnpm init -y自动创建
+#### 安装
+- npm i html-webpack-plugin -D
 
-##### 安装
-- 本地webpack：cnpm i webpack -D
-- 插件：cnpm i html-webpack-plugin -D
-- 依赖：cnpm i tapable webpack-sources ansi-regex json5 object-assign emojis-list -D
-
-##### 使用
+#### 使用
 - copy上面的项目
     + 删除dist目录中的内容
 - 修改index.html
@@ -200,19 +188,18 @@ plugins: [
 ]
 ```
 
-## loader使用
-
-### css-loader、style-loader
+## css-loader、style-loader
 
 #### 说明
 - css-loader
     + 打包css文件内容到js中
+    + 生成的模块会输出一个数组，里面存储着每一个css文件模块的内容
 - style-loader
     + 让打包好的css在页面中自动生效
+    + 内部调用css-loader生成的模块，把得到样式通过style标签的方式插入到页面让其生效
 
 #### 安装
-- loader安装
-    + npm install --save-dev css-loader style-loader
+- npm i css-loader style-loader -D
 
 #### 使用
 ```javascript
@@ -220,85 +207,93 @@ plugins: [
 import './src/css/example.css'
 ```
 ```javascript
-rules: [
-	{
-		test: /\.css$/,
-		use: [
-			'style-loader',
-			'css-loader'
-		]
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.css$/,
+			use: [
+				'style-loader',
+				'css-loader'
+			]
+		}
+	]
+}
 ```
 
-## 其他loader
+#### 非配置方式使用
+```javascript
+// entry.js
+require('style-loader!css-loader!./src/css/example.css');
+```
 
-### less-loader
+## less-loader
 
 #### 说明
 - 把less解析为css
 
 #### 安装
-- loader安装
-    + npm install --save-dev less-loader
-- 依赖安装
-    + npm install --save-dev less
+- 脚本：npm i less less-loader -D
+- 备注：less为less-loader的依赖
 
 #### 使用
+- 要让less文件成功打包并生效，在use中还需添加css-loader与style-loader
 ```javascript
 // entry.js
 import './src/less/example.less'
 ```
 ```javascript
-rules: [
-	{
-		test: /\.less$/,
-		use: [
-			'style-loader',
-			'css-loader',
-			'less-loader'
-		]
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.less$/,
+			use: [
+				'style-loader',
+				'css-loader',
+				'less-loader'
+			]
+		}
+	]
+}
 ```
 
-### sass-loader
+## sass-loader
 
 #### 说明
 - 把sass解析为css
 
 #### 安装
-- loader安装
-    + npm install --save-dev sass-loader
-- 依赖安装
-    + npm install --save-dev node-sass
+- 脚本：npm i node-sass sass-loader -D
+- 备注：node-sass为sass-loader的依赖
+- 注意：根据尝试大部分情况下npm安装node-sass都失败，请使用cnpm安装
 
 #### 使用
+- 要让less文件成功打包并生效，在use中还需添加css-loader与style-loader
 ```javascript
 // entry.js
 import './src/scss/example.scss'
 ```
 ```javascript
-rules: [
-	{
-		test: /\.scss$/,
-		use: [
-			'style-loader',
-			'css-loader',
-			'sass-loader'
-		]
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.scss$/,
+			use: [
+				'style-loader',
+				'css-loader',
+				'sass-loader'
+			]
+		}
+	]
+}
 ```
 
-### html-loader
+## html-loader
 
 #### 说明
 - 把html文件内容以字符串的形式引入
 
 ##### 安装
-- loader安装
-    + npm install --save-dev html-loader
+- 脚本：npm i html-loader -D
 
 ##### 使用
 ```javascript
@@ -307,27 +302,28 @@ import example from './src/tpl/example.html'
 document.querySelector('body').appendChild(example);
 ```
 ```javascript
-rules: [
-	{
-		test: /\.html$/,
-		use: 'html-loader'
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.html$/,
+			use: 'html-loader'
+		}
+	]
+}
 ```
 
-### url-loader、image-webpack-loader
+## url-loader、image-webpack-loader
 
 #### 说明
 - url-loader
-    + 替换文件的引用，小文件将以base64编码的形式和文件一起打包，可减少http请求
+    + 替换文件的引用，小文件将以base64编码的形式和文件一起打包，以减少http请求
+    + 小文件的大小可通过limit选项进行配置，单位字节(byte)，一般配置10240，意为10kb
 - image-webpack-loader
     + 压缩图片
 
 #### 安装
-- loader安装
-    + npm install --save-dev url-loader image-webpack-loader
-- 依赖安装
-    + npm install --save-dev file-loader
+- 脚本：npm i file-loader url-loader image-webpack-loader -D
+- 备注：file-loader为url-loader的依赖
 
 #### 使用
 ```html
@@ -341,68 +337,75 @@ rules: [
 }
 ```
 ```javascript
-rules: [
-	{
-		test: /\.(png|jpg|gif)$/,
-		use: [
-			{loader: 'url-loader', options: {limit: 8192}},
-			'image-webpack-loader'
-		]
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.(png|jpg|gif)$/,
+			use: [
+				{loader: 'url-loader', options: {limit: 8192}},
+				'image-webpack-loader'
+			]
+		}
+	]
+}
 ```
 
-### babel-loader
+## babel-loader
 
 #### 说明
-- 可把es6、es7等浏览器暂不支持的语法规范编写的js脚本，解析为浏览器支持的es5标准脚本。
+- 可把es6、es7、TS等浏览器暂不支持的语法规范编写的js脚本，解析为浏览器支持的es5标准脚本。
 
 ##### 官网
 - [英文官网](http://babeljs.io/)
 - [中文官网](http://babeljs.cn/)
 
 ##### 安装
-- loader安装
-    + npm install --save-dev babel-loader
-- 依赖安装
-    + npm install --save-dev babel-core babel-preset-es2015 babel-plugin-transform-runtime
+- 脚本：npm i babel-loader babel-core babel-preset-es2015 babel-plugin-transform-runtime -D
+- 说明：还可以安装配置其他依赖支持es7，es8脚本的转换
 
 ##### 使用
 ```javascript
-rules: [
-	{
-		test: /\.js$/,
-		use: {
-			loader: 'babel-loader',
-			options: {
-				// 配置要解析的语法规范
-				presets: ['es2015'],
-				plugins: ['transform-runtime']
-			}
-		},
-		include: /src/,
-		exclude: /(node_modules)|bower_components)/
-	}
-]
+module: {
+	rules: [
+		{
+			test: /\.js$/,
+			use: {
+				loader: 'babel-loader',
+				options: {
+					// 配置要解析的语法规范
+					presets: ['es2015'],
+					plugins: ['transform-runtime']
+				}
+			},
+			include: /src/,
+			exclude: /(node_modules)|bower_components)/
+		}
+	]
+}
 ```
 
-### webpack-dev-server
+## vue-loader
 
 #### 说明
-- 启动一台文件服务器，可以实现代码热更新，方便开发
+- 解析打包vue文件
 
-##### 安装
-- npm install --save-dev webpack-dev-server
+#### 安装
+- 脚本：npm i vue-loader vue-template-compiler -D
+- 备注：vue-template-compiler是vue-loader的依赖
 
-##### 使用
-- webpack-dev-server --inline --hot --open --port 6666
-
-##### 配置
-- inline 自动刷新
-- hot 热加载
-- open 自动打开浏览
-- port 指定端口，默认8080
-- host 指定ip，默认127.0.0.1(localhost)
+#### 使用
+```javascript
+module: {
+	rules: [
+		{
+			test: /\.vue$/,
+			use: [
+				'vue-loader'
+			]
+		}
+	]
+}
+```
 
 ## webpack核心配置说明
 
@@ -460,3 +463,56 @@ rules: [
 - 作用：不同模块处理规则
 - 值类型：
     + 数组：[loader_config_1, loader_config_2, ...]
+
+## 配置代码热更新
+
+#### 说明
+- 前端开发通常会边写边查看浏览器运行效果
+- 使用了构造工具后，代码每次修改都要重新打包后再测，比较繁琐
+- webpack-dev-server这款工具便可实现webpack项目的自动打包与浏览器刷新
+- 启动一台文件服务器，可以实现代码热更新，方便开发
+
+##### 安装
+- 全局安装：npm i webpack-dev-server -g
+- 本地安装：npm i webpack-dev-server -D
+- 注意：本地安装不是必须的，但是为了记录项目依赖，最好本地装上
+- 说明：如果只在本地安装按理说也可以，但是必须安装到项目启动目录，不能安装到父级目录
+
+##### 使用
+- 在package.json项目描述文件中，找到scripts配置项，添加一条脚本配置
+```javascript
+{
+	"name": "my project",
+	"scripts": {
+	    "start": "webpack-dev-server --inline --open --port 8888"
+	}
+}
+```
+- 然后通过`npm run 名称`的方式执行命令启动服务
+- webpack-dev-server --inline --hot --open --port 6666
+    + inline 
+    + open 打包完成后自动打开浏览器
+    + port 指定端口，默认8080
+    + host 指定ip，默认127.0.0.1(localhost)
+- 备注：如果想直接执行命令启动服务，全局安装webpack-dev-server即可
+
+## 错误汇总
+- webpack构建时报错
+    + Error: Cannot find module 'webpack/lib/node/NodeTemplatePlugi
+        * 是因为你没有本地安装webpack
+        * 请运行cnpm install webpack -D
+    + Cannot find module '其他包'
+        * 是因为你安装包的时候，某些包的依赖没有安装成功
+        * 要么手动cnpm i 提示的包名，要么删除整个node_modules，重装本地包
+    + Invalid configuration object.
+        * 是因为你的webpack.config.js配置的某些属性名写错了
+        * 找到configuration has an unknown property 'plugin'.这句话
+        * 这里就是因为把plugins写成了plugin造成的配置不对报错
+- webpack构建时没有产出文件到dist目录
+    + 一般是因为output中的path路径配置有误造成的
+        * 这里咱们使用的是path.resovle(__dirname, './dist');
+        * 千万注意是'./dist'，不是'/dist'
+- npm run xxx后报语法错误
+    + 检测package.json中的scripts属性名是不是写错了
+    + package.json配置文件中不能有注释，并且字符串必须使用双引号包起来
+
