@@ -2,20 +2,32 @@
 
 ## 字符串扩展
 
-#### 整体预览
-| 所属对象 | 名称 | 作用 |
+#### 预览
+| 名称 | 所属对象 | 作用 |
 |       -       |    -    |    -   |
-| Stirng.prototype | charAt | 返回指定下标元素 |
-| Stirng.prototype | charCodeAt | 返回指定下标元素的Unicode编码 |
-| Stirng.prototype | trim | 去除首尾空白字符 |
+| charAt | Stirng.prototype | 返回指定下标的字符 |
+| charCodeAt | Stirng.prototype | 返回指定下标元素的Unicode编码 |
+| trim | Stirng.prototype | 去除首尾空白字符 |
 
-#### 实例成员
+#### 演示
 
 - charAt
+```javascript
+var str = 'abcdef';
+str.charAt(3);    // 'd'
+```
 
 - charCodeAt
+```javascript
+var str = 'abcdef';
+str.charCodeAt( str.indexOf('c') );    // 99
+```
 
 - trim
+```javascript
+var str = ' lala ';
+str.trim();    // 'lala'
+```
 
 ## 数组扩展
 

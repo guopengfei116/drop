@@ -1,4 +1,4 @@
-# ES6语法增强
+# ES6常用新增语法
 
 ## ECMAScript6
 > ES6也称为ECMAScript2015，是2015年出版的javaScript国际新标准，
@@ -34,8 +34,8 @@ ES6是在2015年发布的，所以又称为ECMAScript2015，2016年发布的标�
 - 不允许重复声明
 ```javascript
 // SyntaxError，在语法分析时就报错
-let a = 10;  
-let a = 20; 
+let a = 10;
+let a = 20;
 ```
 ```javascript
 function fn(arg) {
@@ -56,7 +56,7 @@ console.log(a);  // ReferenceError
 - 没有预解析
 ```javascript
 console.log(a);  // ReferenceError
-let a = 10;  
+let a = 10;
 ```
 
 - 存在暂时性死区
@@ -517,17 +517,17 @@ console.log(obj);
 
 ```javascript
 class Person {
-	
+
 	constructor(name, age, gender) {
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
 	};
-	
+
 	say() {
 		console.log(`${ this.name }今年${ this.age }岁了`);
 	};
-	
+
 };
 var xiaoming = new Person('小明', 14, '男');
 xiaoming.say();
@@ -537,16 +537,16 @@ xiaoming.say();
 
 ```javascript
 class Person {
-	
+
 	constructor() {
 		Person.total++ ||  (Person.total = 1);
 	};
-	
+
 	// 统计总人口
 	static getTotal() {
-		return Person.total;	
+		return Person.total;
 	};
-	
+
 };
 var p1 = new Person;
 var p2 = new Person;
@@ -557,29 +557,29 @@ console.log(Person.getTotal()); // 2
 
 ```javascript
 class Animal {
-	
+
 	constructor(name, age, gender) {
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
 	};
-	
+
 	eat() {
 		console.log('都得吃啊！');
 	};
-	
+
 };
 
 class Person extends Animal {
-	
+
 	constructor(name, age, gender) {
 		super(name, age, gender);
 	};
-	
+
 	say() {
 		console.log(`${ this.name }今年${ this.age }岁了`);
 	};
-	
+
 };
 var xiaoming = new Person('小明', 14, '男');
 xiaoming.eat();
@@ -590,11 +590,11 @@ xiaoming.say();
 
 ```javascript
 class Animal {
-	
+
 	static test() {
 		console.log('来自父类的静态方法');
 	};
-	
+
 };
 class Person extends Animal {};
 Person.test();
@@ -615,7 +615,7 @@ class Person {
 		console.log('吃吃吃');
 	};
 };
-console.log(Person.prototype); 
+console.log(Person.prototype);
 ```
 
 - 类中的静态方法都定义在了自身
@@ -625,7 +625,7 @@ class Person {
 		console.log('70亿');
 	};
 };
-console.dir(Person); 
+console.dir(Person);
 ```
 
 - 实例继承原理（子类原型继承父类原型）
