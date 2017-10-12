@@ -148,7 +148,7 @@ server.listen(8888, () => console.log('node is running'));
 ```javascript
 'use strict';
 const http = require('http');
-const url = require('url'); 
+const url = require('url');
 let server = http.createServer((req, resp) => {
 	resp.writeHead(200, {
 		"Content-Type": "application/json;charset=utf-8",
@@ -169,24 +169,24 @@ server.listen(8888, () => console.log('node is running'));
 ```javascript
 'use strict';
 const http = require('http');
-const url = require('url'); 
+const url = require('url');
 let responeseData = [{id: 1, name: '法拉利', time: '2013'}, {id: 2, name: '玛莎拉蒂', time: '2015'}];
 let server = http.createServer((req, resp) => {
-	
+
 	// 统一的接口响应头与基本数据格式
 	resp.writeHead(200, {
 		"Content-Type": "application/json;charset=utf-8",
 		"Access-Control-Allow-Origin": "*",
 		"Access-Control-Allow-Methods": "*"
 	});
-	
+
 	// 解析url与search
 	let urlObj = url.parse(req.url, true);
 	let queryObj = urlObj.query;
-	
+
 	// 根据method与url做不同处理与返回
 	if(req.method === 'GET') {
-		
+
 		// 获取歌曲列表
 		if(req.url === '/api/goods/list') {
 			resp.write(JSON.stringify(responeseData));
@@ -202,9 +202,9 @@ let server = http.createServer((req, resp) => {
 			resp.write(JSON.stringify(responeseData));
 		}
 		resp.end();
-		
+
 	}else if((req.method === 'POST')) {
-		
+
 	}
 });
 server.listen(8888, () => console.log('node is running'));
@@ -227,7 +227,7 @@ server.listen(8888, () => console.log('node is running'));
 ```javascript
 'use strict';
 const http = require('http');
-const url = require('url'); 
+const url = require('url');
 const querystring = require('querystring');
 let server = http.createServer((req, resp) => {
 	resp.writeHead(200, {
@@ -237,7 +237,7 @@ let server = http.createServer((req, resp) => {
 	});
 	let data = '';
 	req.on('data', (chunk) => {
-		data += chunk;	
+		data += chunk;
 	});
 	req.on('end', () => {
 		resp.write('服务端接收到的原数据为：' + data);
@@ -253,26 +253,26 @@ server.listen(8888, () => console.log('node is running'));
 ```javascript
 'use strict';
 const http = require('http');
-const url = require('url'); 
+const url = require('url');
 const querystring = require('querystring');
 let responeseData = [{id: 1, name: '法拉利', time: '2013'}, {id: 2, name: '玛莎拉蒂', time: '2015'}];
 let currentId = 2;
 let server = http.createServer((req, resp) => {
-	
+
 	// 统一的接口响应头与基本数据格式
 	resp.writeHead(200, {
 		"Content-Type": "application/json;charset=utf-8",
 		"Access-Control-Allow-Origin": "*",
 		"Access-Control-Allow-Methods": "*"
 	});
-	
+
 	// 解析url与search
 	let urlObj = url.parse(req.url, true);
 	let queryObj = urlObj.query;
-	
+
 	// 根据请求方式与url做不同处理与返回
 	if(req.method === 'GET') {
-		
+
 		// 获取歌曲列表
 		if(req.url === '/api/goods/list') {
 			resp.write(JSON.stringify(responeseData));
@@ -287,9 +287,9 @@ let server = http.createServer((req, resp) => {
 			resp.write(JSON.stringify(responeseData));
 		}
 		resp.end();
-		
+
 	}else if(req.method === 'POST') {
-		
+
 		// 添加歌曲
 		if(urlObj.pathname === '/api/goods/add') {
 			let data = '';
@@ -307,9 +307,9 @@ let server = http.createServer((req, resp) => {
 				resp.end();
 			});
 		}
-		
+
 	}
-	
+
 });
 server.listen(8888, () => console.log('node is running'));
 ```
@@ -503,13 +503,13 @@ http.createServer((req, resp) => {
 	// url解析，计算文件路径
 	let urlObj = url.parse(req.url);
 	let filePath = __dirname + urlObj.pathname;
-	
+
 	// 只允许客户端访问public目录下文件
 	if(req.url.startsWith('/public')) {
-		
+
 		// 计算文件类型
-		let fileType = mime.lookup(filePath);  
-		
+		let fileType = mime.lookup(filePath);
+
 		// 文件读取成功返回200，失败返回500
 		fs.readFile(filePath, (err, data) => {
 			if(!err) {
@@ -609,7 +609,7 @@ http.createServer((req, resp) => {
                 resp.write(JSON.stringify(goodsList));
                 resp.end();
             });
-            
+
         }
         // 删除商品，需要接收来自客户端传入的id
         else if(req.url.startsWith('/api/goods/delete') && req.method === 'GET') {
@@ -764,6 +764,12 @@ console.log(isEven.everyEven(nums)); // false
 console.log(isEven.someEven(nums)); // true
 ```
 
+#### 默认值与非默认值一起导出
+-
+
+```javascript
+```
+
 ## 案例模块化改造
 
 #### 目录结构
@@ -810,7 +816,7 @@ module.exports = function(req, resp) {
 
 	// 根据请求方式与url做不同处理与返回
 	if(req.method === 'GET') {
-	
+
 		// 获取商品列表
 		if(req.url === '/api/getprodlist') {
 			resp.write(JSON.stringify(goodsDataManager.getAll()));
@@ -825,9 +831,9 @@ module.exports = function(req, resp) {
 			resp.write(JSON.stringify(goodsDataManager.search(urlObj.query.name)));
 		}
 		resp.end();
-	
+
 	}else if(req.method === 'POST') {
-	
+
 		// 添加歌曲
 		if(urlObj.pathname === '/api/addproduct') {
 			let data = '';
@@ -862,7 +868,7 @@ module.exports = function(req, resp) {
 
 	// 读取文件内容并返回
 	fs.readFile(filePath, (err, data) => {
-		
+
 		if(!err) {
 			// 设置响应头
 			let mimeType = mime.lookup(filePath);
@@ -891,7 +897,7 @@ class GoodsManager {
 
 	// 遍历商品列表找出当前最大的ID值，没有找到设初始值为0，供以后添加新商品时时候
 	init() {
-		GoodsManager.id = this.goodsList.length? 
+		GoodsManager.id = this.goodsList.length?
 			this.goodsList.reduce((g1, g2) => g1.id > g2.id? g1.id: g2.id) : 0;
 	};
 
@@ -929,7 +935,7 @@ class GoodsManager {
 		this.goodsList.forEach(goods => {
             if(goods.id === id) {
                 goods.name = newName;
-            } 
+            }
         });
 	};
 }
@@ -995,7 +1001,7 @@ class GoodsManager {
 		if(!this.goodsList) {
 			this.goodsList = JSON.parse(fs.readFileSync(localeDataPath, 'utf-8'));
 		}
-		GoodsManager.id = this.goodsList.length? 
+		GoodsManager.id = this.goodsList.length?
 			this.goodsList.reduce((g1, g2) => g1.id > g2.id? g1.id: g2.id) : 0;
 	};
 

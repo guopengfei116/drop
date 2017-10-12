@@ -16,22 +16,30 @@
 
 #### 安装与更新
 - 只要安装了node，那么npm就跟着安装了
-- 可以运行命令npm install -g npm来升级npm到最新版本
-    + 不过需要注意，如果你没有采用默认的安装路径或者没有管理员权限最好不要升级
-    + 因为升级后可能丢失npm的使用权限，到时候就得重装node来解决了
+    + 可在命令行工具中通过npm -v来查看已安装的版本
+    + 最好使用5.0+版本的npm
+- 版本比较低的话可以重新安装最新高版本的node
+- 或者通过命令升级到最新版本
+    + `npm install -g npm`
+    + 不过需要注意，如果你没有采用默认的安装路径或者没有管理员权限最好不要升级，可能出现问题
 
 ## 使用
 
+#### 预备工作
+- 创建一个项目，使用命令行工具切换到项目路径
+- 创建**package.json**项目描述文件
+    + 可通过npm init命令创建
+    + 也可以纯手动创建
+    + 注意：该描述文件中**不能添加注释**，否则会有问题
+
 #### 基本使用
-- 以命令行方式进入一个项目目录
-- 创建项目描述文件（已经有了就不用了）
-    + 运行npm init，运行后项目中会创建一个package.json的项目描述文件
-    + 也可以纯手动的方式创建package.json文件
-- 使用npm安装项目依赖包
-    +npm install jquery bootstrap --save
-    + 运行后项目中会创建一个node_modules文件夹
-    + 打开该文件夹会发现jquery与bootstrap的最新版已经被下载
-- 接下来就可以在项目引用第三方包进行开发了
+- 安装项目依赖包
+    + `npm install jquery`
+    + 运行后jquery的最新版本会自动下载到本地node_modules文件夹
+- 使用
+    + 安装的包在项目中直接使用即可，但要注意引入文件的路径，别引错
+```html
+```
 
 #### 项目共享
 - 通常一个项目是由多个人一起维护的，如果是一个比较大的项目，还会有很多依赖的包
@@ -51,28 +59,65 @@
    + 配置后项目代码就可以提交到git仓库进行管理了
    + 将来其他账户要clone项目并运行，clone后依然运行npm install即可安装依赖恢复项目原样
 
-## 命令汇总
+## 必用命令
 
-#### 必用命令
-- npm init
-    + 可以添加-y参数跳过配置信息的填写，直接生成默认的package.json文件
-- npm install 包名@版本号
-    + --save || -S参数可以把安装信息记录在package.json文件中的dependencies属性中
-    + --save-dev || -D参数可以把安装信息记录在package.json文件中的devDependencies属性中
-    + --production参数让npm根据配置文件中的dependencies属性进行依赖包的安装
-    + -g参数可以在全局进行安装，一般全局安装的都是一些可单独执行的node工具
-    + --registry参数可以指定下载包的地址，可以使用淘宝提供的地址https://registry.npm.taobao.org
-- npm uninstall 包名
-    + --save || -S参数会删除package.json文件中dependencies的依赖信息
-    + --save-dev || -D参数会删除package.json文件中devDependencies的依赖信息
-    + -g参数指明删除全局的包
+#### npm init
+- 作用：创建package.json项目描述文件
+- 基本语法：npm init [-y]
+
+###### 使用
+- 一步步填写项目信息：`npm init`
+- 使用默认值跳过填写步骤：`npm init -y`
+    + 注意：如果项目包含中文会报错
+
+#### npm install
+- 作用：安装包
+- 基本语法：`npm install [name@version] [ -S || -D ]`
+- 简写：`npm i [name]`
+
+###### 使用
+- 根据package.json安装包
+    + 安装全部依赖：`npm i`
+    + 只安装项目的运行依赖：`npm i --production`
+- 指定安装包
+    + 安装最新版本：`npm i name`
+    + 安装指定版本：`npm i name@version`
+    + 安装运行时依赖并记录在描述文件中：`npm i name [ --save || -S ]`
+    + 安装开发时依赖并记录在描述文件中：`npm i name [ --save-dev || -D ]`
+- 其他参数
+    + 指定安装地址：`npm i vue -S --registry=https://registry.npm.taobao.org`
+    + 全局安装：`npm i webpack -g`
+        * 全局安装的都是一些可单独执行的node工具
+
+#### npm uninstall
+- 作用：卸载包
+- 基本语法：`npm uninstall [name@version] [ -S || -D ]`
+
+###### 使用
+- 卸载：`npm uninstall name`
+- 卸载时删除dependencies依赖：`npm uninstall name [ --save || -S ]`
+- 卸载时删除devDependencies依赖：`npm uninstall name [ --save-de || -D ]`
+- 卸载全局包：`npm uninstall name -g`
+
+#### npm list
+- 作用：查看包信息
+- 基本语法：`npm list [name] [ --depth ]  [ number ]`
+- 简写：`npm ls [name]`
+
+###### 使用
+- 所有包信息：`npm list`
+- 指定包信息：`npm list webpack`
+- 指定深度：`npm list webpack --depth 0`
+
+#### npm root
+- 作用：查看当前安装的包的路径
+- 可选项：-g
+    + 查看全局安装的包的路径
 
 #### 其他命令
+- npm help 查看某条命令的详细帮助
 - npm update 更新模块
 - npm outdated 检查模块是否已经过时
-- npm ls 查看安装的模块
-- npm init 在项目中引导创建一个package.json文件
-- npm help 查看某条命令的详细帮助
 - npm root 查看包的安装路径
 - npm config 管理npm的配置路径
 - npm cache 管理模块的缓存
@@ -80,29 +125,57 @@
 - npm stop 停止模块
 - npm restart 重新启动模块
 - npm test 测试模块
-- npm version 查看模块版本
-- npm view 查看模块的注册信息
+- npm version 查看node环境所有模块的版本
+- npm view 联网查看模块的注册信息
 - npm adduser
 - npm publish 发布模块
 - npm access 在发布的包上设置访问级别
 - npm package.json的语法
 
+# 其他包管理工具
+
 ## cnpm
-
-#### 简介
-- [淘宝NPM镜像官网](https://npm.taobao.org/)
-
-#### 安装
-- npm install -g cnpm --registry https://registry.npm.taobao.org
+- 简介：淘宝推出的基于npm的包管理工具，并在国内提供了npm包的镜像，国内使用比较快
+- 资源：[官网](https://npm.taobao.org/)
+- 特点：使用方式与命令与npm基本一致
+- 缺点：使用cnpm安装的包，因为存储方式的原因，不能copy给其他人或其他目录使用
 
 #### 使用
-- 与npm的使用方式一样，本就是对npm的一层封装
-- 使用范例：cnpm install jquery art-template -S
+- 安装：`npm install -g cnpm --registry https://registry.npm.taobao.org`
+    + 有些比较老的机器可能会安装失败
+- 使用1：`cnpm i`
+- 使用2：`cnpm i jquery art-template -S`
 
-#### 其他相关工具
-- bower
-    + twitter推出的一款包管理工具。
-    + 参考文档[http://www.zuojj.com/archives/533.html]
-- yarn
-    + facebook推出的包管理工具。
-    + 参考文档[http://imweb.io/topic/581f6c0bf2e7e042172d618a]
+#### 注意
+- 比较老的机器可能无法正常安装包
+    + 资源管理器中->右键盘符->属性，查看本地磁盘文件系统，一般为NTFS，可能你的为FAT32
+    + 如果是这种情况那就暂时改用npm
+- cnpm安装过的包依赖目录名称
+    + 所以千万不要修改项目名称与目录，否则可能会出错
+    + 如果有这种情况，删除整个node_modules，重装包
+
+#### 使用
+- npm install 包名[@指定版本号]
+    + 安装包
+    + --save
+        * 可以把安装信息记录在package.json文件中的dependencies属性
+    + --save-dev
+        * 可以把安装信息记录在package.json文件中的devDependencies属性
+    + -g
+        * 全局安装包，一些工具性软件会使用全局安装，安装后可以在任何路径执行该工具所提供的命令。
+- npm uninstall 包名
+    + 卸载包
+    + --save
+        * 卸载后同步删除package.json文件中的dependencies记录
+    + --save-dev
+        * 卸载后同步删除package.json文件中的devDependencies记录
+
+## bower
+- 简介：twitter推出的一款包管理工具。
+- 资源：[参考文档](http://www.zuojj.com/archives/533.html)
+- 特点：专属与前端的包管理工具
+
+## yarn
+- 简介：facebook推出的包管理工具。
+- 资源：[参考文档](http://imweb.io/topic/581f6c0bf2e7e042172d618a)
+- 特点：快
