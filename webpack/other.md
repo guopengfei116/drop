@@ -4,13 +4,6 @@
 
 #### 安装
 - 插件：cnpm i html-webpack-plugin --save-dev
-- 依赖：cnpm i tapable webpack-sources ansi-regex json5 object-assign emojis-list --save-dev
-    + tapable 
-    + webpack-sources 
-    + ansi-regex 
-    + json5 
-    + object-assign
-    + emojis-list
 
 #### 基本使用
 ```javascript
