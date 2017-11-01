@@ -5,6 +5,23 @@
 标准的制定者计划，以后每年发布一次标准，使用年份作为版本号，
 ES6是在2015年发布的，所以又称为ECMAScript2015，2016年发布的标准即为ES7。
 
+## 主要升级内容
+字符编码
+新字符串
+增强计算api:  SIMD，Math
+增强正则
+变量赋值 模式匹配
+函数式编程
+函数新数据结构set , map
+二进制数组语法糖
+后端语言特性  class ,const , decorator，Iterator
+将部分库移植到标准  proxy , iterator , promise , module , object ， Async
+新概念 Generator/yield , symbol
+
+## 资料
+- [阮一峰](http://es6.ruanyifeng.com/)
+- [中文网](https://www.tslang.cn/index.html)
+
 ## let与const
 > 新的变量定义方式。
 
@@ -118,6 +135,7 @@ PI = 2.1415926;  // TypeError
 - const特性总结
 ![const](./imgs/const.jpg)
 
+
 ## 解构赋值
 > 按照一定的模式，从数组和对象中提取值，然后对变量进行赋值
 
@@ -197,10 +215,10 @@ console.log(c); // { c1: 30, c2: 31 }
 - 深层解构1
 ```javascript
 let { b: [ b1, b2 ], c: { c1, c2 } } = { a: 10, b: [20, 21], c: { c1: 30, c2: 31 } };
-console.log(b); // RefrenceError
+console.log(b);   // RefrenceError
 console.log(b1); // 20
 console.log(b2); // 21
-console.log(c); // RefrenceError
+console.log(c);   // RefrenceError
 console.log(c1); // 30
 console.log(c2); // 31
 ```
@@ -209,7 +227,7 @@ console.log(c2); // 31
 ```javascript
 // 对象深层解构时前面的引导符不算变量，如有需要，需单独解构
 let { c, c: { c1, c2 } } = { a: 10, b: [20, 21], c: { c1: 30, c2: 31 } };
-console.log(c); // { c1: 30, c2: 31 }
+console.log(c);   // { c1: 30, c2: 31 }
 console.log(c1); // 30
 console.log(c2); // 31
 ```
@@ -232,7 +250,7 @@ console.log(b); // bb
 ```javascript
 let { a: myA } = { a: 10 };
 console.log(myA); // 10
-console.log(a); // ReferenceError
+console.log(a);      // ReferenceError
 ```
 
 #### 使用场景
@@ -240,6 +258,7 @@ console.log(a); // ReferenceError
 - 变量交换
 ```javascript
 let a = 10, b = 20, c = 30;
+// 注意这里a b c已经声明了,就不用再声明了
 [a, b, c] = [ b, c, a ];
 console.log(a, b, c);
 ```
@@ -255,6 +274,8 @@ let ajaxResponseData = {
 		list: ['兰博基尼', '法拉利']
 	}
 };
+
+// 解构提取result中info与list的值
 let { result: { info, list } } = ajaxResponseData;
 console.log(info);
 console.log(list);
@@ -263,7 +284,7 @@ console.log(list);
 - 函数返回多个值（本质还是提取对象中的值）
 ```javascript
 function fn() {
-	var obj = {};
+	let obj = {};
 	return {
 		get: function(key){
 			return obj[key];
@@ -273,13 +294,16 @@ function fn() {
 		}
 	};
 }
-var { get, set } = fn();
+
+// 解构fn的返回值
+let { get, set } = fn();
 set('fib', [1, 1, 2, 3, 5, 8, 13]);
-console.log(get('fib'));
+get('fib');
 ```
 
 - 解构特点总结
 ![解构赋值](./imgs/jiegou.jpg)
+
 
 ## \`\`字符串
 > 新的字符串定义方式。
@@ -294,7 +318,7 @@ console.log(str);
 - 模版字符串
 ```javascript
 // 可以访问变量、调用函数、及各种表达式运算
-var mei = {
+let mei = {
 	name: '小美',
 	age: 16
 };
@@ -302,6 +326,21 @@ let str = `${ mei.name }今年${ mei.age }了，
 	还有${ 30 - mei.age }年他就30了`;
 console.log(str);
 ```
+
+
+## 语句
+
+#### for of
+> 新的循环语句,可遍历数组得到里面的每个值,也可以遍历Set与Map以及内置的类数组的对象
+
+- 遍历数组
+```
+let arr = ['a', 'b', 10, 20];
+for(let v of arr) {
+	console.log(v);   // 'a', 'b', 10, 20
+}
+```
+
 
 ## 运算符
 
@@ -338,6 +377,7 @@ let arr = [ 11, 22, 33, 44 ];
 let [ a, ...b ] = arr;
 console.log(a, b);  // 11, [ 22, 33, 44 ]
 ```
+
 
 ## 函数
 
@@ -449,6 +489,7 @@ fn(1, 2, 3);
 - 函数相关特性预览
 ![函数](./imgs/function.jpg)
 
+
 ## 对象
 
 #### 属性方法简洁表示
@@ -518,22 +559,28 @@ console.log(obj);
 ```javascript
 class Person {
 
+	// 以前的构造函数
 	constructor(name, age, gender) {
 		this.name = name;
 		this.age = age;
 		this.gender = gender;
 	};
 
+	// 以前原型上的方法
 	say() {
 		console.log(`${ this.name }今年${ this.age }岁了`);
 	};
 
 };
-var xiaoming = new Person('小明', 14, '男');
+
+// 使用方式一样
+let xiaoming = new Person('小明', 14, '男');
 xiaoming.say();
 ```
 
 - 静态方法
+静态方法属于`类自己`,通过`类名.方法名`调用
+注意这里static关键字`只能`作用于方法,`不能`作用于属性
 
 ```javascript
 class Person {
@@ -542,18 +589,22 @@ class Person {
 		Person.total++ ||  (Person.total = 1);
 	};
 
-	// 统计总人口
+	// 统计总人口,
 	static getTotal() {
 		return Person.total;
 	};
 
 };
-var p1 = new Person;
-var p2 = new Person;
+
+let p1 = new Person;
+let p2 = new Person;
 console.log(Person.getTotal()); // 2
 ```
 
-- 继承1 - 子类实例使用父类实例的属性方法
+- 继承特性1 - 实例成员继承
+通过extends关键字实现继承
+如果子类有构造器,必须添加super()调用父类构造器
+继承后子类实例便可使用父类实例的属性与方法
 
 ```javascript
 class Animal {
@@ -581,12 +632,12 @@ class Person extends Animal {
 	};
 
 };
-var xiaoming = new Person('小明', 14, '男');
+let xiaoming = new Person('小明', 14, '男');
 xiaoming.eat();
 xiaoming.say();
 ```
 
-- 继承2 - 子类使用父类的静态方法
+- 继承特性2 - 静态成员继承
 
 ```javascript
 class Animal {
@@ -602,10 +653,10 @@ Person.test();
 
 #### 本质
 
-- 类本质上是一个函数
+- 类本质上还是一个函数
 ```javascript
 class Person {};
-console.log(typeof Person); // function
+typeof Person; // function
 ```
 
 - 类中的实例方法都定义在了原型中
@@ -615,7 +666,7 @@ class Person {
 		console.log('吃吃吃');
 	};
 };
-console.log(Person.prototype);
+Person.prototype;
 ```
 
 - 类中的静态方法都定义在了自身
@@ -625,41 +676,112 @@ class Person {
 		console.log('70亿');
 	};
 };
-console.dir(Person);
+Person;
 ```
 
-- 实例继承原理（子类原型继承父类原型）
+- 继承原理
 
 ```javascript
 class Animal {
 	eat() {
 		console.log('都得吃啊！');
-	};
+	}
+
+	static sleep() {
+		console.log('睡');
+	}
 };
 
-// 子类原型 ==> Animal.prototype ==> Object.prototype ==> null
-class Person extends Animal {};
-console.log(Person.prototype.__proto__ === Animal.prototype); // true
+class Dog extends Animal {}
 
-// 实例 ==> Person.prototype ==> Animal.prototype ==> Object.prototype ==> null
-var xiaomei = new Person();
-console.log(xiaomei.__proto__ === Person.prototype);  // true
-console.log(xiaomei.__proto__.__proto__ === Animal.prototype); // true
-console.log(xiaomei.__proto__.__proto__.__proto__ === Object.prototype); // true
+// 实现原理
+Dog.prototype 继承 Animal.prototype,即子类原型 ==> 父类原型
+Dog 继承 Animal,即子类 ==> 父类
 ```
 
-- 类继承原理 （子类继承父类）
+
+## 模块
+- es6新增了`模块`规范, 可惜目前的主流浏览器都`不支持`, 但未来它会统一模块化开发
+- es6里的模块就是一个`独立`的文件, 该文件内部的所有`变量`, 外部无法`获取`,也就是说有了模块概念后就不会再存在全局变量
+- 如果你希望在一个模块里调用另一个模块间的东西,需要使用`import`与`export`导入导出语法
+
+#### webpack安装
+- 因为浏览器还`不支持`es6模块特性,这里我们需要借助`webpack`工具把es6模块打包为浏览器可执行脚本
+- webpack是`模块打包`工具,可把各种模块编写的代码打包成浏览器可`直接运行`的代码
+- 安装命令: `npm install -g webpack`
+- 测试命令: `webpack -v`
+- 打包命令: `webpack 打包入口文件名 输出文件名`
+
+#### 导出导入具名变量
+- 下面的代码演示了导出具名变量的两种方式与导入具名变量的两种方式
+
+###### 演示1
+
+- 单个分别导出, 导出那个就在那个前面添加export关键字
 
 ```javascript
-class Animal {
-	static getTotal() {
-		console.log('全部有多少');
-	};
-};
+export let year = 2017;
+let month = 10;
+let day = 28;
+export function getDate() {
+	return `${year}_${month}_${day}`;
+}
+```
 
-// 子类 ==> Animal ==> Function.prototype ==> Object.prototype ==> null
-class Person extends Animal {};
-console.log(Person.__proto__ === Animal);  // true
-console.log(Person.__proto__.__proto__ === Function.prototype); // true
-console.log(Person.__proto__.__proto__.__proto__ === Object.prototype); // true
+- 单个按需导入, 导入什么就用什么变量接收
+
+```javascript
+import { year, getDate } from './a.js';
+console.log(year);                 // 2017
+console.log(getDate());         // 2017_10_28
+```
+
+###### 演示2
+
+- 批量整体导出, 导出那个就在对象里面添加那个
+
+```javascript
+let year = 2017;
+let month = 10;
+let day = 28;
+function getDate() {
+	return `${year}_${month}_${day}`;
+}
+export { year, month, day, getDate };
+```
+
+- 批量整体导入, 导入时随便起个变量名接收
+
+```javascript
+import * as a from './a.js';
+console.log(a.year);                 // 2017
+console.log(a.getDate());         // 2017_10_28
+```
+
+#### 导出导入默认值
+
+###### export
+
+- 导出时必须使用default关键字来修饰, 且一个模块只能导出一个默认值
+
+```javascript
+const cacheData = {};
+export default function(key, val) {
+	if(val) {
+		cacheData[key] = val;
+		return cacheData;
+	}else  {
+		return cacheData[key];
+	}
+};
+```
+
+###### import
+
+- 导入时随便起个变量名接收
+
+```javascript
+import cache from './cache.js';
+cache('a', 10);
+cache('a');      // 10
 ```

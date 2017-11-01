@@ -81,7 +81,7 @@ str.codePointAt(0); // 65
 str.codePointAt(4); // 19968
 ```
 
-- String.prototype.at
+- String.prototype.at 浏览器还不支持,忽略
 
 ```javascript
 let str = 'ABCD一二三四';
@@ -116,7 +116,7 @@ str.startsWith('bcd', 1); // true
 	2. 结束位置,包头不包尾 { number }
 
 ```javascript
-var str = 'abcde';
+let str = 'abcde';
 str.endsWith('cde'); // true
 str.endsWith('cde', 0); // false
 str.endsWith('cde', 5); // true
@@ -146,16 +146,16 @@ str.endsWith('cde', 5); // true
     2. 与map功能一样的回调
 
 ```javascript
-var likeArray = { 0: 'aa', 1: 'bb', 2: 'cc', length: 3 }
+let likeArray = { 0: 'aa', 1: 'bb', 2: 'cc', length: 3 }
 Array.from(likeArray); // [ 'aa', 'bb', 'cc' ]
 
-var lis = document.querySelectorAll('li');
+let lis = document.querySelectorAll('li');
 Array.from(lis); // [ li, li, li, ... ]
 
-var str = 'abc';
+let str = 'abc';
 Array.from(str); // [ 'a', 'b', 'c' ]
 
-var nums = '123';
+let nums = '123';
 Array.from(nums, v => v * v); // [ 1, 4, 9 ]
 ```
 
@@ -169,7 +169,7 @@ Array.from(nums, v => v * v); // [ 1, 4, 9 ]
 - Array.prototype.findIndex
 
 ```javascript
-[11, 22, 33, 44].find(v => v % 2 === 0); // 1
+[11, 22, 33, 44].find(v => v % 2 === 0); // 22
 [11, 22, 33, 44].find(v => v > 50); // undefined
 ```
 
@@ -179,9 +179,9 @@ Array.from(nums, v => v * v); // [ 1, 4, 9 ]
     3. 结束位置,包头不包尾 { number }
 
 ```javascript
-var arr = new Array(5);
+let arr = new Array(5);
 arr.fill(1); // [ 1, 1, 1, 1, 1 ]
-arr.fill(10, 2, 4); // [ 1, 1, 20, 20, 1 ]
+arr.fill(10, 2, 4); // [ 1, 1, 10, 10, 1 ]
 ```
 
 ## 对象
@@ -212,55 +212,55 @@ Object.is(NaN, NaN);  // true
     2. 被拷贝对象
 
 ```javascript
-var o1 = { a: 1, b: 2 };
-var o2 = { c: 3, d: 4 };
+let o1 = { a: 1, b: 2 };
+let o2 = { c: 3, d: 4 };
 Object.assign(o1, o2); // o1 => { a:1, b: 2, c:3, d: 4 }
 ```
 
 - Object.keys`ES5`
 
 ```javascript
-var obj = { a: 11, b: 22, c: 33 };
+let obj = { a: 11, b: 22, c: 33 };
 Object.keys(obj); // [ 'a', 'b', 'c' ]
 ```
 
 - Object.values
 
 ```javascript
-var obj = { a: 11, b: 22, c: 33 };
+let obj = { a: 11, b: 22, c: 33 };
 Object.values(obj); // [ 11, 22, 33 ]
 ```
 
 - Object.entries
 
 ```javascript
-var obj = { a: 11, b: 22, c: 33 };
+let obj = { a: 11, b: 22, c: 33 };
 Object.entries(obj); // [ [ 'a', 11 ], [ 'b', 22 ], ['c', 33] ]
 ```
 
 - Object.getPrototypeOf
 
 ```javascript
-var arr = [];
+let arr = [];
 Object.getPrototypeOf(arr);  // Array.prototype
 ```
 
 - Object.setPrototypeOf
 
 ```javascript
-var arr = [];
+let arr = [];
 Object.setPrototypeOf(arr, { a: 11, b: 22 });
 arr.a        // 11
 arr.slice  // undefined
 ```
 
 ## Set
-- 新增的构造函数，用于创建新数据结构的集合对象，特点是值唯一
+- 新增的构造函数, 可创建新的`数据结构`, 结构类似与数组, 特点是`值唯一`
 
 #### 预览
 | 名称 | 宿主 | 类型 |  作用 |
 |       -       |    -    |    -   |
-| size | Set | method | 集合成员数量 |
+| size | Set | property | 集合成员数量 |
 | add | Set.prototype | method | 添加某个值 |
 | delete | Set.prototype | method | 删除某个值 |
 | has | Set.prototype | method | 是否存在某个值 |
@@ -272,14 +272,14 @@ arr.slice  // undefined
 - size
 
 ```javascript
-var numSet = new Set([2, 4, 6, 2, 4, 6]);  // { 2, 4, 5 }
+let numSet = new Set([2, 4, 6, 2, 4, 6]);  // { 2, 4, 5 }
 numSet.size  // 3
 ```
 
 - add
 
 ```javascript
-var numSet = new Set([2, 4, 6]);
+let numSet = new Set([2, 4, 6]);
 numSet.add(4);  // { 2, 4, 6 }
 numSet.add(8)   // { 2, 4, 6, 8 }
 ```
@@ -287,14 +287,14 @@ numSet.add(8)   // { 2, 4, 6, 8 }
 - delete
 
 ```javascript
-var numSet = new Set([10, 20, 30]);
+let numSet = new Set([10, 20, 30]);
 numSet.delete(10);  // { 20, 30 }
 ```
 
 - has
 
 ```javascript
-var numSet = new Set([10, 20, 30]);
+let numSet = new Set([10, 20, 30]);
 numSet.has(20);  // true
 numSet.has(50);  // false
 ```
@@ -302,7 +302,7 @@ numSet.has(50);  // false
 - clear
 
 ```javascript
-var numSet = new Set([10, 20, 30]);
+let numSet = new Set([10, 20, 30]);
 numSet.clear();  // {}
 ```
 
@@ -311,16 +311,131 @@ numSet.clear();  // {}
     2. 回调中的this指向  { any }
 
 ```javascript
-var numSet = new Set([10, 20, 30]);
+let numSet = new Set([10, 20, 30]);
 numSet.forEach(v => console.log(v));
+```
+
+- 支持for of
+
+```javascript
+let numSet = new Set([10, 20, 30]);
+
+for(let v of numSet) {
+	console.log(v);          // 10, 20, 30
+}
 ```
 
 - 合并数据并去重
 
 ```javascript
-var arr1 = [ 1, 3, 5 ];
-var arr2 = [ 5, 7, 9 ];
+let arr1 = [ 1, 3, 5 ];
+let arr2 = [ 5, 7, 9 ];
 new Set([ ...arr1, ...arr2 ]);  // { 1, 3, 5, 7, 9 }
+```
+
+- 下标取值
+
+```javascript
+let set = new Set([1, 3, 5, 1, 3, 5]);
+let arr = [...set];    // 先转为数组, 再按照下标取值
+```
+
+```javascript
+let set = new Set([1, 3, 5, 1, 3, 5]);
+let arr = Array.from(set)    // 也可以通过数组from方法转数组
+```
+
+## Map
+- 新增的构造函数, 可创建新的`数据结构`, 结构类似与对象, 特点是`key值`可以为`对象`
+
+#### 预览
+| 名称 | 宿主 | 类型 |  作用 |
+|       -       |    -    |    -   |
+| size | Map | property | 集合成员数量 |
+| set | Set.prototype | method | 通过key,value形式添加新值 |
+| get | Set.prototype | method | 通过key取值 |
+| delete | Set.prototype | method | 通过key删除值 |
+| has | Set.prototype | method | 是否存在某个key |
+| clear | Set.prototype | method | 清空所有值 |
+| forEach | Set.prototype | method | 遍历值 |
+
+#### 演示
+
+- size
+
+```javascript
+let numMap = new Map([
+	[new Date(), 100],
+	[{}, 200]
+]);
+numMap.size  // 2
+```
+
+- set与get
+
+```javascript
+let obj = { name: '张三', age: 21 };
+
+let map = new Map();
+map.set(obj, '我不认识李四');
+map.get(obj)   // '我不认识李四'
+```
+
+- delete
+
+```javascript
+let fibs = [1, 1, 2, 3, 5, 8];
+
+let map = new Map();
+map.set(fibs, '这是');
+map.delete([1, 1, 2, 3, 5, 8]);  // false
+map.delete(fibs);                  // true
+```
+
+- has
+
+```javascript
+let date = new Date();
+
+let map = new Map();
+numSet.has(date);  // false
+numSet.set(date, '明月几时有,把酒问青天');
+numSet.has(date);  // true
+```
+
+- clear
+
+```javascript
+let numMap = new Map([
+	[new Date(), 100],
+	[{}, 200]
+]);
+numMap.clear()  // {}
+```
+
+- forEach
+    1. 用来接收值的回调 { function }
+    2. 回调中的this指向  { any }
+
+```javascript
+let numMap = new Map([
+	[new Date(), 100],
+	[{}, 200]
+]);
+numMap.forEach((v, k) => console.log(v, k));
+```
+
+- 支持for of
+
+```javascript
+let numMap = new Map([
+	[new Date(), 100],
+	[{}, 200]
+]);
+
+for(let v of numMap) {
+	console.log(v);          // 100, 200
+}
 ```
 
 ## Promise
@@ -339,7 +454,7 @@ new Set([ ...arr1, ...arr2 ]);  // { 1, 3, 5, 7, 9 }
 - 然后传入一个`函数`，里面编写异步操作的代码
 
 ```javascript
-var engagement = new Promise(function(yes, no) {
+let engagement = new Promise(function(yes, no) {
 	// 定义10年期限，期限到后芳芳没嫁，就调yes，否则调no
 	// 这里的yes与no方法是Promise实例提供给我们的
 	setTimeout(function() {
@@ -366,7 +481,7 @@ engagement.then(
 - 即时异步操作结束了，我们还是可以调用then
 
 ```javascript
-// 只传入成功回调
+// then第一个回调固定为成功回调
 engagement.then(
 	() => console.log('芳芳终于嫁给我了，我要带她环游世界！')
 );
@@ -377,7 +492,10 @@ engagement.catch(
 ```
 
 #### 小结
-- 使用Promise管理异步操作，`异步逻辑`与`结果处理`是分开编写的，这有利于我们程序的`解耦`，让程序更`好维护`
+- `创建`promise实例时传入的回调`作用`是为了接收yes与no方法
+- `then`方法用来添加`成功`回调与`失败`回调,失败回调可选
+- `catch`方法用来添加`失败`回调
+- Promise管理异步操作的特点是实现逻辑的`解耦`, 让程序更`好维护`
 - then方法后续仍可以调用，是因为每个Promise实例都有一个`状态`记录异步操作`执行的进度`，即时异步操作`结束`了，这个记录`仍然存在`
     + `pending`状态，代表正在执行异步操作，实例刚`创建`时的状态
     + `resolved`状态，代表异步代码执行完毕，调用`yes`方法后的状态
@@ -407,37 +525,39 @@ setTimeout(function() {
 - 通过then方法的链式调用控制代码的执行流程
 
 ```javascript
-// 创建一个promise实例，用于控制第二个计时器的执行
+// 创建一个promise实例
 new Promise(function(yes, no) {
 	setTimeout(function() {
-		console.log('第一个计时器回调执行，开启第二个');
 		yes();
 	}, 2000);
 })
-// 第二个执行，并创建返回一个新的promise实例，用于控制第三个计时器的执行
 .then(function() {
+    console.log('第一个计时器回调执行，开启第二个');
 	return new Promise(function(yes, no) {
 		setTimeout(function() {
-			console.log('第二个计时器回调执行，开启第三个');
 			yes();
 		}, 2000);
 	});
 })
-// 第三个执行，如没第四个，就不用再返回新的promise实例控制后续执行了
 .then(function() {
-	setTimeout(function() {
-		console.log('第三个计时器回调执行');
-	}, 2000);
+    console.log('第二个计时器回调执行，开启第三个');
+	return new Promise(function(yes, no) {
+		setTimeout(function() {
+			yes();
+		}, 2000);
+	});
+})
+.then(function() {
+	console.log('第三个计时器回调执行');
 });
 ```
 
-## Promise封装与传参
-
-#### 封装promise版本的定时器
-- 如果同一件异步操作将来可能多次使用，可以考虑封装一个方法，便于复用
+#### promise封装
+- 上面例子setTimeout代码重复写了3遍
+- 对于重复冗余的代码，我们可以考虑封装成一个方法，便于复用
 
 ```javascript
-function pmsTimeout(time, data) {
+function timeout(time, data) {
 	return new Promise(function(yes, no) {
 		setTimeout(function() {
 			yes(data);
@@ -445,111 +565,216 @@ function pmsTimeout(time, data) {
 	});
 }
 
-pmsTimeout(2000)
+timeout(2000)
 .then(function() {
-	console.log('通过then方法来添加定时器的回调逻辑，实现解耦');
+    console.log('第一个计时器回调执行，开启第二个');
+	return timeout(4000);
 });
-
-pmsTimeout(4000)
 .then(function() {
-	console.log('封装后使用方便不少');
+    console.log('第二个计时器回调执行，开启第三个');
+	return timeout(4000);
+})
+.then(function() {
+    console.log('第三个计时器回调执行');
 });
 ```
 
-#### 数据传递
-- 另外yes与no方法还可以传递一些参数给then中的回调
+## Promise数据传递
+
+#### 数据传递演示
+- 调用yes与no方法时可以传递一些数据供成功与失败回调使用
 
 ```javascript
 function pmsTimeout(time) {
 	return new Promise(function(yes, no) {
 		setTimeout(function() {
-			yes('给小伙来个士力架');
+			yes('嘿!别睡了,起来嗨!');
 		}, time);
 	});
 }
 
 pmsTimeout(2000)
 .then(function(data) {
-	console.log(data);  // '给小伙来个士力架'
+	console.log(data);  // '嘿!别睡了,起来嗨!'
 });
 ```
 
-#### 进阶
+#### 封装ajax请求
 - 我们把普通异步操作封装成promise版本时，可以让使用者指定数据
 
 ```javascript
-function pmsTimeout(time, data) {
+function ajax(config) {
 	return new Promise(function(yes, no) {
-		setTimeout(function() {
-			yes(data); // 用户传什么我就给then回调什么
-		}, time);
+		Object.assign(config, {
+			success: data => yes(data),
+			error: () => no()
+		});
+	    $.ajax(config);
 	});
 }
 
-pmsTimeout(2000, '老大')
-.then(function(data) {
-	console.log(`${ data }没钱吃饭`);
-	return pmsTimeout(3000, '老二');
+let ajaxP = ajax({ url: 'xxx' });
+
+ajaxP.then(function(data) {
+	console.log('请求成功');
+	console.log(data);
 })
-.then(function(data) {
-	console.log(`${ data }没钱穿衣`);
-	return pmsTimeout(4000, '老三');
-})
-.then(function(data) {
-	console.log(`${ data }个长不大`);
+.cache(function() {
+	console.log('请求失败');
 });
+
+// 即便请求结束了,后续也可以通过then拿到数据
+ajaxP.then(function(data) {
+    console.log('仍然可以得到前面请求回来的数据');
+	console.log(data);
+})
 ```
 
 ## async`ES7`
-- 使异步操作变得更加简洁清晰
-- 使用它控制Promise执行流程，简直没谁了
+- 使用它可以以书写同步代码的方式控制Promise执行流程
+- 同步代码阅读起来清晰简单, promise配合async函数使用简直无敌了
 
-#### 顺序执行定时器
+#### 定时器例子
+- 下面的例子使用async函数来控制多个定时器的顺序执行
 
 ```javascript
-function pmsTimeout(time, data) {
+function timeout(time) {
 	return new Promise(function(yes, no) {
 		setTimeout(function() {
-			yes(`Hello ${ data }`); // 数据小做处理
+			yes();
 		}, time);
 	});
 }
 
-async function asyncTimeout() {
-	let data = null;
+// await关键字会等待后面的语句执行完毕后继续向下执行,直到遇到下一个await关键字
+async function test() {
+	await timeout(1000);
+	console.log('1秒后我才会执行');
 
-	data = await pmsTimeout(1000, '大娃');
-	console.log(data);
+	await timeout(2000);
+	console.log('我要等待上面的代码执行成功后我才执行');
 
-	data = await pmsTimeout(2000, '二娃');
-	console.log(data);
-
-	data = await pmsTimeout(3000, '三娃');
-	console.log(data);
-
-	data =await pmsTimeout(4000, '四娃');
-	console.log(data);
+	await timeout(3000);
+	console.log('以同步方式编写异步代码真是太爽了');
 }
 
-// 开启幸福生活
-asyncTimeout();
+// 调用test异步函数, 体验异步编程幸福生活
+test();
 ```
 
-#### 顺序进行数据请求
+#### async数据接收
+- 下面范例中使用的fetch方法是浏览器新的标准, 用于发送ajax请求
+- fetch特点是简单好用, 同时调用fetch方法会得到一个promise实例, 可通过then添加成功回调
 
 ```javascript
-async function asyncFetch() {
-	var response = null, data = null;
-
-	response = await fetch('abc.json');
-	data =  response.ok && await response.json();
-	console.log(data);
-
-	response = await fetch('react.js');
-	data = response.ok && await response.text();
-	console.log(data);
+async function ajax(url) {
+    // await关键字还有一个特点, 它可以返回原本需要then才能拿到的数据
+	let response = await fetch(url);
+	let data =  response.ok && await response.json();
+	console.log('可以在这里使用data数据了');
 }
 
 // 开启幸福生活
-asyncFetch();
+ajax('xxx.json');
+```
+
+#### async对于promise执行失败的处理
+
+- 准备工作: 装一个总是执行失败的promise函数, 以此学习如何处理失败
+
+```javascript
+function timeout(time) {
+	return new Promise(function(yes, no) {
+		setTimeout(function() {
+			no();
+		}, time);
+	});
+}
+```
+
+- 方式1: try catch语句
+
+```javascript
+async function test(time) {
+    try {
+        await timeout(time);
+        console.log('成功');
+    }catch(e) {
+        console.log('失败');
+    }
+}
+
+test(2000);
+```
+
+- 方式2: async方法返回的promise
+
+```javascript
+async function test(time) {
+    await timeout(time);
+    console.log('成功');
+}
+
+// async函数调用后会返回一个promise,可以调用then或catch添加成功失败回调
+test(3000).catch(() => console.log('失败'));
+```
+
+- 方式3: catch方法 - 这种方法会在promise执行失败后仍然向下执行
+
+```javascript
+async function test(time) {
+    await timeout(time).catch(() => console.log('失败'));
+    console.log('成功');
+}
+
+test(1000);
+```
+
+#### async函数返回值
+
+```javascript
+async function test(time) {
+    await new Promise((yes, no) => yes());
+    return 123;
+}
+
+test()
+.then(data => console.log(data));  // then成功回调可接收async函数的返回值
+```
+
+## 复习promise与async应用
+- 这里通过jQuery的animate函数来复习巩固promise与async的使用
+
+#### 纯promise
+```javascript
+function animate(selector, style, time) {
+  return new Promise(function(yes, no) {
+    $(selector).animate(style, time, () => { yes() });
+  });
+}
+
+animate('div', { width: 300 }, 2000)
+.then(() => { animate('div', { height: 300 }, 1000) })
+.then(() => { animate('div', { marginLeft: 500 }, 2000) })
+.then(() => { animate('div', { marginTop: 300 }, 1000) })
+.catch(() => console.log('发生了未知错误, 动画执行失败了'));
+```
+
+#### promise结合async
+```javascript
+function animate(selector, style, time) {
+  return new Promise(function(yes, no) {
+    $(selector).animate(style, time, () => { yes() });
+  });
+}
+
+async function divRun() {
+    await animate('div', { width: 300 }, 2000);
+    await animate('div', { height: 300 }, 1000);
+    await animate('div', { marginLeft: 500 }, 2000);
+    await animate('div', { marginTop: 300 }, 1000);
+}
+
+divRun()
+.catch(() => console.log('发生了未知错误, 动画执行失败了'));
 ```
