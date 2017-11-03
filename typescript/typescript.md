@@ -590,7 +590,7 @@ interface data {
 let obj: data = { a: 10, b: 'abc' };         // 正常, 这个对象符合接口data定义的数据结构
 let obj2: data = { a: 10 };                    // 报错, 缺失b属性
 let obj3: data = { a: 10, b: true };        // 报错, b属性类型不对
-let obj3: data = { a: 10, b: true, c:1 };  // 报错, 多了c属性
+let obj4: data = { a: 10, b: true, c:1 };  // 报错, 多了c属性
 ```
 
 ## 泛型
@@ -627,9 +627,9 @@ function createArray<Type>(...arg: Type[]): Type[] {
 	return arg;
 }
 
-let arr1: number = createArray<number>(10, 20, 30);    // 正确
-let arr2: string = createArray<string>('a', 'b', 'c')            // 正确
-let arr3: any = createArray<string>('a', 'b', 10)               // 报错
+let arr1: Array<number> = createArray<number>(10, 20, 30);    // 正确
+let arr2: Array<string> = createArray<string>('a', 'b', 'c')            // 正确
+let arr3: Array<any> = createArray<string>('a', 'b', 10)               // 报错
 ```
 
 #### 泛型在类中的应用
@@ -823,6 +823,7 @@ class Cat {
 	static feature: string[] = ['吃', '喝'];
 }
 
+// 测试
 console.log(Person.feature);    // ['吃', '喝', '拉', '撒', '睡']
 console.log(Cat.feature);         // ['吃', '喝', '拉', '撒', '睡']
 ```
@@ -879,8 +880,46 @@ class Person {
   }
 }
 
+// 测试
 new Person().study(1000);
 Person.getTotal()
+```
+
+#### 装饰属性
+- 在属性上使用装饰器, 装饰函数会自动接收到`两个`值: (类|原型) 方法名
+- `静态`属性第一个参数为类, `实例`属性第一个参数为原型
+
+```typescript
+function getSet(...arg: any[]): void {
+    let classOrPrototype = arg[0];  // 类或原型
+    let propName = arg[1];           // 属性名称
+
+    // 根据属性名称添加对应的set方法
+    classOrPrototype[propName + 'Set'] = function(val: any): void {
+        this[propName] = val;
+    }
+
+    // 根据属性名称添加对应的get方法
+    classOrPrototype[propName + 'Get'] = function(): any {
+        return this[propName];
+    }
+}
+
+class Person {
+    @getSet
+    name: string = '匿名';
+
+    @getSet
+    static total: number = 0;
+}
+
+// 测试
+Person.totalSet(100);
+Person.totalGet();
+
+let fang: Person = new Person();
+fang.nameSet('芳芳');
+fang.nameGet();
 ```
 
 ## 装饰器工厂 - 可传参的装饰器
@@ -904,7 +943,26 @@ function test(param: string): any {
 class Person {}
 ```
 
-#### 范例
+#### 语法
+```typescript
+// 装饰器工厂内部返回一个函数, 内部的函数就是我们之前写的装饰器函数
+function getZhuangshiqi(a: number) {
+
+    // 这个装饰器函数可以自动接收到一些值, 因为我们这个案例装饰了类, 那么就应该得到一个类
+    return function(target: any) {
+
+        // 现在这个装饰器函数即可以使用用户传过来的参数, 也可以使用自动传过来的参数
+        console.log(a);
+        console.log(target);
+    }
+}
+
+// 用户现在可以调用传参
+@getZhuangshiqi(123)
+class Person{}
+```
+
+#### 使用范例
 ```typescript
 function feature(level: string): any {
 	return function(target: any): void {
@@ -930,3 +988,25 @@ class Dog {
 }
 ```
 
+## 补充
+- 一个类/属性或方法可以同时使用多个装饰器
+- 这些装饰器是按照从下向上顺序执行的, 即上面的装饰器权限高
+
+```typescript
+function decorator1(...arg: any[]) {
+	console.log('装饰器1');
+}
+
+function decorator2(...arg: any[]) {
+	console.log('装饰器2');
+}
+
+function decorator3(...arg: any[]) {
+	console.log('装饰器3');
+}
+
+@decorator1
+@decorator2
+@decorator3
+class Person {}
+```
