@@ -1,16 +1,27 @@
-# axios
+## axios
+- 一个前后端通用的http请求库
+- 在浏览器环境中使用XMLHttpRequest对象, Node中使用http模块
 
-## 简介
+#### 入门
+- 在浏览器环境中导入库, 然后使用库暴露的全局变量axios发送请求
 
-#### 作用
-- 一个用于发起http请求的库
-- 可以拦截请求与响应，或取消请求，或进行统一的请求配置与处理
+###### get请求
+- 成功回调接收一个`response`对象, 要拿到请求回来的数据, 需要通过`respone.data`来取
+- 函数调用会返回一个`Promise`实例, 通过then或catch添加成功失败回调
 
-#### 特点
-- 浏览器与node环境中都可以使用
-- 浏览器环境中使用XMLHttpRequest对象
-- node中使用http模块
-- 支持Promise API
+```javascript
+axios.get('http://vue.studyit.io/api/getprodlist')   // 得到一个Promise实例,
+.then((rep) => console.log(rep.data))                   // 得到response对象, 通过data属性拿数据
+.catch((err) => console.log(err))                           // 得到错误描述对象
+```
+
+###### post请求
+
+```javascript
+axios.get('http://vue.studyit.io/api/getprodlist')   // 得到一个Promise实例, 通过then或catch添加成功失败回调
+.then((rep) => console.log(rep.data))                   // 得到response对象, 通过data属性拿数据
+.catch((err) => console.log(err))                           // 得到错误描述对象
+```
 
 ## 语法
 
@@ -34,6 +45,9 @@ axios.head(url, config)
 axios.put(url, data, config)
 axios.patch(url, data, config)
 ```
+
+#### 特点
+- 可以拦截请求与响应，或取消请求，或进行统一的请求配置与处理
 
 ## 使用
 
@@ -102,11 +116,11 @@ axios.defaults = Object.as
 ```
 ```javascript
 // 全局登陆组件
-Vue.component('v-login', {
+let LoginComponent = {
 	template: '<h4>登陆</h4>'
-});
+};
 // 全局注册组件
-Vue.component('v-register', {
+let RegisterComponent = {
 	template: '<h4>注册</h4>'
 });
 // 实例
@@ -115,8 +129,8 @@ var vm = new Vue({
 	// 路由配置
 	router: new VueRouter({
 		routes: [
-			{ path: '/login', component: 'v-login' },
-			{ path: '/register', component: 'v-register' }
+			{ path: '/login', component: LoginComponent },
+			{ path: '/register', component: RegisterComponent }
 		]
 	})
 });
