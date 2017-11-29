@@ -743,9 +743,11 @@ test()
 ```
 
 ## 复习promise与async应用
-- 这里通过jQuery的animate函数来复习巩固promise与async的使用
+- `jQuery` 当中有个 `animate` 动画函数, 在使用时经常会`嵌套`很多`回调`
+- 这里使用 `promise` 与 `async` 的方式来进行使用, 以复习巩固
 
 #### 纯promise
+
 ```javascript
 function animate(selector, style, time) {
   return new Promise(function(yes, no) {
@@ -757,10 +759,11 @@ animate('div', { width: 300 }, 2000)
 .then(() => { animate('div', { height: 300 }, 1000) })
 .then(() => { animate('div', { marginLeft: 500 }, 2000) })
 .then(() => { animate('div', { marginTop: 300 }, 1000) })
-.catch(() => console.log('发生了未知错误, 动画执行失败了'));
+.catch(() => alert('发生了未知错误, 动画执行失败了'));
 ```
 
 #### promise结合async
+
 ```javascript
 function animate(selector, style, time) {
   return new Promise(function(yes, no) {
@@ -768,13 +771,12 @@ function animate(selector, style, time) {
   });
 }
 
-async function divRun() {
+(async function() {
     await animate('div', { width: 300 }, 2000);
     await animate('div', { height: 300 }, 1000);
     await animate('div', { marginLeft: 500 }, 2000);
     await animate('div', { marginTop: 300 }, 1000);
-}
-
-divRun()
-.catch(() => console.log('发生了未知错误, 动画执行失败了'));
+    alert('动画执行完毕!');
+}())
+.catch(() => alert('发生了未知错误, 动画执行失败了'));
 ```
