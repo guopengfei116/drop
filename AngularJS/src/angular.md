@@ -323,6 +323,7 @@ App.controller('appCtrl', ['$scope', function($scope) {
 - 创建模块与控制器，关联视图
 - 初始化表单数据，使用ng-model实现双向绑定
 - 注册按钮事件绑定，点击时进行数据效验，给出不同提示
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('registerCtrl', ['$scope', function($scope) {
@@ -493,69 +494,3 @@ app.factory('storageSvic', [function() {
   };
 }]);
 ```
-
-# 商品管理综合案例
-
-## 接口
-
-#### 获取商品列表
-- 地址：http://139.199.192.48:8888/api/getprodlist
-- 请求方式：GET
-- 请求参数：无
-- 返回数据格式
-```json
-{
-	// 0代表正常，其他则异常
-	status: 0,
-	// 商品列表
-	message: [
-		{
-			id: 1,
-			name: '奔驰',
-			ctime: '2017-08-26T08:37:18.000Z'
-		},
-		{
-			id: 2,
-			name: '宝马',
-			ctime: '2017-08-25T06:32:14.000Z'
-		},
-		...
-	]
-}
-```
-
-#### 删除商品
-- 地址：http://139.199.192.48:8888/api/delproduct/:id
-- 请求方式：GET
-- 请求参数：id
-- 返回数据格式
-```json
-{
-	// 0代表正常，其他则异常
-	status: 0,
-	// 删除结果
-	message: "删除品牌数据ok"
-}
-```
-
-#### 添加商品
-- 地址：http://139.199.192.48:8888/api/addproduct
-- 请求方式：POST
-- 请求参数：name
-- 返回数据格式
-```json
-{
-	// 0代表正常，其他则异常
-	status: 0,
-	// 添加结果
-	message: "添加成功"
-}
-```
-
-## 实现
-
-#### 商品列表
-#### 删除商品
-#### 添加商品
-#### 搜索商品
-#### 列表排序

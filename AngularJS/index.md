@@ -1,0 +1,9 @@
+import './src/angular.md';
+import './src/service.md';
+import './src/filter.md';
+import './src/product_manage.md';
+import './src/directive.md';
+import './src/root.md';
+import './src/form.md';
+import './src/router_plugin.md';
+import './src/other.md';
