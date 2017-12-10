@@ -1,0 +1,26 @@
+{
+  "name": "teaching_plan",
+  "version": "1.0.0",
+  "description": "教案编写",
+  "main": "gulp.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guopengfei116/teaching_plan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guopengfei116/teaching_plan/issues"
+  },
+  "homepage": "https://github.com/guopengfei116/teaching_plan#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
