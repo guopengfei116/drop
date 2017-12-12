@@ -1,0 +1,9 @@
+import './src/es6_introduction.md';
+import './src/es6_syntax/variable.md';
+import './src/es6_syntax/deconstruction.md';
+import './src/es6_syntax/string.md';
+import './src/es6_syntax/statement.md';
+import './src/es6_syntax/operator.md';
+import './src/es6_syntax/function.md';
+import './src/es6_syntax/object.md';
+import './src/es6_syntax/class.md';
