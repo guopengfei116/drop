@@ -105,6 +105,7 @@ app.controller('appCtrl', ['$scope', '$filter',  function($scope, $filter) {
 #### currency
 - 将数值格式化为货币格式
 - 可指定货币符号与保留的小数点位数，默认保留2位
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <div>{{ val | currency:'￥':'2' }}</div>
@@ -115,6 +116,7 @@ app.controller('appCtrl', ['$scope', '$filter',  function($scope, $filter) {
 - 日期格式化，可以任意组合年月日时分秒以及毫秒
 - 年y、月M、日d、时h、分m、秒s、毫秒sss
 - 注意：因为月与分都是m，所以使用大小写进行区分
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <div>{{ val | date:'yyyy-MM-dd hh:mm:ss:.sss' }}</div>
@@ -128,6 +130,7 @@ app.controller('appCtrl', ['$scope', '$filter',  function($scope, $filter) {
 - 了解：第一个参数还可以是数组按优先级指定多个关键字或函数动态设置关键字
 
 ###### 普通排序
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <ul>
@@ -148,6 +151,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
 ```
 
 ###### 按属性及优先级排序
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <ul>
@@ -176,6 +180,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
 - 需要一个参数指定要查找的关键字，值可以是字符串、对象
 
 ###### 普通搜索
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <ul>
@@ -192,6 +197,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
 ```
 
 ###### 按属性值搜索
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
     <ul>

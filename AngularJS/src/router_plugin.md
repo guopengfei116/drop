@@ -15,6 +15,7 @@
 
 #### 单页面应用演示
 - 这里利用ng-include指令来演示单页面应用的概念
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <header>公共头部</header>
@@ -45,6 +46,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
     + 当页面的hash值发生变化时，浏览器是**不会**发生页面跳转的
     + 我们可以使用$scope.$on方法监听Angular的内置事件$locationChangeStart得知这个变化
     + 然后通过$location.$$path属性取得hash中的path信息，从而给用户展示不同的视图
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <header>公共头部</header>
@@ -78,6 +80,7 @@ app.controller('appCtrl', ['$scope', '$location', function($scope, $location) {
 - hash最初作用是，通过ID定位页面的元素，实现页面内的跳转
 - 最常见的使用场景都是点击a标签，跳转到页面指定位置，这时候页面hash会跟着变化
 - 除了点击a标签，我们手动在url中输入指定hash值也会自动跳转
+
 ```html
 <body>
     <a href="#mother">找妈妈</a>
@@ -106,6 +109,7 @@ app.controller('appCtrl', ['$scope', '$location', function($scope, $location) {
 - 示例：[网易云音乐](http://music.163.com)
 - angular源码中就使用了该事件监听hash变化
 - 备注：如果没有该事件，我们也可以通过定时器，每隔一定时间检测url的变化
+
 ```html
 <body>
 	<a href="#mother">找妈妈</a>
@@ -132,6 +136,7 @@ window.onhashchange = function() {
     + 模块实例上有一个config方法，是专门用来配置的
     + 语法：`模块.config([ 依赖..., callback ])`
     + 语法和其他模块方法类似，但是不需要名字，因为这是对模块功能的配置
+
 ```html
 <body ng-app="app">
   <header>公共头部</header>
@@ -165,6 +170,7 @@ app.config(['$routeProvider', function($routeProvider) {
 
 #### 添加控制器
 - 编写业务逻辑或动态化数据可以配置控制器
+
 ```html
 <body ng-app="app">
   <header>公共头部</header>
@@ -202,6 +208,7 @@ app.config(['$routeProvider', function($routeProvider) {
 - 它把路径的一部分作为参数获取，然后返回不同的数据
 - 我们也可以配置这样的路由规则，最常见的场景就是不同id展示不同的信息
 - 配置完毕后，我们可以通过插件提供的$routeParams服务需要获取这些参数值
+
 ```html
 <body ng-app="app">
   <header>公共头部</header>
@@ -226,6 +233,7 @@ app.config(['$routeProvider', function($routeProvider) {
 ```
 
 #### 路由事件
+
 ```javascript
 app.controller('appCtrl', ['$scope', function($scope) {
     $scope.$on('$routeChangeStart', function() {
@@ -271,6 +279,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
 - $broadcast(eName, arg1, arg2, ...): 触发自身与所有子的自定义事件
 
 #### $emit
+
 ```html
 <body ng-app="app">
 	<main ng-controller="mainCtrl">
@@ -295,6 +304,7 @@ app.controller('divCtrl', ['$scope', function($scope) {
 ```
 
 #### $broadcast
+
 ```html
 <body ng-app="app">
 	<main ng-controller="mainCtrl">

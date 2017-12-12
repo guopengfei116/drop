@@ -1,42 +1,12 @@
-# AngularJS
-
-## 基本介绍
-
-#### 简介
-- Angular是一款使用js编写的前端应用框架
-- 由Google员工Miško Hevery从2009 年开始着手开发，与2012年发布了1.0版本
-- 该项目目前已由Google正式支持，有一个全职的开发团队持续开发和维护这个库
-- 目前主要有**1.+**与**4.+**两个版本，我们学习的是**1.+**版本
-
-#### 作用
-- 既然是框架那么就是为了提高开发人员工作效率的
-- 但是Angular比较适合大中型并具有大量数据操作的前端应用
-- 单一页面应用程序就更适合了
-- 对于小型或者DOM操作频繁的应用，用了反而会增加代码复杂度，影响开发效率
-
-#### 特点
-- **内置模块系统**
-    + 这里的模块系统与**requireJS**模块类库有**很大差别**，它不是模块加载器
-    + 而是帮我们**组织代码结构**的一套规范，严格限制了我们的编码方式
-    + 同时多个模块可以通过依赖配置实现功能合并与共享
-- **内置模版引擎**
-    + 这里的模版有我们熟悉的**表达式**和**过滤器**系统，写法基本类似
-    + 不同的是模版与数据的**绑定方式**不一样
-- **扩展原生HTML功能**
-    + 通过自定义**属性**与**标签**扩展了HTML功能，这些属性标签称为**指令**
-    + 有了自定义指令基本上我们不再需要**手动**操作DOM，因为封装好了
-- **数据绑定**
-    + 一般的模版引擎，数据与视图的联系是**一次性**的，模版渲染到页面中俩者再无瓜葛
-    + Angualr中数据与视图的联系是**永久性**的，一旦有了关联，任何时间任意一方改变都会引起另一方的变化
-
 ## 初探Angular
-- 使用Angular开发时**页面视图**与**业务数据操作**天生就是分离的
+- 使用 Angular 开发时**页面视图**与**业务数据操作**天生就是分离的
 - 从框架的层面上就限制了我们代码的编写方式
 
 #### 使用模版引擎 - 表达式
 - 表达式实际上就是模版引擎的一部分，用来进行**数据输出**或**基本运算**
 - Angular中使用的表达式语法是两对大括号**{{ }}**
 - 不过这里我们先解释如何在模版中使用表达式，关于如何输出变量后续补充
+
 ```html
 <body>
    <div>{{ 1+1 }}</div>
@@ -52,6 +22,7 @@
 #### 使用指令 - 管理视图
 - Angular中把具有**特殊作用**的**标签属性**称为指令，这些指令全部以ng打头
 - **ng-app**指令可以替代**angular.bootstrap**方法，指定当前视图由哪个模块管理
+
 ```html
 <!-- 2、让主模块管理body视图 -->
 <body ng-app="app">
@@ -70,6 +41,7 @@
 
 #### 使用控制器 - 创建与关联
 - 控制器是我们编写业务逻辑的入口，在这里我们操作数据改变视图
+
 ```html
 <body ng-app="app">
   <!-- 2、关联控制器，使用val变量 -->
@@ -88,6 +60,7 @@
 - 但是上面的定义的变量无法在视图中使用
 - 因为Angular无法获取这些变量，我们必须通过某种方式把这些值传给它
 - 所以Angular提供了一个$scope对象，给这个对象添加的属性都可以在视图中访问
+
 ```html
 <body ng-app="app">
   <!-- 2、关联哪个控制器就可以使用哪个控制器的$scope数据 -->
@@ -105,6 +78,7 @@
 #### 补充
 - **一个**模块可以创建**任意多**个控制器
 - 每个控制器可以关联视图中的一部分
+
 ```html
 <body ng-app="app">
   <div ng-controller="appHeaderCtrl">{{ val }}</div>
@@ -112,16 +86,16 @@
   <div ng-controller="appFooterCtrl">{{ val }}</div>
 </body>
 <script>
-  var App = angular.module('app', []);
-   App.controller('appHeaderCtrl', ['$scope', function($scope) {
-$scope.val = '头';
-   }]);
-   App.controller('appMainCtrl', ['$scope', function($scope) {
-$scope.val = '身体';
-   }]);
-   App.controller('appFooterCtrl', ['$scope', function($scope) {
-$scope.val = '脚';
-   }]);
+    var App = angular.module('app', []);
+    App.controller('appHeaderCtrl', ['$scope', function($scope) {
+        $scope.val = '头';
+    }]);
+    App.controller('appMainCtrl', ['$scope', function($scope) {
+        $scope.val = '身体';
+    }]);
+    App.controller('appFooterCtrl', ['$scope', function($scope) {
+        $scope.val = '脚';
+    }]);
 </script>
 ```
 
@@ -133,6 +107,7 @@ $scope.val = '脚';
 #### ng-bind
 - 作用：类似与{{}}表达式，可以解决{{}}闪烁问题，但是会覆盖子元素
 - 演示：把angular库在body下面引入，并使用调试工具模拟3G网络即可出现
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 两者等价，只是在网络比较慢的时候上面会出现显示源码的情况 -->
@@ -144,6 +119,7 @@ $scope.val = '脚';
 #### ng-cloak
 - 作用：如果喜欢使用{{}}，又要解决闪烁问题，可以使用ng-cloak配合css实现
 - 原理：Angular渲染视图时会自动去除元素身上的ng-cloak属性，好让元素显现出来
+
 ```html
 <style>
   [ng-cloak] {
@@ -160,6 +136,7 @@ $scope.val = '脚';
 
 #### ng-if
 - 作用：控制元素的插入与移除
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 这里的isLive是$scope中定义的属性 -->
@@ -170,6 +147,7 @@ $scope.val = '脚';
 
 #### ng-show
 - 作用：控制元素的显示隐藏
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 这里的isShow是$scope中定义的属性 -->
@@ -182,6 +160,7 @@ $scope.val = '脚';
 - 作用：遍历数组或对象，也可指定遍历次数
 - 注意：如果遍历的值存在相等的情况会报错，需要添加track by指定唯一key
     + 因为ng-repeat会生成很多元素，数据一改变，所有元素又得重新解析渲染一遍
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 遍历数组 -->
@@ -202,6 +181,7 @@ $scope.val = '脚';
 
 #### ng-class
 - 作用：动态设置或控制类名
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 一、字符串：通过$scope属性动态设置类名 -->
@@ -218,6 +198,7 @@ $scope.val = '脚';
 #### ng-事件
 - 作用：元素事件绑定
 - 备注：如果回调需要事件对象，传入$event即可
+
 ```html
 <body ng-cloak ng-app="app" ng-controller="appCtrl">
   <p>{{ number }}</p>
@@ -245,6 +226,7 @@ $scope.val = '脚';
 #### ng-model
 - 通常网站会有一些需要用户填写并提交数据的表单，这个指令处理表单就是神器
 - 作用：表单与数据双向绑定，任意一方的值发生改变另一方跟着变
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <input type="text" ng-model="val" />
@@ -256,6 +238,7 @@ $scope.val = '脚';
 #### ng-include
 - 通过ajax的方式引入一段html作为子元素
 - 注意：重复加载同一个模版只会请求一次，因为Angular会自动缓存
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <header ng-include="tpl/header.tpl"></header>
@@ -274,6 +257,7 @@ $scope.val = '脚';
     + 当DOM解析完毕后，Angular才会把imgUrl替换成正确的值
     + 这时候浏览器才会发起正确请求展示img
 - 不足之处：访问$scope的属性，必须使用{{ }}表达式，不能直接使用属性名
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 一、如果不使用ng指令，那么浏览器会额外发起多余的{{ imgUrl }}请求 -->
@@ -284,6 +268,7 @@ $scope.val = '脚';
 #### ng-href
 - 作用：主要是为了解决原生属性在配合Angular使用时存在的bug
 - 不足之处：访问$scope的属性，必须使用{{ }}表达式，不能直接使用属性名
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <!-- 预防a标签点击时造成的页面刷新 -->
@@ -298,6 +283,7 @@ $scope.val = '脚';
 - 从以往的DOM操作转为数据操作，DOM交由Angular的指令去操作
 
 #### 加法计算器
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <input type="number" ng-model="val1" />

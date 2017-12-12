@@ -10,6 +10,7 @@
 #### factory方法
 - 特点：必须要return一个返回值，否则报错
 - 在使用时return什么就会得到什么
+
 ```javascript
 var app = angular.module('app', []);
 app.factory('storageSvic', [function() {
@@ -35,6 +36,7 @@ app.factory('storageSvic', [function() {
 #### service方法
 - 特点：面向对象写法，里面给this添加属性方法
 - 在使用时会得到函数实例对象，this添加了什么就有什么
+
 ```javascript
 var app = angular.module('app', []);
 app.factory('storageSvic', [function() {
@@ -58,6 +60,7 @@ app.factory('storageSvic', [function() {
 
 #### value方法
 - 特点：用来定义共享数据的，不存在业务逻辑的编写
+
 ```javascript
 var app = angular.module('app', []);
 app.value('data', { a: 1, b: 2 });
@@ -66,6 +69,7 @@ app.value('data', { a: 1, b: 2 });
 #### constant方法
 - 特点：与value一样，不过语义上是定义常量的
 - 通常会把那些不会改变的数据定义在这里，比如配置信息
+
 ```javascript
 var app = angular.module('app', []);
 app.constant('PI', 3.1415926);
@@ -80,6 +84,7 @@ app.constant('PI', 3.1415926);
 - 区别2：post请求默认发送的数据格式为JSON，如果发送formDate需要自己转
 
 ###### $http本身就是函数
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('registerCtrl', ['$scope', '$http', function($scope, $http) {
@@ -100,6 +105,7 @@ app.controller('registerCtrl', ['$scope', '$http', function($scope, $http) {
 ```
 
 ###### $http还提供了get、post等快捷方法
+
 ```javascript
 $http.get(url, config).then();
 $http.post(url, data, config).then();
@@ -110,6 +116,7 @@ $http.jsonp(url, config).then();
 - 原生location对象的封装，区别是url部分计算方式不同
 - 相比location对象，他们的协议、域名、端口号是一样的
 - 但是path、search、hash不同，$location是从#!后面算起的
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('registerCtrl', ['$scope', '$location', function($scope, $location) {
@@ -141,6 +148,7 @@ app.controller('registerCtrl', ['$scope', '$location', function($scope, $locatio
 #### $timeout与$interval
 - 原生的定时器改变数据后，angular是无法检测到的，造成视图不刷新
 - 这两方法是对原生方法的封装，使用方式一样，就是为了解决上诉问题的
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('registerCtrl', ['$scope', '$interval', function($scope, $interval) {
@@ -157,6 +165,7 @@ app.controller('registerCtrl', ['$scope', '$interval', function($scope, $interva
 ```
 
 #### $log
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('registerCtrl', ['$scope', '$log', function($scope, $log) {

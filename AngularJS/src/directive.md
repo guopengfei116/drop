@@ -35,6 +35,7 @@
 - 属性指令主要是为了操作DOM，一般不会替换元素的子节点
 - 这里的例子会替换元素子节点是因为实现比较简单
 - 目的是为了先让大家对不同类型的指令有个基本认识
+
 ```html
 <body ng-app="app">
 	<div ngl-tpl></div>
@@ -54,6 +55,7 @@ app.directive('nglTpl', [function() {
 
 #### 元素指令
 - 元素指令主要是为了封装可重复使用的组件，一般都有自己的html模版
+
 ```html
 <body ng-app="app">
 	<ngl-tpl></ngl-tpl>
@@ -87,6 +89,7 @@ app.directive('nglTpl2', [function() {
 
 #### 类名指令
 - 不常用，了解即可
+
 ```html
 <body ng-app="app">
 	<div class="a ngl-tpl c"></div>
@@ -108,6 +111,7 @@ app.directive('nglTpl', [function() {
 #### 注释指令
 - 不常用，了解即可
 - 注意：注释指令必须配置replace为true
+
 ```html
 <body ng-app="app">
 	<!-- directive:ngl-tpl -->
@@ -129,6 +133,7 @@ app.directive('nglTpl', [function() {
 ## 案例
 
 #### 自动焦点 - 属性指令
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
   <input type="text" ngl-focus/>
@@ -151,6 +156,7 @@ app.directive('nglFocus', [function() {
 ```
 
 #### 拖拽 - 属性指令
+
 ```html
 <body ng-app="app">
   <button ngl-drag>移动</button>
@@ -206,6 +212,7 @@ app.directive('nglDrag', [function() {
 #### 丑陋时钟 - 元素指令
 - 封装好的元素指令与其他指令一样可以复用
 - 补充：如果自定义标签被覆盖，那么上面定义的属性会移植到模版根元素上
+
 ```html
 <body ng-app="app">
   <ngl-clock></ngl-clock>
@@ -244,6 +251,7 @@ app.directive('nglClock', [function() {
 
 #### 丑陋时钟操作数据实现 - 元素指令
 - 时钟案例主要是操作数据，所以可以使用我们之前的方式实现
+
 ```html
 <body ng-app="app">
   <ngl-clock></ngl-clock>
@@ -284,6 +292,7 @@ app.directive('nglClock', ['$interval', function($interval) {
 - 对于非DOM操作的业务逻辑，Angular建议我们放在controller当中
 - 现在这种写法，就是把咱们之前的视图与控制器使用一个指令封装在了一起，以便复用
 - 注意：这里因为使用了定时器，要获取元素监听销毁事件，所以给根标签加了个class
+
 ```html
 <body ng-app="app">
   <ngl-clock></ngl-clock>
@@ -333,6 +342,7 @@ app.directive('nglClock', ['$interval', function($interval) {
 #### 默认情况
 - 默认情况下指令自己没有单独的$scope
 - 在它里面使用的是父级$scope，这样容易出现误操作
+
 ```html
 <body ng-app="app" ng-controller="appCtrl">
 	<!-- 预期显示的10，结果被自定义指令给改写了 -->
@@ -362,6 +372,7 @@ app.directive('nglCounter', [function() {
 #### 配置单独作用域
 - 如果不想和父作用域有任何瓜葛，可通过scope配置项来指定独立作用域
 - 配置：`scope: {}`
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('appCtrl', ['$scope', function($scope) {
@@ -385,6 +396,7 @@ app.directive('nglCounter', [function() {
 #### 单独作用域继承父作用域
 - 如果不想修改父作用域的数据，但是又想访问父作用域的数据，也可以
 - 配置：`scope: true`
+
 ```javascript
 var app = angular.module('app', []);
 app.controller('appCtrl', ['$scope', function($scope) {

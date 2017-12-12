@@ -1,6 +1,4 @@
-# form
-
-## 指令
+## Form表单
 
 #### 必用指令
 
@@ -47,21 +45,26 @@
 
 ## 元素属性
 - 可以在模版中，通过form的name获取元素
+
 ```html
 <form name="signIn"></form>
 <p ng-if="signIn.$invalid">填单数据不正确</p>
 ```
+
 - 可以在scope中，可以通过form的name属性值获取对应的form元素
+
 ```javascript
 console.log($scope.signIn);
 console.log('form效验通过：' + $scope.signIn.$valid);
 ```
+
 - 可以通过form元素查找具有name属性的子表单元素
+    + 注：form的name属性值必须是驼峰命名法，否则可能获取不到
+
 ```javascript
 console.log($scope.signIn.password);
 console.log('input效验通过：' + $scope.signIn.password.$valid);
 ```
-- 注：form的name属性值必须是驼峰命名法，否则可能获取不到
 
 #### 获取元素效验结果
 这些效验结果，需要通过表单元素以属性方式获取
@@ -76,6 +79,7 @@ console.log('input效验通过：' + $scope.signIn.password.$valid);
 - 作用：所有不通过的效验都会在该错误对象中记录
 
 ###### 使用范例
+
 ```html
 <form name="signIn">
 	<input ng-pattern="/^\w{6,16}$/" ng-minlength="6" ng-maxlength="16" name="password" />
@@ -99,15 +103,3 @@ console.log('input效验通过：' + $scope.signIn.password.$valid);
 
 ###### $drity
 - 作用：值被修改过
-=======
-#### 表单效验指令
-
-###### ng-required
-- 作用：必填项
-
-###### ng-minlength
-- 作用：最小长度
-
-###### ng-maxlength
-- 作用：最大长度
->>>>>>> c14977766f48cae268f949132d21df6cd6c88755
