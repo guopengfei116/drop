@@ -6,5 +6,6 @@ import './src/product_manage.md';
 import './src/directive.md';
 import './src/root.md';
 import './src/form.md';
+import '../common/singlepage.md';
 import './src/router_plugin.md';
 import './src/other.md';

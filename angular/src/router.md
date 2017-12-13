@@ -1,13 +1,8 @@
 ## Angular4.x中的路由
 
-## 单页应用程序（SPA Single Page Application）
-- 单页应用，指的是在一个页面上集成多种功能，甚至整个系统就只有一个页面，所有的业务功能都是它的子模块，通过特定的方式挂接到主界面上。
-- 它是AJAX技术的进一步升华，把AJAX的无刷新机制发挥到极致，因此能造就与桌面程序媲美的流畅用户体验。
-- 例如: 网易云音乐，切换页面音乐依然继续播放，典型的单页应用程序
-
 #### 什么是路由
 - 在web开发中，路由是指根据URL找到能处理这个URL的程序或模块。
-- 比如在www.http：//baidu.com/login中，/login就是当前url的路由
+- 比如在www.http://baidu.com/login中, /login就是当前url的路由
 
 #### Angula4.x在项目中配置路由
 1. 新建home、news、newscontent三个组件

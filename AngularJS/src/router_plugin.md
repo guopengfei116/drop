@@ -1,19 +1,8 @@
-# angular-route
-- 这是Angular官方提供的一个独立模块，称为插件也可以
-- 主要作用是通过url控制不同视图的加载，可实现单页面应用程序
+## angular-route
+- 这是Angular官方提供的一个独立模块, 称为插件也可以
+- 主要作用是实现单页面应用程序, 即在不刷新页面的情况下实现url对视图的控制切换
 
-## 单页面应用概念
-- 单页面即网站只有一个页面框架主体
-    + 网站会根据url的变化按照一定规则
-    + 以ajax的方式加载不同的视图，实现页面切换效果
-- 优点
-    + 页面切换仅仅是局部模版的替换，响应速度会提高
-    + 省去了资源的重复加载，公共视图的重复刷新，脚本的重复执行
-    + 更好的实现了与后端的分离，减轻了服务端渲染模版的压力
-- 缺点
-    + 因为不同页面都是ajax加载的html模版片段，所以不利于SEO
-
-#### 单页面应用演示
+#### 伪单页面实现
 - 这里利用ng-include指令来演示单页面应用的概念
 
 ```html
@@ -36,7 +25,7 @@ app.controller('appCtrl', ['$scope', function($scope) {
 }]);
 ```
 
-#### 改进
+#### 真单页面实现
 - 上面的演示案例中，页面切换是通过按钮点击发起的
 - 在实际的项目中，页面的展现应该由url的变化而发起
 - 问题
@@ -74,56 +63,6 @@ app.controller('appCtrl', ['$scope', '$location', function($scope, $location) {
 }]);
 ```
 
-## 剖析
-
-#### hash由来
-- hash最初作用是，通过ID定位页面的元素，实现页面内的跳转
-- 最常见的使用场景都是点击a标签，跳转到页面指定位置，这时候页面hash会跟着变化
-- 除了点击a标签，我们手动在url中输入指定hash值也会自动跳转
-
-```html
-<body>
-    <a href="#mother">找妈妈</a>
-    <a href="#father">找爸爸</a>
-    <ul>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li id="mother">青蛙妈妈</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li id="father">青蛙爸爸</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-    	<li>小蝌蚪</li>
-	</ul>
-</body>
-```
-
-#### hash变化
-- 在h5标准中，浏览器给window对象实现了一个hashchange事件
-- 当hash变化时这个事件就会触发，使用它实现单页面就方便多了
-- 示例：[网易云音乐](http://music.163.com)
-- angular源码中就使用了该事件监听hash变化
-- 备注：如果没有该事件，我们也可以通过定时器，每隔一定时间检测url的变化
-
-```html
-<body>
-	<a href="#mother">找妈妈</a>
-	<a href="#father">找爸爸</a>
-</body>
-```
-```javascript
-<script type="text/javascript">
-window.onhashchange = function() {
-   console.log('hash变化为:' + location.hash);
-};
-</script>
-```
-
 ## angular-route使用
 - 该模块的功能可以认为是ng-include与$location的结合版
 - 可以通过配置的方式自动加载模版，模版还可以配置对应的控制器
@@ -144,6 +83,7 @@ window.onhashchange = function() {
   <footer>公共底部</footer>
 </body>
 ```
+
 ```javascript
 // 创建主模块，并添加ngRoute依赖
 var app = angular.module('app', ['ngRoute']);
