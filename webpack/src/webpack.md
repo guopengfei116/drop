@@ -1,63 +1,3 @@
-# webpack
-- 一个功能强大的js模块打包工具，可以把`CommonJS`模块，`AMD`模块，`ES6`模块打包在一起
-- 借助于`loader`插件，webpack可以将css、img、tpl等`其他文件`也一起打包
-
-
-## 安装
-- webpack是基于`nodejs`运行的，所以在时候前必须保证本地`拥有`nodejs运行环境
-
-#### 修改npm镜像地址
-- 可以修改镜像地址为国内淘宝服务器加快速度: `npm config set registry http://registry.npm.taobao.org/`
-- 后续有需要再改回来: `npm config set registry https://registry.npmjs.org/`
-- 查看本地配置: `npm config list`
-
-#### 全局安装
-- 脚本：`npm i webpack -g`
-- 全局安装`一次`以后就不用了，全局安装的目的是可以在本地直接运行`webpack`命令
-
-
-## 基本使用与介绍
-- 通过一个小Dome体会webpack的作用
-
-#### 未打包模式
-- 普通模式开发网站，我们要在页面中通过`script`标签去组织js的`加载顺序`，每个单独js的`依赖`不明确
-- 同时还会造成`过多`的`http`请求，拖慢我们网站的载入速度
-
-```html
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>原始模式</title>
-	</head>
-	<body>
-		<script src="js/jquery.js"></script>
-		<script src="js/bootstrap.js"></script>
-		<script src="js/a.js"></script>
-		<script src="js/b.js"></script>
-		<script src="js/main.js"></script>
-	</body>
-</html>
-```
-
-#### 打包模式
-- webpack提供了`一站式`解决方案，不论你采用`何种`模块化，都可以帮你完成`打包`任务
-- 为了`减少http`请求, 我们采用一种`模块化`的方式编写如下代码, 然后`打包`成一个js文件
-- 打包命令: `webpack 入口文件 打包后文件`
-
-```html
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<title>模块打包</title>
-	</head>
-	<body>
-		<!-- 引入一个打包后的文件即可 -->
-		<script src="js/bundle.js"></script>
-	</body>
-</html>
-```
-
-
 ## 使用配置文件
 - 上面使用`命令行`的打包方式比较繁琐,  每次都要`手动输入`很多内容, 而且不能复用
 - webpack提供了`配置文件`的方式来描述整个打包过程, 这样我们`写一次`配置以后就方便了, `一劳永逸`
@@ -91,52 +31,6 @@ module.exports = {
 	}
 };
 ```
-
-
-## webpack-dev-server
-
-#### 简介
-- 这是一个基于webpack的`开发工具`，它会`自动`调用webpack进行`打包`操作，并启动一台文件`服务器`用于`测试`打包结果
-- 使用该工具的好处是: `源代码`发生变动, 会自动打包, 自动更新浏览器, 同时打包文件只存储在`内存`, 比磁盘速度要快
-
-#### 安装
-- 全局安装一次：`npm i webpack-dev-server -g`
-- 每个项目本地安装：`npm i webpack-dev-server -D`
-
-#### 启动
-- 脚本：`webpack-dev-server --contentBase src --open --port 8888`
-    + --contentBase 指定托管根目录
-    + --open 自动打开浏览器
-    + --port 指定服务端口
-    + --host 指定ip，默认127.0.0.1(localhost)
-- webpack-dev-server打包后的文件直接存储在内存中, 不会进行磁盘读写, 所以非常快
-
-#### 使用配置文件启动
-- 如果觉得运行`命令`较长, `参数`较多, `写`起来较麻烦, 也不便于`记忆`, 那么可以记录在`配置文件`中
-
-###### 方式1
-- 找到在`package.json`描述文件, 找到`scripts`配置项, 把启动命令配置进去, 并给命令起个名字
-- 然后运行`npm run 名称`执行相关命令
-
-```json
-"scripts": {
-    "dev": "webpack-dev-server --contentBase src --open --port 8888 -d"
-}
-```
-
-###### 方式2
-- 在`webpack-config.js`配置文件中添加配置, 然后运行命令: `webpack-dev-server`
-
-```javascript
-module.exports = {
-	devServer: {
-		contentBase: 'src'
-		open: true,
-		port: 8888
-	}
-}
-```
-
 
 ## 命令小结
 
@@ -239,6 +133,49 @@ module.exports = {
 };
 ```
 
+## webpack-dev-server
+
+#### 简介
+- 这是一个基于webpack的`开发工具`，它会`自动`调用webpack进行`打包`操作，并启动一台文件`服务器`用于`测试`打包结果
+- 使用该工具的好处是: `源代码`发生变动, 会自动打包, 自动更新浏览器, 同时打包文件只存储在`内存`, 比磁盘速度要快
+
+#### 安装
+- 全局安装一次：`npm i webpack-dev-server -g`
+- 每个项目本地安装：`npm i webpack-dev-server -D`
+
+#### 启动
+- 脚本：`webpack-dev-server --contentBase src --open --port 8888`
+    + --contentBase 指定托管根目录
+    + --open 自动打开浏览器
+    + --port 指定服务端口
+    + --host 指定ip，默认127.0.0.1(localhost)
+- webpack-dev-server打包后的文件直接存储在内存中, 不会进行磁盘读写, 所以非常快
+
+#### 使用配置文件启动
+- 如果觉得运行`命令`较长, `参数`较多, `写`起来较麻烦, 也不便于`记忆`, 那么可以记录在`配置文件`中
+
+###### 方式1
+- 找到在`package.json`描述文件, 找到`scripts`配置项, 把启动命令配置进去, 并给命令起个名字
+- 然后运行`npm run 名称`执行相关命令
+
+```json
+"scripts": {
+    "dev": "webpack-dev-server --contentBase src --open --port 8888 -d"
+}
+```
+
+###### 方式2
+- 在`webpack-config.js`配置文件中添加配置, 然后运行命令: `webpack-dev-server`
+
+```javascript
+module.exports = {
+    devServer: {
+        contentBase: 'src'
+        open: true,
+        port: 8888
+    }
+}
+```
 
 # loader使用
 - 默认情况下, webpack只能打包`js`模块

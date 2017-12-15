@@ -7,3 +7,4 @@ import './src/es6_syntax/operator.md';
 import './src/es6_syntax/function.md';
 import './src/es6_syntax/object.md';
 import './src/es6_syntax/class.md';
+import './src/es6_syntax/module.md';
