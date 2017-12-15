@@ -391,13 +391,13 @@
 
 #### 配置项
 - bind
-    + 指令与元素绑定时调用，只会调用一次
+    + 元素挂载到视图前执行, 只执行一次
 - inserted
-    + 元素被插入到节点时调用，只会调用一次
+    + 元素挂载到视图后执行, 只执行一次
 - update
-    + 元素或值更新时调用
+    + 元素指令变化时执行, 可执行多次
 - unbind
-    + 所在元素卸载时调用，只会调用一次
+    + 元素从视图中卸载时执行, 只执行一次
 
 #### 函数参数
 - 定义指令时大部分是在bind与update时做操作
@@ -405,13 +405,17 @@
 - 比如：`Vue.directive(name, fn)`
 
 #### 示例1
+
 ```html
 <div id="app">
 	<input v-focus type="text" />
 </div>
 ```
+
 ```javascript
+// 全局指令
 Vue.directive('focus', {
+	// 当表单插入到视图中的时候自动获取焦点
 	inserted: function(el, binding, vnode, oldnode) {
 		el.focus();
 	}
@@ -419,11 +423,13 @@ Vue.directive('focus', {
 ```
 
 #### 示例2
+
 ```html
 <div id="app">
-	<p v-hint:strong="keyword" v-html="content"></p>
+	<p v-html="content" v-hint:strong="keyword"></p>
 </div>
 ```
+
 ```javascript
 Vue.directive('hint', function(el, binding) {
 	// 指令的参数配置标签名，值配置关键字
