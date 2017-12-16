@@ -22,7 +22,6 @@
 ```javascript
 const path = require('path');
 const htmlWebapckPlugin = require('html-webpack-plugin');
-const cleanWebpackPlugin = require('clean-webpack-plugin');
 
 // 配置文件要求我们必须导出一个配置对象
 module.exports = {
@@ -45,9 +44,6 @@ module.exports = {
             filename: 'index.html',                 // 处理后的html名称
             inject: 'body',                               // 自动注入js到什么地方
         }),
-
-        // 每次打包前先清除dist目录
-        new cleanWebpackPlugin(['./dist'])
     ],
 
     // loader的作用是为了让webpack可以打包其他类型的模块

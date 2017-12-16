@@ -22,13 +22,13 @@ import RegisterComponent from '../component/register/Register.vue';
 // 导出路由配置
 export default {
     routes: [
-        // 首页路由配置
+        // 首页
         { path: "/", redirect: "/home" },
         { name: "h", path: "/home", component: HomeComponent },
 
-        // 新闻路由配置
+        // 登陆注册
         { name: "l", path: "/login", component: LoginComponent },
-        { name: "r", path: "/register", component: RegisterComponent }
+        { name: "r", path: "/register", component: RegisterComponent },
     ]
 };
 ```
@@ -144,15 +144,18 @@ axios.defaults.withCredentials=true;
 export default axios;
 ```
 
-#### vue中注入axios
+#### vue中注入axios与api
 - 修改 `src/main.js`
 - 因为 `axios` 不是 `vue` 插件, 那个模块`使用`它, 必须先在那个模块里进行`导入`
 - 为了使用方便, 我们把 `axios` 加到 `vue` 的`原型`中, 这样组件的`实例`就可以通过 `this` 来调用它了
+- 同样的, 为了方便拿到 `api`, 我们把它也一起`注入`到 vue 原型当中
 
 ```javascript
-// 3.1 导入配置后的axios, 并注入到Vue的原型中, 将来在实例通过this.$http调用
+// 3.1 导入配置后的axios与api, 并注入到Vue原型中 将来在实例通过this.$http调用
 import axios from './js/axios_config.js';
+import api from './js/api_config.js';
 Vue.prototype.$http = axios;
+Vue.prototype.$api = api;
 
 // 渲染根组件, 启动项目
 new Vue({
@@ -177,8 +180,6 @@ new Vue({
 </template>
 
 <script>
-    import apiConfig from '../../js/api_config.js';
-
     export default {
         data() {
             return {
@@ -192,13 +193,13 @@ new Vue({
         methods: {
             // 登陆
             login() {
-                this.$http.post(apiConfig.login, this.user)
+                this.$http.post(this.$api.login, this.user)
                     .then(rsp => alert(rsp.data.message.realname));
             },
 
             // 判断是否已登陆
             isLogin() {
-                this.$http.get(apiConfig.islogin)
+                this.$http.get(this.$api.islogin)
                     .then(rsp => alert(rsp.data.code));
             }
         }
@@ -316,6 +317,29 @@ module: {
 html, body, main {
     min-height: 100%;
     height: 100%;
+}
+
+// a标签默认白色, 无装饰
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+// 左侧导航
+.aside {
+    // 文本超出不出现滚动条
+    overflow: initial;
+
+    // 去掉导航右边框
+    .el-menu {
+        border-right: 0;
+    }
+
+    // 去掉导航子标题高度
+    .el-menu-item-group__title {
+        padding: 0;
+        height: 0;
+    }
 }
 ```
 
