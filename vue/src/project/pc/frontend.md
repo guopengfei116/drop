@@ -1,86 +1,736 @@
-## 导入全局样式
-- 把已经写好的网站样式文件 `css` 目录放入到 `src` 当中
+## 准备工作
+
+#### 导入全局样式
+- 把已经写好的网站样式放入到 `src/css` 目录中
+- 在 `main.js` 中进行导入
+
+#### 加入图片资源
 - 把准备好的图片放入到 `src/img` 目录中
 
-## 公共头部组件
-- 创建 `src/component/frame/Header.vue`
-- 因为 `Header 组件`是 `App 组件`的公共架构部分, 所以把它创建在根组件所在目录的 `/frame` 里
+#### 加入JQ插件资源
+- 把准备好的JQ插件放入到 `src/lib` 目录中
+- 说明: 这些插件无法通过npm安装, 都是在网上进行搜索然后下载得到的
 
-#### 静态布局
-- 这里直接使用已经布好局的头部 html 片段
+## 组件结构设计
+
+#### 创建组件
+
+#### 配置路由
+
+## 登陆
+
+#### 功能分析
+
+#### 功能实现
+
+## 登陆权限校验
+
+#### 业务逻辑分析
+
+#### 功能实现
+
+## 商城主体结构
+
+#### 功能分析
+
+#### 头部组件实现
+- 编写 `src/component/store/common/Header.vue`
+
+```vue
+```
+
+#### 底部组件实现
+- 编写 `src/component/store/common/Footer.vue`
+
+```vue
+```
+
+## 商品列表
+
+#### 功能分析
+
+#### ProductTop实现
+- 该组件由`三块功能`构成, 他们所需的数据来自`同一接口`, 所以先拿到`数据`, 然后依次编写`模版`
+- 其中左侧的`分类列表`数据需要`递归渲染`, 所以`创建`一个对应的递归组件 `SubCates.vue`
+
+```vue
+<script>
+    import SubCates from './SubCates'
+
+    export default {
+        data() {
+            return {
+                all: {
+                    catelist: [],    // 分类列表数据
+                    sliderlist: [],  // 轮播图列表数据
+                    toplist: [],     // 置顶商品列表数据
+                }
+            }
+        },
+
+        methods: {
+            // 获取全部数据
+            getData() {
+                this.$http.get(this.$api.goodsTop).then(res => {
+                    this.all = res.data.message;
+                });
+            }
+        },
+
+        created() {
+            this.getData();
+        },
+
+        components: {
+            appCategory,
+        }
+    };
+</script>
+```
+
+##### 左侧分类列表
+
+```vue
+<div class="banner-nav">
+    <ul>
+        <li v-for="item in all.catelist" :key="item.id">
+            <h3>
+                <i class="iconfont icon-arrow-right"></i>
+                <!-- 顶级分类 -->
+                <span>{{ item.title }}</span>
+                <!-- 子级分类 -->
+                <p>
+                    <span v-for="subitem in item.subcates" :key="subitem.id">{{ subitem.title }}</span>
+                </p>
+            </h3>
+
+            <div class="item-box">
+                <dl>
+                    <!-- 顶级分类 -->
+                    <dt>
+                        <a href="/goods/40.html">{{ item.title }}</a>
+                    </dt>
+                    <!-- 子级分类 -->
+                    <dd>
+                        <!-- 这里遍历到的subitem可能还会有自己的subcates, 并且可能无限 -->
+                        <!-- <a v-for="subitem in item.subcates" :key="subitem.id" href="/goods/43.html">{{ subitem.title }}</a> -->
+                        <!-- 如果有无限层, 我们只能尝试封装一个单独的组件, 因为只有组件才能递归调用自己, 普通元素不行 -->
+                        <!-- 我们把起始的一层列表数据传递过去, 让它渲染 -->
+                        <!-- 然后该组件还会判断每一层数据是否有下一级, 如果有那么调用自己继续渲染, 直接没有下一级 -->
+                        <app-category :list="item.subcates"></app-category>
+                    </dd>
+                </dl>
+            </div>
+        </li>
+    </ul>
+</div>
+```
+
+##### 中间轮播图
+
+```vue
+<div class="banner-img">
+    <el-carousel trigger="click" height="341px">
+          <el-carousel-item v-for="item in all.sliderlist" :key="item.id">
+            <img style="height: 100%;" :src="item.img_url" draggable="false">
+          </el-carousel-item>
+    </el-carousel>
+</div>
+```
+
+##### 右侧置顶列表
+
+```vue
+<ul class="side-img-list">
+    <li v-for="(item, index) in all.toplist" :key="item.id">
+        <div class="img-box">
+            <label>{{ index + 1 }}</label>
+            <img :src="item.img_url">
+        </div>
+        <div class="txt-box">
+            <router-link :to="{ name: 'goodsDetail', params: { id: item.id } }">{{ item.title }}</router-link>
+            <span>{{ item.add_time }}</span>
+        </div>
+    </li>
+</ul>
+```
+
+#### ProductMain实现
 
 ```vue
 <template>
-    <div id="header" class="header">
-        <div class="head-top">
-            <div class="section">
-                <div class="left-box">
-                    <span>vue2.0单页应用</span>
-                    <a target="_blank" href="#"></a>
-                    <a target="_blank" href="#"></a>
-                </div>
-                <div id="menu" class="right-box">
-                    <a href="/login.html">登录</a>
-                    <a href="/register.html">注册</a>
-                    <strong>|</strong>
-                    <!--<a href="/content/contact.html"><i class="iconfont icon-phone"></i>联系我们</a>
-                    <a href="/cart.html"><i class="iconfont icon-cart"></i>购物车(<span id="shoppingCartCount"><script type="text/javascript" src="/tools/submit_ajax.ashx?action=view_cart_count"></script></span>)</a>-->
-                </div>
+    <div>
+        <!-- 商品按组展示 -->
+        <div class="section" v-for="item in goodsList" :key="item.level1cateid">
+
+            <!-- 分类标题 -->
+            <div class="main-tit">
+                <h2>{{ item.catetitle }}</h2>
+                <p>
+                    <router-link v-for="subitem in item.level2catelist" :key="subitem.subcateid" to="">
+                        {{ subitem.subcatetitle }}
+                    </router-link>
+                    <router-link to="">更多<i>+</i></router-link>
+                </p>
             </div>
-        </div>
-        <div class="head-nav">
-            <div class="section">
-                <!-- <div class="logo">
-                    <a href="/index.html"><img width="230px" height="70px" src="/templates/main/images/logo.png" /></a>
-                </div>-->
-                <div id="menu2" class="nav-box menuhd">
-                    <ul>
-                        <li class="index">
-                            <a href="/index.html">
-                                首页
-                            </a>
-                        </li>
-                        <li class="news">
-                            <a href="/news.html">
-                                学员问题汇总
-                            </a>
-                        </li>
-                        <li class="photo">
-                            <a href="/photo.html">
-                                重难点专区
-                            </a>
-                        </li>
-                        <!--<li class="goods"><a href="">就业阶段</a></li>-->
-                        <li class="video">
-                            <a href="/video.html">
-                                前端常用功能
-                            </a>
-                        </li>
-                        <li class="down">
-                            <a href="/down.html">
-                                资源下载
-                            </a>
-                        </li>
-                        <li>
-                            <a target="_blank" href="/admin/index.aspx">
-                                问题提交
-                            </a>
+
+            <!-- 商品列表 -->
+            <div class="wrapper clearfix">
+                <div class="wrap-box">
+                    <ul class="img-list">
+                        <li v-for="subitem in item.datas">
+                            <router-link :to="{ name: 'goodsDetail', params: { id: subitem.artID } }">
+                                <div class="img-box">
+                                    <img :src="subitem.img_url">
+                                </div>
+                                <div class="info">
+                                    <h3>{{ subitem.artTitle }}</h3>
+                                    <p class="price">
+                                        <b>{{ subitem.sell_price }}</b>元</p>
+                                    <p>
+                                        <strong>库存 {{ subitem.stock_quantity }}</strong>
+                                        <span>市场价：
+                                            <s>{{ subitem.market_price }}</s>
+                                        </span>
+                                    </p>
+                                </div>
+                            </router-link>
                         </li>
                     </ul>
                 </div>
-                <div class="search-box">
-                    <div class="input-box">
-                        <input id="keywords" name="keywords" type="text" onkeydown="if(event.keyCode==13){SiteSearch('/search.html', '#keywords');return false};" placeholder="输入关健字" x-webkit-speech="">
+            </div>
+
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                goodsList: []
+            }
+        },
+
+        methods: {
+            // 获取全部数据
+            getData() {
+                this.$http.get(this.$api.goodsContent).then(res => {
+                    this.goodsList = res.data.message;
+                });
+            }
+        },
+
+        created() {
+            this.getData();
+        },
+    };
+</script>
+```
+
+## 商品详情
+
+#### 功能分析
+
+#### 放大镜插件
+- [插件介绍与下载](http://157.122.54.189:8998/video/show-116.html)
+- 把下载好的`插件`放入网站的 `lib` 目录下, 这里专门`放置`那些`无法`用 `npm` 安装的`第三方包`
+
+```vue
+<template>
+    <div class="magnifier" id="magnifier1">
+        <div class="magnifier-container">
+            <div class="images-cover"></div>
+            <!--当前图片显示容器-->
+            <div class="move-view"></div>
+            <!--跟随鼠标移动的盒子-->
+        </div>
+        <div class="magnifier-assembly">
+            <div class="magnifier-btn">
+                <span class="magnifier-btn-left">&lt;</span>
+                <span class="magnifier-btn-right">&gt;</span>
+            </div>
+            <!--按钮组-->
+            <div class="magnifier-line">
+                <ul class="clearfix animation03">
+                    <li v-for="item in imglist" :key="item.id">
+                        <div class="small-img">
+                            <img :src="item.original_path" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!--缩略图-->
+        </div>
+        <div class="magnifier-view"></div>
+        <!--经过放大的图片显示容器-->
+    </div>
+</template>
+
+<script>
+     // 导入jQuery放大镜插件, 该插件依赖与jQuery变量, 所以我们在它的源代码里import了一下
+    import '@/lib/imgzoom/css/magnifier.css';
+    import '@/lib/imgzoom/js/magnifier.js';
+
+    // 导入$, 接下来要调用插件方法
+    import $ from 'jquery';
+
+    export default {
+        props: ['imglist'],
+
+        // 监听imglist的变化, 每次变化都要重新的初始化放大镜插件
+        // 官方文档: https://cn.vuejs.org/v2/api/#vm-nextTick
+        watch: {
+            imglist() {
+                this.$nextTick(function () {
+                    var _magnifier = $().imgzoon({
+                        magnifier : "#magnifier1",//最外层的大容器
+                        width : 370,//承载容器宽
+                        height : 370,//承载容器高
+                        moveWidth : null,//如果设置了移动盒子的宽度，则不计算缩放比例
+                        zoom : 5//缩放比例
+                    });
+                });
+            }
+        }
+    };
+</script>
+```
+
+#### 商品信息
+
+```vue
+<template>
+    <!-- 商品信息 -->
+    <div class="goods-spec">
+        <h1>{{ goodsinfo.title }}</h1>
+        <p class="subtitle">{{ goodsinfo.sub_title }}</p>
+        <div class="spec-box">
+            <dl>
+                <dt>货号</dt>
+                <dd id="commodityGoodsNo">{{ goodsinfo.goods_no }}</dd>
+            </dl>
+            <dl>
+                <dt>市场价</dt>
+                <dd>
+                    <s id="commodityMarketPrice">¥{{ goodsinfo.market_price }}</s>
+                </dd>
+            </dl>
+            <dl>
+                <dt>销售价</dt>
+                <dd>
+                    <em class="price" id="commoditySellPrice">¥{{ goodsinfo.sell_price }}</em>
+                </dd>
+            </dl>
+        </div>
+
+        <div class="spec-box">
+            <dl>
+                <dt>购买数量</dt>
+                <dd>
+                    <div class="stock-box">
+                        <!-- elementUI的计数器组件: max最大数量为库存, v-model关联一个数据 -->
+                        <el-input-number v-model="goodsCount"
+                            :min="1" :max="goodsinfo.stock_quantity" size="small" label="购买数量">
+                        </el-input-number>
                     </div>
-                    <a href="javascript:;" onclick="SiteSearch('/search.html', '#keywords');">
-                        <i class="iconfont icon-search"></i>
-                    </a>
+                    <span class="stock-txt">
+                            <span>库存</span>
+                    <em id="commodityStockNum">{{ goodsinfo.stock_quantity }}</em>件
+                    </span>
+                </dd>
+            </dl>
+            <dl>
+                <dd>
+                    <div class="btn-buy" id="buyButton">
+                        <button class="buy">立即购买</button>
+                        <button class="add" @click="addShopcart">加入购物车</button>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        props: ['goodsinfo'],
+
+        data() {
+            return {
+                // 关联+-按钮的购买数量
+                goodsCount: 1
+            }
+        },
+
+        methods: {
+            // 加入购物车
+            // 通过commit方法累加商品购买记录
+            addShopcart() {
+                this.$store.commit('addShopcartData', {
+                    id: this.$route.params.id,
+                    val: this.goodsCount
+                });
+            }
+        },
+
+        watch: {
+            // url发生变化, 重置商品数量
+            $route() {
+                this.goodsCount = 1;
+            }
+        }
+    };
+</script>
+```
+
+#### 右侧特效列表
+
+```vue
+<template>
+    <ul class="side-img-list">
+        <li v-for="(item, index) in list" :key="item.id">
+            <div class="img-box">
+                <label>{{ index + 1 }}</label>
+                <img :src="item.img_url">
+            </div>
+            <div class="txt-box">
+                <router-link :to="{ name: 'goodsDetail', params: { id: item.id } }">{{ item.title }}</router-link>
+                <span>{{ item.add_time }}</span>
+            </div>
+        </li>
+    </ul>
+</template>
+
+<script>
+    export default {
+        props: ['list']
+    }
+</script>
+```
+
+#### 评论
+
+```vue
+<template>
+    <!-- 对所有页面开发的公共评论组件 -->
+    <div class="comment-box">
+
+        <!--发表评论, 监听提交事件, 并阻止默认的浏览器刷新提交, 转为ajax手动提交 -->
+        <form id="commentForm" name="commentForm" class="form-box" @submit.prevent="subComment">
+            <div class="avatar-box">
+                <i class="iconfont icon-user-full"></i>
+            </div>
+            <div class="conn-box">
+                <div class="editor">
+                    <textarea v-model="commentContent" id="txtContent" name="txtContent" sucmsg=" "
+                        datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
+                    <span class="Validform_checktip"></span>
+                </div>
+                <div class="subcon">
+                    <button id="btnSubmit" name="submit" type="submit" class="submit">提交评论</button>
+                    <span class="Validform_checktip"></span>
+                </div>
+            </div>
+        </form>
+
+        <!-- 评论列表 -->
+        <ul id="commentList" class="list-box">
+            <!-- 没有评论时的提示信息 -->
+            <p v-if="!commentList.length" style="margin:5px 0 15px 69px;line-height:42px;text-align:center;border:1px solid #f7f7f7;">
+                暂无评论，快来抢沙发吧！
+            </p>
+
+            <!-- 具体评论 -->
+            <li v-for="(item, i) in commentList" :key="i">
+                <div class="avatar-box">
+                    <i class="iconfont icon-user-full"></i>
+                </div>
+                <div class="inner-box">
+                    <div class="info">
+                        <span>{{ item.user_name }}</span>
+                        <span>{{ item.user_ip }}</span>
+                        <span>{{ item.add_time | date }}</span>
+                    </div>
+                    <p>{{ item.content }}</p>
+                </div>
+            </li>
+        </ul>
+
+        <!--放置页码-->
+        <div class="page-box" style="margin:5px 0 0 62px">
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="query.pageIndex"
+                :page-sizes="[4, 6, 8, 10]"
+                :page-size="query.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalcount" background>
+            </el-pagination>
+        </div>
+        <!--/放置页码-->
+    </div>
+</template>
+
+<script>
+    export default {
+        // 获取评论列表时所需的 模块名称 与 文字ID
+        props: ['tablename', 'artID'],
+
+        data() {
+            return {
+                // 关联表单的评论文本
+                commentContent: '',
+
+                // 评论列表数据
+                commentList: [],
+
+                // 获取评论列表时所需的查询字符串, 将来通过elementUI的分页组件来动态控制它们的值
+                query: {
+                    pageIndex: 1,
+                    pageSize: 4
+                },
+
+                // 评论总数
+                totalcount: 0
+            }
+        },
+
+        methods: {
+            // 修改页码
+            handleCurrentChange(page) {
+                this.query.pageIndex = page;
+                this.getCommentList();
+            },
+
+            // 修改每页数量
+            handleSizeChange(size) {
+                this.query.pageSize = size;
+                this.getCommentList();
+            },
+
+            // 获取评论列表
+            getCommentList() {
+                // 记得加上参数与查询, 其中get的第二个参数为一个配置对象, 可以设置请求头等信息
+                this.$http
+                .get(
+                    this.$api.commentList + this.tablename + '/' + this.artID,
+                    { params: this.query }
+                )
+                .then(rsp => {
+                    this.commentList = rsp.data.message;
+                    this.totalcount = rsp.data.totalcount;
+                });
+            },
+
+            // 提交评论
+            subComment() {
+                // 记得加上参数与查询, 其中post的第二个参数为提交的数据
+                this.$http.post(
+                    this.$api.comment + this.tablename + '/' + this.artID,
+                    { commenttxt: this.commentContent }
+                ).then(rsp => {
+
+                    // 评论成功的提示
+                    this.$message({
+                        message: '恭喜你，发表成功',
+                        type: 'success'
+                    });
+
+                    // 评论成功后应该更新整个评论列表, 我们这里直接手动创建一条评论对象,
+                    // unshift到评论列表的最前面, 这样省去了一个接口的请求
+                    this.commentList.unshift({
+                        user_name: '匿名用户',
+                        user_ip: '127.0.0.1',
+                        add_time: new Date(),
+                        content: this.commentContent
+                    });
+                    this.commentContent = '';
+                });
+            }
+        },
+
+        watch: {
+            // 监听ID的变化, 从而更新不同ID下的评论列表
+            artID() {
+                this.getCommentList();
+            }
+        },
+
+        created() {
+            this.getCommentList();
+        }
+    };
+</script>
+```
+
+#### 商品详情
+
+```vue
+<template>
+    <div>
+        <!-- 导航栏 -->
+        <div class="section">
+            <div class="location">
+                <span>当前位置：</span>
+                <router-link :to="{ name: 'goodsList' }">首页</router-link>&gt;
+                <router-link to="">商品详情</router-link>
+            </div>
+        </div>
+
+        <!-- 商品详情 -->
+        <div class="section">
+            <div class="wrapper clearfix">
+                <div class="wrap-box">
+
+                    <!--页面左边-->
+                    <div class="left-925">
+
+                        <!-- 商品图片预览与详细信息 -->
+                        <div class="goods-box clearfix">
+                            <div class="pic-box">
+                                <detail-img :imglist="all.imglist"></detail-img>
+                            </div>
+                            <detail-info :goodsinfo="all.goodsinfo"></detail-info>
+                        </div>
+
+                         <!-- 商品介绍与评论 -->
+                        <detail-main></detail-main>
+                    </div>
+
+                    <!--页面右边-->
+                    <div class="left-220">
+                        <div class="bg-wrap nobg">
+                            <div class="sidebar-box">
+                                <h4>推荐商品</h4>
+                                <app-slide :list="all.hotgoodslist"></app-slide>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+    import AppSlide from './common/Slide'
+    import DetailImg from './common/DetailImg'
+    import DetailInfo from './common/DetailInfo'
+    import DetailMain from './common/DetailMain'
+
+    export default {
+        data() {
+            return {
+                id: this.$route.params.id,
+                all: {
+                    goodsinfo: [],        // 商品信息
+                    imglist: [],               // 轮播图列表
+                    hotgoodslist: [],    // 热销列表
+                }
+            }
+        },
+
+        methods: {
+            // 获取全部数据
+            getData() {
+                this.$http.get(this.$api.goodsDetail + this.id).then(res => {
+                    this.all = res.data.message;
+                });
+            }
+        },
+
+        created() {
+            this.getData();
+        },
+
+        // 如果是同一个路由规则下批量的url发生变化, 那么不会触发路由页面的更换
+        // 但是$route对象会记录新的url参数等信息, 我们可以监听$route对象, 来得知同一个路由规则下的url变化
+        watch: {
+            $route() {
+                this.id = this.$route.params.id;  // 修改为最新的id
+                this.getData();                               // 重新请求数据更新页面内容
+            }
+        },
+
+        components: {
+            AppSlide,
+            DetailImg,
+            DetailInfo,
+            DetailMain
+        }
+    };
+</script>
 ```
+
+## 购物车
+
+#### 功能分析
+
+#### 列表展示
+
+#### 数量加减与删除
+
+#### 总数总价
+
+#### 全选按钮
+
+#### 立即结算
+
+## 收货信息
+
+#### 功能分析
+
+#### 商品列表渲染
+
+#### 总数总价
+
+#### 表单提交
+
+## 支付界面
+
+####  功能分析
+
+####  功能实现
+
+## 支付
+
+####  功能分析
+
+####  功能实现
+
+## 支付成功
+
+####  功能分析
+
+####  功能实现
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### 集成jQuery导航插件
 - [插件介绍与下载](http://www.jq22.com/jquery-info5332)
@@ -156,650 +806,6 @@ export default {
 };
 ```
 
-## 商品首页
 
-#### 静态模版
 
-```vue
-<template>
-    <div>
-        <!-- 商品头部区域 -->
-        <div class="section">
-            <div class="wrapper">
-                <div class="wrap-box">
-                    <!--类别菜单-->
-                    <div class="left-220" style="margin:0;">
-                        <div class="banner-nav">
-                            <ul>
-                                <!--此处声明下面可重复循环-->
-
-                                <li>
-                                    <h3>
-                                        <i class="iconfont icon-arrow-right"></i>
-                                        <span>手机数码</span>
-                                        <p>
-
-                                            手机通讯 摄影摄像 存储设备
-
-                                        </p>
-                                    </h3>
-                                    <div class="item-box">
-                                        <!--如有三级分类，此处可循环-->
-                                        <dl>
-                                            <dt>
-                                                <a href="/goods/40.html">手机数码</a>
-                                            </dt>
-                                            <dd>
-
-                                                <a href="/goods/43.html">手机通讯</a>
-
-                                                <a href="/goods/44.html">摄影摄像</a>
-
-                                                <a href="/goods/45.html">存储设备</a>
-
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <h3>
-                                        <i class="iconfont icon-arrow-right"></i>
-                                        <span>电脑办公</span>
-                                        <p>
-
-                                            电脑整机 外设产品 办公打印
-
-                                        </p>
-                                    </h3>
-                                    <div class="item-box">
-                                        <!--如有三级分类，此处可循环-->
-                                        <dl>
-                                            <dt>
-                                                <a href="/goods/41.html">电脑办公</a>
-                                            </dt>
-                                            <dd>
-
-                                                <a href="/goods/46.html">电脑整机</a>
-
-                                                <a href="/goods/47.html">外设产品</a>
-
-                                                <a href="/goods/48.html">办公打印</a>
-
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <h3>
-                                        <i class="iconfont icon-arrow-right"></i>
-                                        <span>影音娱乐</span>
-                                        <p>
-
-                                            平板电视 音响DVD 影音配件
-
-                                        </p>
-                                    </h3>
-                                    <div class="item-box">
-                                        <!--如有三级分类，此处可循环-->
-                                        <dl>
-                                            <dt>
-                                                <a href="/goods/42.html">影音娱乐</a>
-                                            </dt>
-                                            <dd>
-
-                                                <a href="/goods/49.html">平板电视</a>
-
-                                                <a href="/goods/50.html">音响DVD</a>
-
-                                                <a href="/goods/51.html">影音配件</a>
-
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                    <!--/类别菜单-->
-
-                    <!--幻灯片-->
-                    <div class="left-705">
-                        <div class="banner-img">
-                            <div id="focus-box" class="focus-box">
-                                <ul class="slides">
-                                    <li class="" style="width: 100%; float: left; margin-right: -100%; position: relative; opacity: 0; display: block; z-index: 1;">
-                                        <a href="/goods.html">
-                                            <img src="/templates/main/images/focus_1.png" draggable="false">
-                                        </a>
-                                    </li>
-                                    <li style="width: 100%; float: left; margin-right: -100%; position: relative; opacity: 1; display: block; z-index: 2;" class="flex-active-slide">
-                                        <a href="/goods.html">
-                                            <img src="/templates/main/images/focus_2.png" draggable="false">
-                                        </a>
-                                    </li>
-                                </ul>
-                                <ol class="flex-control-nav flex-control-paging">
-                                    <li>
-                                        <a class="">1</a>
-                                    </li>
-                                    <li>
-                                        <a class="flex-active">2</a>
-                                    </li>
-                                </ol>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!--/幻灯片-->
-
-                    <!--推荐商品-->
-                    <div class="left-220">
-                        <ul class="side-img-list">
-
-                            <li>
-                                <div class="img-box">
-                                    <label>1</label>
-                                    <img src="/upload/201504/20/thumb_201504200314272543.jpg">
-                                </div>
-                                <div class="txt-box">
-                                    <a href="/goods/show-98.html">奔腾（BNTN） 380功放+纽约至尊 套装家庭影院</a>
-                                    <span>2015-04-20</span>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="img-box">
-                                    <label>2</label>
-                                    <img src="/upload/201504/20/thumb_201504200258403759.jpg">
-                                </div>
-                                <div class="txt-box">
-                                    <a href="/goods/show-97.html">三星（SAMSUNG）UA40HU5920JXXZ 40英寸4K超高清</a>
-                                    <span>2015-04-20</span>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="img-box">
-                                    <label>3</label>
-                                    <img src="/upload/201504/20/thumb_201504200242250674.jpg">
-                                </div>
-                                <div class="txt-box">
-                                    <a href="/goods/show-95.html">惠普（HP）LaserJet 2035商用黑白激光打印机（黑色）</a>
-                                    <span>2015-04-20</span>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="img-box">
-                                    <label>4</label>
-                                    <img src="/upload/201504/20/thumb_201504200239192345.jpg">
-                                </div>
-                                <div class="txt-box">
-                                    <a href="/goods/show-94.html">金士顿（Kingston） DataTraveler SE9 32GB 金属U盘</a>
-                                    <span>2015-04-20</span>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <!--/推荐商品-->
-                </div>
-            </div>
-        </div>
-
-        <!-- 商品列表 -->
-        <div class="section">
-
-            <!--子类-->
-            <div class="main-tit">
-                <h2>手机数码</h2>
-                <p>
-
-                    <a href="/goods/43.html">手机通讯</a>
-
-                    <a href="/goods/44.html">摄影摄像</a>
-
-                    <a href="/goods/45.html">存储设备</a>
-
-                    <a href="/goods/40.html">更多
-                        <i>+</i>
-                    </a>
-                </p>
-            </div>
-            <!--/子类-->
-            <div class="wrapper clearfix">
-                <div class="wrap-box">
-                    <ul class="img-list">
-
-                        <li>
-                            <a href="/goods/show-91.html">
-                                <div class="img-box">
-                                    <img src="/upload/201504/20/thumb_201504200214471783.jpg">
-                                </div>
-                                <div class="info">
-                                    <h3>尼康(Nikon)D3300套机（18-55mm f/3.5-5.6G VRII）（黑色）</h3>
-                                    <p class="price">
-                                        <b>¥3180.00</b>元</p>
-                                    <p>
-                                        <strong>库存 10</strong>
-                                        <span>市场价：
-                                            <s>3150.00</s>
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="/goods/show-90.html">
-                                <div class="img-box">
-                                    <img src="/upload/201504/20/thumb_201504200154277661.jpg">
-                                </div>
-                                <div class="info">
-                                    <h3>佳能（Canon） EOS 700D 单反套机</h3>
-                                    <p class="price">
-                                        <b>¥4799.00</b>元</p>
-                                    <p>
-                                        <strong>库存 98</strong>
-                                        <span>市场价：
-                                            <s>5099.00</s>
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="/goods/show-89.html">
-                                <div class="img-box">
-                                    <img src="/upload/201504/20/thumb_201504200119256512.jpg">
-                                </div>
-                                <div class="info">
-                                    <h3>小米（Mi）小米Note 16G双网通版</h3>
-                                    <p class="price">
-                                        <b>¥2299.00</b>元</p>
-                                    <p>
-                                        <strong>库存 58</strong>
-                                        <span>市场价：
-                                            <s>2699.00</s>
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="/goods/show-88.html">
-                                <div class="img-box">
-                                    <img src="/upload/201504/20/thumb_201504200059017695.jpg">
-                                </div>
-                                <div class="info">
-                                    <h3>苹果Apple iPhone 6 Plus 16G 4G手机（联通三网版）</h3>
-                                    <p class="price">
-                                        <b>¥5780.00</b>元</p>
-                                    <p>
-                                        <strong>库存 198</strong>
-                                        <span>市场价：
-                                            <s>6388.00</s>
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="/goods/show-87.html">
-                                <div class="img-box">
-                                    <img src="/upload/201504/20/thumb_201504200046589514.jpg">
-                                </div>
-                                <div class="info">
-                                    <h3>华为（HUAWEI）荣耀6Plus 16G双4G版</h3>
-                                    <p class="price">
-                                        <b>¥2195.00</b>元</p>
-                                    <p>
-                                        <strong>库存 60</strong>
-                                        <span>市场价：
-                                            <s>2499.00</s>
-                                        </span>
-                                    </p>
-                                </div>
-                            </a>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</template>
-```
-
-## 商品详情
-
-#### 静态模版
-- [在线获取](http://157.122.54.189:8998/down/show-140.html)
-
-
-```vue
-<template>
-    <div>
-        <!-- 导航栏 -->
-        <div class="section">
-            <div class="location">
-                <span>当前位置：</span>
-                <a href="/index.html">首页</a> &gt;
-                <a href="/goods.html">购物商城</a>
-                <a href="/goods/42/1.html">商品详情</a>
-
-            </div>
-        </div>
-
-        <!-- 商品详情 -->
-        <div class="section">
-            <div class="wrapper clearfix">
-                <div class="wrap-box">
-                    <!--页面左边-->
-                    <div class="left-925">
-                        <div class="goods-box clearfix">
-                            <!--商品图片-->
-                            <div class="pic-box">
-
-                            </div>
-                            <!--/商品图片-->
-
-                            <!--商品信息-->
-                            <div class="goods-spec">
-                                <h1>奔腾（BNTN） 380功放+纽约至尊 套装家庭影院</h1>
-                                <p class="subtitle">送美诗特TA20无线话筒1套+自拍神器杆！ DTS解码数字功放 HDMI、光纤、同轴多组输入输出 USB、蓝牙播放功能</p>
-                                <div class="spec-box">
-                                    <dl>
-                                        <dt>货号</dt>
-                                        <dd id="commodityGoodsNo">SD6583245641</dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>市场价</dt>
-                                        <dd>
-                                            <s id="commodityMarketPrice">¥5880.00</s>
-                                        </dd>
-                                    </dl>
-                                    <dl>
-                                        <dt>销售价</dt>
-                                        <dd>
-                                            <em class="price" id="commoditySellPrice">¥4880.00</em>
-                                        </dd>
-                                    </dl>
-                                </div>
-
-                                <div class="spec-box">
-                                    <dl>
-                                        <dt>购买数量</dt>
-                                        <dd>
-                                            <div class="stock-box">
-                                                <input id="commodityChannelId" type="hidden" value="2">
-                                                <input id="commodityArticleId" type="hidden" value="98">
-                                                <input id="commodityGoodsId" type="hidden" value="0">
-                                                <input id="commoditySelectNum" type="text" maxlength="9" value="1" maxvalue="10" onkeydown="return checkNumber(event);">
-                                                <a class="add" onclick="addCartNum(1);">+</a>
-                                                <a class="remove" onclick="addCartNum(-1);">-</a>
-                                            </div>
-                                            <span class="stock-txt">
-                                                库存
-                                                <em id="commodityStockNum">10</em>件
-                                            </span>
-                                        </dd>
-                                    </dl>
-                                    <dl>
-                                        <dd>
-                                            <div class="btn-buy" id="buyButton">
-                                                <button class="buy" onclick="cartAdd(this,'/',1,'/shopping.html');">立即购买</button>
-                                                <button class="add" onclick="cartAdd(this,'/',0,'/cart.html');">加入购物车</button>
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
-
-                            </div>
-                            <!--/商品信息-->
-                        </div>
-
-                        <div id="goodsTabs" class="goods-tab bg-wrap">
-                            <!--选项卡-->
-                            <div id="tabHead" class="tab-head" style="position: static; top: 517px; width: 925px;">
-                                <ul>
-                                    <li>
-                                        <a class="selected" href="javascript:;">商品介绍</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;" class="">商品评论</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <!--/选项卡-->
-
-                            <!--选项内容-->
-                            <div class="tab-content entry" style="display:block;">
-                                内容
-                            </div>
-
-                            <div class="tab-content" style="display: block;">
-                                <!--网友评论-->
-                                <div class="comment-box">
-                                    <!--取得评论总数-->
-                                    <form id="commentForm" name="commentForm" class="form-box" url="/tools/submit_ajax.ashx?action=comment_add&amp;channel_id=2&amp;article_id=98">
-                                        <div class="avatar-box">
-                                            <i class="iconfont icon-user-full"></i>
-                                        </div>
-                                        <div class="conn-box">
-                                            <div class="editor">
-                                                <textarea id="txtContent" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
-                                                <span class="Validform_checktip"></span>
-                                            </div>
-                                            <div class="subcon">
-                                                <input id="btnSubmit" name="submit" type="submit" value="提交评论" class="submit">
-                                                <span class="Validform_checktip"></span>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <ul id="commentList" class="list-box">
-                                        <p style="margin:5px 0 15px 69px;line-height:42px;text-align:center;border:1px solid #f7f7f7;">暂无评论，快来抢沙发吧！</p>
-                                        <li>
-                                            <div class="avatar-box">
-                                                <i class="iconfont icon-user-full"></i>
-                                            </div>
-                                            <div class="inner-box">
-                                                <div class="info">
-                                                    <span>匿名用户</span>
-                                                    <span>2017/10/23 14:58:59</span>
-                                                </div>
-                                                <p>testtesttest</p>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="avatar-box">
-                                                <i class="iconfont icon-user-full"></i>
-                                            </div>
-                                            <div class="inner-box">
-                                                <div class="info">
-                                                    <span>匿名用户</span>
-                                                    <span>2017/10/23 14:59:36</span>
-                                                </div>
-                                                <p>很清晰调动单很清晰调动单</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <!--放置页码-->
-                                    <div class="page-box" style="margin:5px 0 0 62px">
-                                        <div id="pagination" class="digg">
-                                            <span class="disabled">« 上一页</span>
-                                            <span class="current">1</span>
-                                            <span class="disabled">下一页 »</span>
-                                        </div>
-                                    </div>
-                                    <!--/放置页码-->
-                                </div>
-
-                                <!--/网友评论-->
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <!--/页面左边-->
-
-                    <!--页面右边-->
-                    <div class="left-220">
-                        <div class="bg-wrap nobg">
-                            <div class="sidebar-box">
-                                <h4>推荐商品</h4>
-                                <ul class="side-img-list">
-
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="/goods/show-98.html">
-                                                <img src="/upload/201504/20/thumb_201504200314272543.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="/goods/show-98.html">奔腾（BNTN） 380功放+纽约至尊 套装家庭影院</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="/goods/show-97.html">
-                                                <img src="/upload/201504/20/thumb_201504200258403759.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="/goods/show-97.html">三星（SAMSUNG）UA40HU5920JXXZ 40英寸4K超高清</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="/goods/show-95.html">
-                                                <img src="/upload/201504/20/thumb_201504200242250674.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="/goods/show-95.html">惠普（HP）LaserJet 2035商用黑白激光打印机（黑色）</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <div class="img-box">
-                                            <a href="/goods/show-94.html">
-                                                <img src="/upload/201504/20/thumb_201504200239192345.jpg">
-                                            </a>
-                                        </div>
-                                        <div class="txt-box">
-                                            <a href="/goods/show-94.html">金士顿（Kingston） DataTraveler SE9 32GB 金属U盘</a>
-                                            <span>2015-04-20</span>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <!--/页面右边-->
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-```
-
-#### 集成放大镜插件
-- [插件介绍与下载](http://157.122.54.189:8998/video/show-116.html)
-- 把下载好的`插件`放入网站的 `lib` 目录下, 这里专门`放置`那些`无法`用 `npm` 安装的`第三方包`
-
-## 商品列表
-
-#### 静态模版
-
-```vue
-<template>
-    <div>
-        <div class="section">
-            <div class="location">
-                <span>当前位置：</span>
-                <a href="/index.html">首页</a> &gt;
-                <a href="/goods.html">购物商城</a>
-                &nbsp;&gt;&nbsp;
-                <a href="/goods/40/1.html">手机数码</a>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="wrapper clearfix">
-                <div class="screen-box">
-                    <!--分类-->
-                    <dl>
-                        <dt>分类：</dt>
-                        <dd>
-
-                            <a href="/goods/0.html">全部</a>
-
-                            <a class="selected" href="/goods/40.html">手机数码</a>
-
-                            <a href="/goods/41.html">电脑办公</a>
-
-                            <a href="/goods/42.html">影音娱乐</a>
-
-                        </dd>
-                    </dl>
-                    <!--/分类-->
-                </div>
-
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="wrapper clearfix">
-                <ul class="img-list">
-                    <!--取得一个分页DataTable-->
-
-                    <li>
-                        <a href="/goods/show-91.html">
-                            <div class="img-box">
-
-                                <div class="abs-txt">推荐</div>
-
-                                <img src="/upload/201504/20/thumb_201504200214471783.jpg">
-                            </div>
-                            <div class="info">
-                                <h3>尼康(Nikon)D3300套机（18-55mm f/3.5-5.6G VRII）（黑色）</h3>
-                                <p class="price">
-                                    <b>¥3180.00</b>元</p>
-                                <p>
-                                    <strong>库存 10</strong>
-                                    <span>市场价：
-                                        <s>3150.00</s>
-                                    </span>
-                                </p>
-                            </div>
-                        </a>
-                    </li>
-
-                </ul>
-
-                <!--页码列表-->
-                <div class="page-box" style="margin:15px 0 0;">
-                    <div class="digg"></div>
-                </div>
-                <!--/页码列表-->
-            </div>
-
-        </div>
-    </div>
-</template>
-```
 
