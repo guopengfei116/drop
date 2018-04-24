@@ -251,3 +251,141 @@ for (int i = 1; i <= 1000; i++) {
 int[] results =pst.executeBatch(); // [1, 0, 0, 1, 1, 2, 1, 1, 0, 0];
 pst.clearBatch();
 ```
+
+- - -
+
+## 工具类封装
+
+```java
+public class JDBCUtil {
+  private static final String propertiesFilePath;
+  private static final String driverClassName;
+  private static final String url;
+  private static final String username;
+  private static final String password;
+
+  //  从配置文件中读取信息
+  static {
+    Properties prop = new Properties();
+    try {
+      prop.load(new FileInputStream(propertiesFilePath));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    driverClassName = prop.getProperty("driverClassName");
+    url = prop.getProperty("url");
+    username = prop.getProperty("username");
+    password = prop.getProperty("password");
+  }
+
+  // 注册驱动
+  public static void loadDriver() {
+    try {
+      Class.forName(driverClassName);
+    } catch(ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+
+  // 获取连接对象
+  public static Connection getConnection() {
+    Connection con = null;
+    try {
+      loadDriver();
+      con = DriverManager.getConnection();
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+
+    return con;
+  }
+
+  // 释放资源
+  public static void release(Statement st, Connection con) {
+    if(st != null) {
+      try {
+        st.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if(con != null) {
+      try {
+        con.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  // 释放资源
+  public static void release(ResultSet rs, Statement st, Connection con) {
+    release(st, con);
+
+    if(rs != null) {
+      try {
+        rs.close();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+}
+```
+
+- - -
+
+## 事务
+
+> 业务逻辑上的一组操作，用以实现某个功能，具有原子性；
+> 所以这些操作必须全部执行成功，如果有一个失败，那么整体都应该给失败
+
+### **API**
+
+| 名字 | 返回值 | 描述 |
+|   -    |     -      |    -    |
+| setAutoCommit | void | 设置自动提交 |
+| commit              | void | 提交 |
+| rollback              | void | 回滚 |
+
+### **使用**
+
+```java
+try {
+  // 获取数据库连接
+  con = JDBCUtil.getConnect();
+
+  // 关闭自动提交
+  con.setAutoCommit(false);
+
+  // 预编译sql
+  String sql = "update user set money = ? where id = ?"
+  pst = con.prepareStatement(sql);
+
+  // 完成一个事务操作
+  pst.setDouble(1, -100);
+  pst.setInt(1, 10);
+  pst.executeUpdate();
+
+  pst.setDouble(1, 100);
+  pst.setInt(1, 20);
+  pst.executeUpdate();
+
+  // 手动提交
+  con.committ();
+}
+// 如果事务执行失败，那么回滚数据
+catch(Exception e) {
+  try {
+    con.rollback();
+  } catch(SQLException e1) {
+    e.printStackTrace();
+  }
+}
+// 释放资源
+finally {
+  JDBCUtil.release(pst, con);
+}
+```
