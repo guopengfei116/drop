@@ -235,6 +235,7 @@ public static void main(String[] args) {
           InputStream socketIn = null;
           OutputStream socketOut = null;
           BufferedOutputStream  fileOut = null;
+          String fileName = "C:\\upload\\";
 
           try {
             // 4. 打印客户端信息
@@ -245,19 +246,23 @@ public static void main(String[] args) {
             socketIn = socket.getInputStream();
             socketOut = socket.getOutputStream();
 
-            // 6. 从Socket输入流中读数据，写入到文件输出流
-            fileOut = new BufferedOutputStream(new FileOutputStream("test.jpg"));
+            // 6. 创建文件输出流
+            fileName += "example_" + System.currentTimeMillis() + "_" + new Random().nextInt(99999) + ".jpg";
+            fileOut = new BufferedOutputStream(new FileOutputStream(fileName));
+
+            // 7. 从Socket输入流中读数据，写入到文件
+            // 注：socketIn.read方法会阻塞程序，只有收到客户端数据或传输结束消息时才会继续执行
             byte[] tempBuffer = new byte[1024];
             int tempLen = -1;
-            while ((tempLen = socketIn.read(tempBuffer)) != -1) { // read方法会阻塞程序，只有收到客户端数据或传输结束消息时才会继续执行
+            while ((tempLen = socketIn.read(tempBuffer)) != -1) { 
               fileOut.write(tempBuffer, 0, tempLen);
               System.out.println("写入" + tempLen + "字节数据");
             }
 
-            // 7. 文件写完后，使用Socket输出流响应客户端信息
+            // 8. 文件写完后，使用Socket输出流响应客户端信息
             socketOut.write("上传成功!".getBytes());
 
-            // 8. 释放资源
+            // 9. 释放资源
             fileOut.close();
             socketOut.close();
             socketIn.close();
