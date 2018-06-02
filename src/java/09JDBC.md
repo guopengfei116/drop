@@ -389,3 +389,46 @@ finally {
   JDBCUtil.release(pst, con);
 }
 ```
+
+- - -
+
+## 总结
+
+### JDBC 查询步骤
+
+1. 加载驱动
+2. 创建连接
+3. 定义sql
+4. 创建Statement对象
+5. 设置参数
+6. 执行sql
+7. 处理结果集
+8. 关闭资源
+
+```java
+Connection con = null;
+PreparedStatement psmg = null;
+ResultSet rs = null;
+
+// DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+// 通过反射加载驱动，变成字符串，可从配置文件中读取，避免写死
+Class.forName("com.mysql.jdbc.Driver");
+
+con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cust", "root", "13456");
+
+String sql = "select * from ?";
+
+psmt = con.prepareStatement(sql);
+
+psmt.setString(1, "customer");
+
+rs = psmt.executeQuery();
+
+while(rs.next()) {
+  System.out.println(rs.getInt("cust_id") + "" + rs.getString("cust_name"));
+}
+
+if(rs != null) con.close();
+if(psmt != null) psmt.close();
+if(con != null) con.close();
+```
