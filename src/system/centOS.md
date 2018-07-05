@@ -26,15 +26,16 @@ IPV6_PEERROUTES=yes
 IPV6_FAILURE_FATAL=no
 NAME=eno16777736
 UUID=ae0965e7-22b9-45aa-8ec9-3f0a20a85d11
-ONBOOT=yes  #开启自动启用网络连接
-IPADDR0=192.168.21.128  #设置IP地址
-PREFIXO0=24  #设置子网掩码
-GATEWAY0=192.168.21.2  #设置网关
-DNS1=8.8.8.8  #设置主DNS
-DNS2=8.8.4.4  #设置备DNS
+ONBOOT=yes             #开启自动启用网络连接
+IPADDR=192.168.12.1    #设置IP地址
+GATEWAY=192.168.12.0   #设置网关，该网关由虚拟机提供
+NETMASK=255.255.255.0  #设置子网掩码
+DNS1=8.8.8.8           #设置主DNS
+DNS2=8.8.4.4           #设置备DNS
 
 # 重启网络
-service network restart
+旧命令：service network restart
+新命令：systemctl restart network.service
 
 #查看IP地址
 ip addr
