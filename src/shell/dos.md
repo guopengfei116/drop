@@ -14,3 +14,9 @@
 - 退出 exit
 - 清屏 clear
   + cls
+
+查看环境变量
+set 
+
+搜索环境变量
+set | findstr "过滤条件"
