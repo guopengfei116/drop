@@ -134,7 +134,7 @@ create-react-native-app --version
 # 项目创建与运行
 create-react-native-app projectName
 cd projectName
-npm start
+yarn start
 ```
 
 除了使用模拟器外，也可以通过真机运行应用，但是需要先手动去Google或Apple应用商店下载Expo软件，然后应用软件的扫一扫功能，扫描npm start执行后显示的巨大二维码即可，前提条件是必须保证真机与URL在同一局域网内才可以正常打开。<br />
@@ -199,7 +199,7 @@ yarn config get disturl
 如果使用Android系统开发测试，那么需要安装 Java SE Development Kit (JDK)，安装后需要手动配置环境变量。打开控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量 -> 新建。环境变量配置后，需要关闭现有的命令行工具然后重新打开，新的环境变量才会生效。
 
 - [下载页面]<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
-- [环境变量配置参考文档]<http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html>
+- [环境变量配置参考文档]<https://jingyan.baidu.com/article/d45ad148ba5ab169552b80d3.html>
 
 ```shell
 # 1. 创建 JAVA_HOME 环境变量，值为 jdk 的安装根路径，默认 C:\Program Files\Java\jdk1.8.0_112
@@ -261,7 +261,8 @@ adb version
 
 #### 模拟器
 
-启动模拟器，运行adb devices命令，查看设备是否正常连接，如果提示adb版本不符合，那么就需要把本地Android-sdk目录下的adb.ext复制到模拟器目录下的bin中，进行覆盖。然后重启模拟器进行尝试。
+- 启动模拟器，运行adb devices命令，查看设备是否正常连接，
+- 如果提示adb版本不符合，那么就需要把本地Android-sdk目录下的adb.ext复制到模拟器目录下的bin中，进行覆盖。然后重启模拟器进行尝试。
 
 ```shell
 adb devices
@@ -270,7 +271,7 @@ adb devices
 
 #### 创建项目
 
-使用`命令行`工具切入一个`目录`, 保证该目录及整个`路径`中没有任何`中文`字符串，然后运行 `react-native init project-name` 命令初始化一个 `React-Native` 项目，创建时过程中需要联网`下载`依赖包，耐心等待
+- 使用`命令行`工具切入一个`目录`, 保证该目录及整个`路径`中没有任何`中文`字符串，然后运行 `react-native init project-name` 命令初始化一个 `React-Native` 项目，创建时过程中需要联网`下载`依赖包，耐心等待
 
 ```shell
 # 创建项目
@@ -279,7 +280,8 @@ react-native init projectName
 
 #### 启动服务
 
-在项目目录下运行`npm start`命令，在本地启动一个端口`8081`的服务器, 它的作用是向移动设备提供项目最新的打包生成的bundle.js文件，每当代码变更时，该服务就会重新打包js并推送给客户端使用。
+- 在项目目录下运行`npm start`命令，在本地启动一个端口`8081`的服务器, 
+- 它的作用是向移动设备提供项目最新的打包生成的bundle.js文件，每当代码变更时，该服务就会重新打包js并推送给客户端使用。
 
 ```shell
 cd projectName
@@ -288,7 +290,7 @@ npm start
 
 #### 打包运行
 
-在项目目录下运行 `react-native run-android` 命令便会打包 `android` 项目, 生成 `apk` 文件, 然后自动安装到Android设备并运行。打包后的 `apk` 安装包, 可以在项目中找到，路径为 `projecrName/android/app/build/outputs/apk`，这个apk安装包可以手动安装到其它模拟器或真机中进行开发调试。
+- 在项目目录下运行 `react-native run-android` 命令便会打包 `android` 项目, 生成 `apk` 文件, 然后自动安装到Android设备并运行。
 
 ```shell
 react-native run-android
@@ -309,10 +311,24 @@ react-native run-android
 sdk.dir=G:\\Android-sdk
 ```
 
-#### 真机运行
+#### 手动安装
 
-真机可以手动安装apk开发调试或者通过usb接口连接本机调试，但是需要USB启用调试模式，并通过命令 `adb devices`检测设备是否正常连接。<br />
-另外应用在运行可能还需要`悬浮框`权限，可在`设置` => `授权管理` => `应用权限管理` 中找到对应的 APP , 然后`开启`悬浮框权限。<br />
+- 打包后的 `apk` 安装包, 可以在项目中找到，路径为 `projecrName/android/app/build/outputs/apk`，这个apk安装包可以手动安装到其它模拟器或真机中进行开发调试。
+- 如果自动安装失败, 可自行把apk文件拷贝到手机存储器, 然后手动安装。
+
+#### APP权限设置
+
+- app运行时需要`悬浮框`权限，可在`设置` => `授权管理` => `应用权限管理` 中找到对应的 APP , 然后`开启`悬浮框权限。<br />
+
+#### 设备直连
+
+- 准备一台Android手机, 通过数据线连接到电脑，设置启用USB调试
+- 一般的手机在设置中可以直接找到开发者选项进行开启, 部分手机开启的位置可能不同，根据需要自行百度一下
+- 手机连接成功后运行检测命令adb devices,如果有输出设备列表与ID相关的字符串就证明连接成功了
+- 附录: 小米手机开启USB调试步骤
+    + 首先进入`设置` => `我的设备` => `全部参数` => 连续`点击`MUI版本3次以上
+    + 然后重新进入`设置` => `更多设置` => `开发者选项`(在无障碍下面) => 找到`USB调试`点击开启
+    + 最后需要拉到底部找到`启用 MUI 优化`, 关掉重启
 
 ![usb调试](https://github.com/guopengfei116/drop/blob/master/img/react-native/usb_debug.png?raw=true)
 
@@ -332,8 +348,8 @@ sdk.dir=G:\\Android-sdk
 - Enable Hot Reloading: 热更新, 代码变动自动的进行局部更新
 - Dev Sttings: 开发调试配置
 
-
 #### 开发初体验
+
 - 在项目根目录下有个 `index.js` , 它是项目的`入口`文件, 负责注册根组件
 - 根目录下有个 `App.js` , 是默认生成的`根组件`, 我们在 APP 上看到的`欢迎界面`就是这个组件实现的
 - 尝试修改 `App.js` 中的文本内容, 然后手机摇一摇 `Reload` 查看即可看到修改内容
@@ -423,573 +439,402 @@ const styles = StyleSheet.create({
 ```
 
 ## 内置组件
+
 - 在 `React Native` 中你需要使用官方提供的`组件`进行应用构建
 - 因为是开发`原生`应用, 我们的代码最终会`转为`原生组件的方式渲染, 所以你不会看到任何以 `html` 标签命名的组件
+- [官方文档]<https://facebook.github.io/react-native/docs/getting-started>
 
 #### View
-- 作用相当于 `html` 的 `div` 标签用于结构布局
+
+- 视图容器，作用相当于 `html` 的 `div` 标签，它是创建UI所需的最基础组件，支持Flexbox布局、样式、触摸事件，它可以放到其它视图中，也可以包含任意多个任意子视图。
 - <http://reactnative.cn/docs/0.50/view.html#content>
 
+```jsx
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, Button } from 'react-native';
+
+export default class ViewTest extends Component {
+    render() {
+        return (
+            {/* View标签相当于div，可以嵌套 */}
+            <View style={style.container}>
+                <View>
+                    <Text>React Native</Text>
+                </View>
+                <View>
+                    <Text>使用React编写</Text>
+                    <Text>使用JSX编写</Text>
+                </View>
+            </View>
+        );
+    }
+}
+
+// 注意border、background等样式不能简写，必须一个一个的设置属性
+let style = StyleSheet.create({
+    container: {
+        width: 300,
+        padding: 10,
+        borderStyle: "dashed",
+        borderWidth: 2,
+        borderColor: "red",
+        borderRadius: 2,
+    },
+    text: {
+        fontSize: 20,
+        color: "yellow",
+    }
+});
+```
+
 #### Text
-- 作用相当于 `html` 的 `p` 标签用于文本段落
+
+- 文本容器，作用相当于 `html` 的 `span` 标签，为什么不是 `p` 标签呢，一会演示。Text标签支持嵌套、触摸事件。在RN中，文本必须放置到Text中才可以被渲染，否则报错。
 - 注意: 除了Text外, 别的组件内都不能包含文本
 - <http://reactnative.cn/docs/0.50/text.html#content>
 
+文本布局
+
+Text采用的是文本布局，多个子文本在渲染时会折叠合并在一起，如果把View理解成块级元素，那么Text就可以理解为行内元素。<br />
+
+```jsx
+import React, { Component } from "react";
+import { StyleSheet, View, Text } from "react-native";
+
+export default class TextTest extends Component {
+    render() {
+        return (
+            // 可以嵌套
+            <Text>
+                {/* 文本节点是span版本的p标签，行内元素，下面文字会合并在一行 */}
+                <Text>饿了吗</Text>
+                <Text>美图</Text>
+            </Text>
+        );
+    }
+}
+```
+
+样式继承
+
+在RN中，父文本的样式可以传递给后代文本，也就是样式继承。但是除了文本之外其它组件都无法继承样式。<br />
+
+```jsx
+render() {
+    return (
+        <Text style={style.rootText}>
+            <Text>饿了吗</Text>
+            <Text>美图</Text>
+            {/* 文本样式继承 */}
+            <Text>
+                <Text>滴滴外卖</Text>
+            </Text>
+        </Text>
+    );
+}
+
+let style = StyleSheet.create({
+    rootText: {
+        fontSize: 20,
+        color: "blue",
+        lineHeight: 24
+    }
+});
+```
+
 #### Image
+
 - 作用相当于 `html` 的 `img` 标签用于承载图片
 - 组件通过 `source` 属性设置图片地址
 - <http://reactnative.cn/docs/0.50/images.html#content>
 - <http://reactnative.cn/docs/0.50/image.html#content>
 
 ###### 载入本地图片
-- `require` 方法里面必须传入一个`静态字符串`
-- 里面不能写`表达式`, 比如字符串拼接, 同时图片名称也不允许以`数字`开头
+
+- 本地图片通过`require`方法导入
+- 之前的版本中require方法必须传入`静态字符串`，不能使用表达式和字符串拼接, 也就是写死，同时图片名称也不允许以`数字`开头，现在的新版本已经修复了这两个bug
 
 ```jsx
-{/* 正确 */}
-<Image source={require('./img/icon.png')} />
+import React, { Component } from 'react';
+import { StyleSheet, View, Image } from 'react-native';
 
-{/* 错误 */}
-<Image source={require('./' + 'img/icon.png')} />
+export default class ImageTest extends Component {
+    render() {
+        let pic = {
+            uri: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=645293140,2005760885&fm=173'
+        };
+        let imgBasePath = "../public/img/";
+        return (
+            <View >
+                {/* 通过source属性设置图片地址，通过require方法载入本地图片 */}
+                <Image style={styles.img} source={require('../public/img/12.jpg')}/>
+                
+                {/* 在之前的版本中，图片路径必须是静态的，不能写表达式，现在可以了 */}
+                <Image style={styles.img} source={require(imgBasePath + '12.jpg')} />
+                
+                {/* 在之前的版本中，图片名称也不能以数字开头，现在也可以了 */}
+                <Image style={styles.img} source={require('./56.jpg')} />
+            </View>
+        )
+    }
+}
 
-{/* 错误 */}
-<Image source={require('123.png')} />
+let styles = StyleSheet.create({
+    img: {
+        width: 55,
+        height: 55
+    }
+});
 ```
 
 ###### 载入网络图片
-- `动态`载入的图片需要手动设置`宽高`, 否则无法显示
+
+- 如果是通过uri载入的网络图片，必须要设置宽高，否则无法显示
 - 如果某些网站的图片载入失败尝试换一个域名图片试试
 
 ```jsx
-{/* 正确 */}
-<Image
-	source={{uri: 'http://facebook.github.io/react/img/logo_og.png'}}
-	style={{width: 400, height: 400}}
-/>
+export default class ImageTest extends Component {
+    render() {
+        let pic = {
+            uri: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=645293140,2005760885&fm=173'
+        };
+        let imgBasePath = "../public/img/";
+        return (
+            <View >
+                {/* 没有宽高，图片不会显示 */}
+                <Image source={pic} />
 
-{/* 错误 */}
-<Image source={{uri: 'http://facebook.github.io/react/img/logo_og.png'}} />
-```
-
-###### 载入网络图片
-- 如果想`写活`地址, 必须定义一个`对象`赋值
-
-```jsx
-let imgObj = {uri: 'http://facebook.github.io/react/img/logo_og.png'};
-{/* 正确 */}
-<Image source={ imgObj } style={{width: 400, height: 400}} />
-
-{/* 错误 */}
-let imgUri = 'http://facebook.github.io/react/img/logo_og.png'
-<Image source={{uri: imgUri}} />
-```
-
-#### Button
-- 作用相当于 `html` 的 `button` 标签用于触发点击
-- 需要通过 `title` 属性设置按钮内的文本内容, 通过 `onPress` 属性监听按钮的点击事件
-- <http://reactnative.cn/docs/0.50/button.html>
-
-```jsx
-<Button title="点我吧" onPress={ this.clickHandler }></Button>
-```
-
-#### TextInput
-- 作用相当于 `html` 的 `input` 标签用于输入文本
-- 需要通过 `value` 属性文本内容, 通过 `onChangeText` 属性监听文本的变化事件
-- <http://reactnative.cn/docs/0.50/textinput.html#content>
-
-```jsx
-export default class Home extends Component {
-	state = {
-    	text: '默认值'
+                {/* 设置宽高，图片正常显示 */}
+                <Image source={pic} style={{width:200, height: 100}} />
+            </View>
+        )
     }
+}
+```
 
-    upText(text) {
-	    this.setState({
-	      text: text
-	    });
+###### 批量载入网络图片
+
+- 之前如果想`写活`地址, 必须定义一个`对象`赋值
+- `<Image source={对象} />`
+- 现在更加灵活，只需要把uri写活就可以
+- `<Image source={{uri: 变量}} />`
+
+```jsx
+import React, { Component } from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+
+export default class ImageTest extends Component {
+
+    constructor(props) {
+        super(props);
     }
 
     render() {
-    	return (
-      		<View style={styles.container}>
-      			<Text style={styles.welcome}>{ this.state.text }</Text>
-    			<TextInput value={ this.state.text } onChangeText={ this.upText } />
-	    	</View>
-	    );
+        return (
+            <View>
+                {
+                    this.props.imgs && this.props.imgs.map((uri, i) => {
+                        return <Image key={`key${i}`} source={{uri: uri}} style={{width:200, height: 100}} />;
+                    })
+                }
+            </View>
+        )
     }
+}
+```
+
+#### Button
+
+- 作用相当于 `html` 的 `button` 标签用于触发点击
+- 按钮需要通过 `title` 属性设置文本内容, 值必须为字符串，其他数值或者不设都会报错
+- 按钮通过 `onPress` 属性监听点击事件
+- <http://reactnative.cn/docs/0.50/button.html>
+
+```jsx
+import React, { Component } from "react";
+import { StyleSheet, View, Text, Button, Alert } from "react-native";
+
+export default class ButtonTest extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            num: 1
+        };
+    }
+
+    onPressHandler() {
+        this.setState({num: ++this.state.num});
+    }
+
+    render() {
+        return (
+            <View>
+                <Text>{this.state.num}</Text>
+                <Button onPress={() => {this.onPressHandler()}} title="点我+1"></Button>
+            </View>
+        )
+    }
+}
+```
+
+#### TextInput
+
+- 作用相当于 `html` 的 `input` 标签用于输入文本
+- 需要通过 `value` 属性指定文本内容, 通过 `onChangeText` 属性监听文本的变化事件
+- <http://reactnative.cn/docs/0.50/textinput.html#content>
+
+```jsx
+import React, { Component } from 'react';
+import { StyleSheet, View, Text, TextInput } from 'react-native';
+
+export default class TextInputTest extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: '默认值'
+        }
+    }
+
+    render() {
+        return (
+            <View>
+                {/* 模拟双向数据绑定 */}
+      			<Text>{ this.state.text }</Text>
+                <TextInput value={ this.state.text } onChangeText={(text) => this.setState({text})} />
+                <Text>{ this.state.text }</Text>
+    			<TextInput placeholder="请输入密码" onChangeText={(text) => this.setState({text})} />
+	    	</View>
+        );
+    }
+}
+```
+
+#### Alert
+
+```jsx
+import React, { Component } from "react";
+import { StyleSheet, View, Text, Button, Alert } from "react-native";
+
+export default class AlertTest extends Component {
+
+    onPressHanlder() {
+        Alert.alert(
+            // 标题
+            '温馨提示',
+            // 内容
+            '您的餐凉了，要不要热一下',
+            // 配置一个按钮是确定，两个按钮是取消与确定，三个按钮是稍后再试、取消与确定
+            [
+              {text: '再等一会', onPress: () => console.log('先聊会天')},
+              {text: '算了', onPress: () => console.log('凉着吃吧')},
+              {text: '好的', onPress: () => console.log('热的好吃')},
+            ],
+            // 点击屏幕关闭
+            { cancelable: false }
+        );
+    }
+
+    render() {
+        return (
+            <Button onPress={()=>{this.onPressHanlder()}} title="点我弹框"></Button>
+        )
+    }
+}
 ```
 
 #### ScrollView
+
 - 默认情况下, `超出`屏幕的内容是看不到的, 不像浏览器环境下会自动添加`滚动条`
 - 如果需要滚动, 可以使用这个`组件`把要相应的内容`包裹`起来, 被包裹的内容就会处于`滚动条`中
+- 滚动的过程中，可以通过onScroll绑定回调，每帧最多调用一次回调
 - <http://reactnative.cn/docs/0.50/scrollview.html#content>
 
+```jsx
+return (
+    <ScrollView>
+    <View style={styles.container} onScroll={() => {this.onScrollHandler()}}>
+        <Text>Open up App.js to start working on your app!</Text>
+        <Text>Changes you make will automatically reload.</Text>
+        <Text>Shake your phone to open the developer menu1.</Text>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <ViewTest></ViewTest>
+        <TextTest></TextTest>
+        <ImageTest imgs={imgs}></ImageTest>
+        <ButtonTest></ButtonTest>
+        <TextInputTest></TextInputTest>
+        <AlertTest></AlertTest>
+    </View>
+    </ScrollView>
+);
+```
+
+#### FlatList
+
+```jsx
+import React, { Component } from "react";
+import { StyleSheet, View, Text, FlatList } from 'react-native';
+
+export default class FlatListTest extends Component {
+    render() {
+        return (
+            <View>
+                <FlatList
+                    data={[
+                        {key: 'Devin'},
+                        {key: 'Jackson'},
+                        {key: 'James'},
+                        {key: 'Joel'},
+                        {key: 'John'},
+                        {key: 'Jillian'},
+                        {key: 'Jimmy'},
+                        {key: 'Julie'},
+                    ]}
+                    renderItem={(e) => <Text style={styles.item}>{e.index + ":" + e.item.key}</Text>}
+                />
+            </View>
+        );
+        
+    }
+}
+
+const styles = StyleSheet.create({
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
+});
+```
+
 #### ActivityIndicator
+
 - 展示一个小圆形的`loading`
 - 通过属性 `animating` 控制显示隐藏, `color` 设置颜色
 - <http://reactnative.cn/docs/0.50/activityindicator.html#content>
 
 ```jsx
-<ActivityIndicator animating={ this.state.isShow }></ActivityIndicator>
-```
+import React, { Component } from "react";
+import { StyleSheet, ActivityIndicator } from "react-native";
 
-# 豆瓣电影列表案例
-
-## 集成react-native-swiper
-- 这是一个基于 `react-native` 开发的第三方轮播图组件库
-- [详情可查看github官方文档](https://github.com/leecade/react-native-swiper)
-
-#### 安装
-- 命令: `yarn add react-native-swiper -S`
-
-#### 封装自用公共组件
-- 创建 `src/component/common/swiper.js` 公共组件
-- 然后 `copy` 官方的`示例`代码进行测试
-- 注意: 因为这个组件为子组件, 对于 `Swiper` 组件而言, 其`父组件`必须设有`高度`才可正常运行
-
-```jsx
-// 根据官方文档导入相关组件与函数
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  Image
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-
-//  showsButtons属性可用来控制左右箭头显示与隐藏, height设置高度, autoplay控制自动播放
-export default class Home extends Component {
-    render() {
-        return (
-            <Swiper style={styles.wrapper} showsButtons={true} height={160}>
-                <View style={styles.slide1}>
-                    <Text style={styles.text}>Hello Swiper</Text>
-                </View>
-                <View style={styles.slide2}>
-                    <Text style={styles.text}>Beautiful</Text>
-                </View>
-                <View style={styles.slide3}>
-                    <Text style={styles.text}>And simple</Text>
-                </View>
-            </Swiper>
-        );
-    }
-}
-
-var styles = StyleSheet.create({
-    wrapper: {},
-    slide1: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#9DD6EB',
-    },
-    slide2: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#97CAE5',
-    },
-    slide3: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#92BBD9',
-    },
-    image:{
-        width:'100%',
-        height:'100%'
-    }
-});
-```
-
-#### 测试
-- 修改 `App.js` 根组件
-- 导入`公共轮播图`组件并使用`测试`
-
-```jsx
-import AppSwiper from './src/component/common/swipe.js';
-
-export default class App extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <AppSwiper></AppSwiper>
-                <Text>轮播图组件测试</Text>
-            </View>
-        );
-    }
-}
-```
-
-## 轮播图数据动态化
-
-#### 接口配置文件
-- 创建 `src/js/api_config.js` 接口配置文件
-- [豆瓣接口文档](https://developers.douban.com/wiki/?title=api_v2)
-
-```js
-const domain = 'http://vue.studyit.io/api';
-const dbDomain = 'http://api.douban.com/v2';
-
-export default {
-    // 轮播图
-    getLunbo: `${domain}/getlunbo`,
-
-    // 豆瓣电影正在热映
-	doubanHot: 'http://api.douban.com/v2/movie/in_theaters',
-
-	// 豆瓣电影即将上映
-	doubanSoon: `${dbDomain}/movie/coming_soon`,
-
-	// 豆瓣电影top250
-	doubanTop: `${dbDomain}/movie/top250`,
-
-	// 豆瓣电影详情
-    doubanDetail: `${dbDomain}/movie/subject/` // 后面需要加电影id参数
-};
-```
-
-#### 轮播图组件修改
-
-```jsx
-import Swiper from 'react-native-swiper';
-import apiConfig from '../../js/api_config.js';
-
-export default class AppSwiper extends Component {
+export default class ActivityIndicatorTest extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            lunbos: [],
-            imgUrl: {uri: 'http://ofv795nmp.bkt.clouddn.com/vuelogobanner1.jpg'}
+            isShow: true
         }
     }
 
-    // 给每个对象里面添加uri属性, 以便设置给Image组件
-    transformLunbos(lunbos) {
-        return lunbos.message.map(item => {
-            item.uri = item.img;
-            return item;
-        });
-    }
-
-    componentWillMount() {
-        // 请求轮播图数据
-        fetch(apiConfig.getLunbo)
-            .then(rsp => rsp.json())
-            .then(lunbos => {
-                this.setState({
-                    lunbos: this.transformLunbos(lunbos)
-                });
-            }
-        );
-    }
-
     render() {
         return (
-            <View style={{height: 200}}>
-                <Swiper showsButtons={true} height={160} autoplay={true}>
-                    {
-                        this.state.lunbos.map(item => {
-                            return (
-                                <View style={styles.slide} key={item.uri}>
-                                    <Image style={{height:'100%', width:'100%'}} source={item}></Image>
-                                </View>
-                            );
-                        })
-                    }
-                </Swiper>
-            </View>
-        );
-    }
-}
-```
-
-## 首页导航按钮
-
-```jsx
-<View style={{flexDirection:'row', justifyContent:'space-around',
-    height: 40, backgroundColor: 'skyblue', alignItems: 'center'}}>
-    <Text>首页</Text>
-    <Text>电影</Text>
-    <Text>关于</Text>
-</View>
-```
-
-## 集成react-native-router-flux
-- 这是一个基于 react-native 开发的第三方路由库
-- [详情可查看github官方文档](https://github.com/aksonov/react-native-router-flux)
-
-#### 安装
-- 运行命令: `yarn add react-native-router-flux -S`
-
-#### 使用
-- 创建 `src/component/index/index.js` 首屏页面组件, 把 `App.js` 根组件的代码 `Copy` 过去
-- 然后`重新`编写 `App.js` 根组件, 主要代码是利用`路由`组件控制其他页面的展示
-
-```jsx
-import React, { Component } from 'react';
-import { Router, Stack, Scene } from 'react-native-router-flux';
-
-import AppIndex from './src/component/index';
-
-// 定义并导出组件
-export default class App extends Component {
-    render() {
-        return (
-            <Router>
-                <Stack key="root">
-                    <Scene key="index" component={ AppIndex } hideNavBar={ true } title={'index'}></Scene>
-                </Stack>
-            </Router>
-        );
-    }
-}
-```
-
-## 路由其他页面
-
-#### 创建三个页面组件
-- 创建 `src/component/home/index.js`
-- 创建 `src/component/movie/index.js`
-- 创建 `src/component/about/index.js`
-
-```jsx
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-// 三个页面组件模版
-export default class (AppHome | AppMovie | AppAbout) extends Component {
-    render() {
-        return (
-            <View>
-                <Text>(首页 | 电影 | 关于)</Text>
-            </View>
-        );
-    }
-}
-```
-
-#### 增加路由配置
-- 修改 `App.js` 根组件, 导入新页面进行`路由`配置
-
-```jsx
-import React, { Component } from 'react';
-import { Router, Stack, Scene } from 'react-native-router-flux';
-
-// 导入页面组件
-import AppIndex from './src/component/index';
-import AppHome from './src/component/home';
-import AppMovie from './src/component/movie';
-import AppAbout from './src/component/about';
-
-// 定义并导出组件
-export default class App extends Component {
-    render() {
-        return (
-            <Router>
-                <Stack key="root">
-                	{/* 路由配置, initial用于设置默认展示的页面, key是路由的名称将来要通过这个key进行组件切换 */}
-                    <Scene key="index" component={ AppIndex } hideNavBar={ true } initial={true} ></Scene>
-                    <Scene key="home" component={ AppHome } hideNavBar={ false }  title={ '首页' }></Scene>
-                    <Scene key="movie" component={ AppMovie } hideNavBar={ false } title={ '电影' }></Scene>
-                    <Scene key="about" component={ AppAbout } hideNavBar={ false } title={ '关于' }></Scene>
-                </Stack>
-            </Router>
-        );
-    }
-}
-```
-
-#### 首屏导航实现
-- 修改 `src/component/index/index.js` 首屏页面组件
-
-```jsx
-import AppSwiper from '../common/swipe.js';       // 轮播图组件
-import { Actions } from 'react-native-router-flux';  // 路由插件提供的操作对象
-
-export default class AppIndex extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                <AppSwiper></AppSwiper>
-                <View style={{flexDirection:'row', justifyContent:'space-around',
-                    height: 40, backgroundColor: 'skyblue', alignItems: 'center'}}>
-                    <Text onPress={ Actions.home }>首页</Text>
-                    <Text onPress={ Actions.movie }>电影</Text>
-                    <Text onPress={ Actions.about }>关于</Text>
-                </View>
-            </View>
-        );
-    }
-}
-```
-
-## 电影列表
-- 修改 `src/component/movie/index.js`
-- 使用 `hasLoading` 状态控制 `loading` 的展示隐藏, 默认展示
-- 使用 `fetch` 获取电影列表`数据`进行渲染, 获取完毕后`隐藏` loading
-
-```jsx
-import React, { Component } from 'react';
-import { Text, View, ActivityIndicator, ScrollView, Image } from 'react-native';
-import apiConfig from '../../js/api_config.js';
-
-// 定义并导出组件
-export default class App extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            hasLoading: true,
-            movieList: []
-        };
-    }
-
-    componentWillMount() {
-        // 获取热映列表
-        fetch(apiConfig.doubanHot)
-            .then(rsp => rsp.json())
-            .then(data => {
-                this.setState({
-                    hasLoading: false,
-                    movieList: data.subjects
-                })
-            });
-    }
-
-    render() {
-        return (
-            <View style={{paddingTop: 60}}>
-                {
-                    this.state.hasLoading === true
-                    ?
-                        // loading
-                        <ActivityIndicator size='large' color={'red'}></ActivityIndicator>
-                    :(
-                        // 电影列表
-                        <ScrollView>
-                            {
-                                this.state.movieList.map(item => {
-                                    return (
-                                        <View style={{paddingLeft: 10, paddingRight: 10, flexDirection: 'row', marginBottom: 2}}>
-                                            <Image style={{width:80, height:120}} source={{uri: item.images.small}}></Image>
-                                            <View style={{justifyContent:'space-around', marginLeft: 10, fontSize: 20}}>
-                                                <Text>电影名称: {item.title}</Text>
-                                                <Text>上映年份: {item.year}</Text>
-                                                <Text>电影评分: {item.rating.average||0}</Text>
-                                            </View>
-                                        </View>
-                                    );
-                                })
-                            }
-                        </ScrollView>
-                    )
-                }
-            </View>
-        );
-    }
-}
-```
-
-## 电影详情
-
-#### 初始页面
-- 创建 `src/component/movie/detail/index.js`
-
-#### 路由配置
-- 修改 `App.js` 根组件, 导入新页面进行`路由`配置
-
-```jsx
-import AppIndex from './src/component/index';
-import AppHome from './src/component/home';
-import AppMovie from './src/component/movie';
-import AppMovieDetail from './src/component/movie/movie_detail';
-import AppAbout from './src/component/about';
-
-<Stack key="root">
-    <Scene key="index" component={ AppIndex } hideNavBar={ true } initial={true} ></Scene>
-    <Scene key="home" component={ AppHome } hideNavBar={ false } title={ '首页' }></Scene>
-    <Scene key="movie" component={ AppMovie } hideNavBar={ false } title={ '电影' }></Scene>
-    <Scene key="movieDetail" component={ AppMovieDetail } hideNavBar={ false } title={ '电影详情' }></Scene>
-    <Scene key="about" component={ AppAbout } hideNavBar={ false } title={ '关于' }></Scene>
-</Stack>
-```
-
-#### 电影列表导航功能
-- 导入 `TouchableOpacity` 组件, 用于添加点击事件与效果
-- 导入 `Actions` 对象, 用于切换页面
-
-```jsx
-import { ..., TouchableOpacity } from 'react-native'; // 多导入一个TouchableOpacity组件
-import { Actions } from 'react-native-router-flux';    // 导入Actions对象
-
-// 渲染电影列表
-<ScrollView>
-    {
-        this.state.movieList.map(item => {
-            return (
-            	// 使用该组件包裹每个电影, 监听点击事件跳转到电影详情页, 并把id作为参数传过去
-                <TouchableOpacity onPress={() => { Actions.movieDetail({id: item.id}) }}>
-                    <View>...</View>
-                </TouchableOpacity>
-            );
-        })
-    }
-</ScrollView>
-```
-
-#### 电影详情页实现
-
-```jsx
-import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
-import apiConfig from '../../js/api_config.js';
-
-export default class AppMovieDetail extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            hasLoading: true,
-            movieDetail: {}
-        };
-    }
-
-    componentWillMount() {
-        // 获取电影详情
-        fetch(apiConfig.doubanDetail + this.props.id)
-            .then(rsp => rsp.json())
-            .then(data => {
-                this.setState({
-                    hasLoading: false,
-                    movieDetail: data
-                })
-            });
-    }
-
-    render() {
-        return (
-            <View style={{paddingTop: 60}}>
-            {
-                    this.state.hasLoading === true
-                    ?
-                        // 渲染loading
-                        <ActivityIndicator size='large' color={'red'}></ActivityIndicator>
-                    :(
-                        <View>
-                            <Text>{this.state.movieDetail.title}</Text>
-                            <Image style={{width: '100%', height: 300}}
-                                source={{uri: this.state.movieDetail.images.large}}></Image>
-                            <Text>{this.state.movieDetail.summary}</Text>
-                        </View>
-                    )
-            }
-            </View>
+            <ActivityIndicator animating={this.state.isShow} color="green" size="large"></ActivityIndicator>
         );
     }
 }
