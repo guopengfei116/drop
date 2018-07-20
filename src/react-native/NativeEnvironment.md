@@ -4,12 +4,6 @@
 
 - 安装的软件目录中不要出现**中文**与**特殊字符**，尤其是**空格**
 - 计算机名称`(控制面板\所有控制面板项\系统中设置)`不要**中文**，改成**英文**，也不要**特殊字符**
-- 因为这些环境都依赖我们的操作系统，如果系统是被优化阉割的版本可能会安装失败
-
-## 环境预览
-
-- [参照文档] <http://reactnative.cn/docs/0.42/getting-started.html>
-- ![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/environment_config.png?raw=true)
 
 ## Node环境
 
@@ -126,9 +120,9 @@ create-react-native-app --version
 - [雷电]<https://www.yeshen.com/>
 - [MuMu]<http://mumu.163.com/baidu/>
 
-### **开发调试**
+### **模拟器开发调试**
 
-开发环境`create-react-native-app`与运行环境`真机或模拟器`准备好之后，就可以开始RN开发了。首先打开模拟器，然后通过下面的命令创建并运行项目，CRNA会自动在模拟器中安装Expo软件，并在此APP中运行我们的项目，这种方式有点类似与微信小程序，即我们的应用运行在一个APP容器中。<br />
+开发环境`create-react-native-app`与运行环境`模拟器`准备好之后，就可以开始RN开发了。首先打开模拟器，然后通过下面的命令创建并运行项目，CRNA会自动在模拟器中安装Expo软件，并在此APP中运行我们的项目，这种方式有点类似与微信小程序，即我们的项目最终是运行在一个叫Expo的App当中。<br />
 
 ```shell
 # 项目创建与运行
@@ -137,7 +131,20 @@ cd projectName
 yarn start
 ```
 
+### **真机开发调试**
+
 除了使用模拟器外，也可以通过真机运行应用，但是需要先手动去Google或Apple应用商店下载Expo软件，然后应用软件的扫一扫功能，扫描npm start执行后显示的巨大二维码即可，前提条件是必须保证真机与URL在同一局域网内才可以正常打开。<br />
+
+因为本机可能会有多个ip地址，比如以太网IP、无线局域网IP等等，那么npm start命令启动时通常无脑的选择第一个，假如选择了以太网IP，那么就与wifi连接的手机不在同一局域网，比如下面的情况，最终使用的是第一个94端IP。<br />
+
+- ![ipconfig]](https://github.com/guopengfei116/drop/blob/master/img/react-native/ipconfig.png?raw=true)
+- ![expo-service]](https://github.com/guopengfei116/drop/blob/master/img/react-native/expo_service.png?raw=true)
+
+遇到这种情况，可以通过设置REACT_NATIVE_PACKAGER_HOSTNAME环境变量，手动配置IP地址：在cmd窗口中运行如下命令
+
+```dos
+set REACT_NATIVE_PACKAGER_HOSTNAME=ip地址
+```
 
 ### **错误提示(红屏和黄屏)**
 
@@ -160,7 +167,15 @@ React-Native开发调试没有本地代码方便，但也是可以调的，在�
 
 ![调试菜单预览](https://note.youdao.com/yws/public/resource/6a301213468716d4d839ca93f6b26025/xmlnote/5F7D6A3BB20945BE8C521606F0DD0C76/6915)
 
-## React-Native开发与打包环境
+## React-Native完整开发环境
+
+前面我们使用的开发方式是进化过的方式，简述步骤就是，先安装一个Expo应用程序，然后使用扫一扫功能在Expo内运行我们的App，偏向传统的前端开发方式。<br />
+这在之前，React Native采用的开发方式是先把写好的项目打包编译成一个独立App，然后直接安装到手机上运行，偏向传统的Native开发方式。
+
+**环境预览**
+
+- [参照文档] <http://reactnative.cn/docs/0.42/getting-started.html>
+- ![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/environment_config.png?raw=true)
 
 ### **Yarn与React-Native-Cli**
 
