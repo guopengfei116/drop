@@ -21,8 +21,12 @@ const styles = StyleSheet.create({
 ## 盒子模型
 
 在RN中的元素同样拥有盒子模型：宽高、内边距、边框、外边距。<br />
+
 需要注意在RN中的样式大小不需要单位，同时没有css的复合样式，比如border、background、font，在RN中border宽度、颜色、圆角等样式需要一个一个设置，background和font也一样。<br />
+
 关于padding与margin，在css中可以赋予多个值来设置四边不一样的大小，在RN中只能给定一个值，指定相同的大小，如果四边大小不一样，就需要按照方向一个一个设置。同时RN也提供了paddingHorizontal、marginHorizontal、paddingVertical、marginVertical同时设置左右和上下两个方向的值。<br />
+
+另外补充一下，在设置字体时，Android内建的有这么几个: normal、serif、monospace<br />
 
 ```jsx
 import React, { Component } from "react";
