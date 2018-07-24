@@ -126,11 +126,13 @@ create-react-native-app --version
 
 ### adb工具
 
-adb安装在Android-sdk路径下的platform-tools目录，这个工具是电脑与Android设备进行通信的通用命令行工具，有几个常用命令需要了解，将来打包调试的时候需要保证本机的adb版本需要与模拟器的adb一致，如果不一致可以复制本机的adb.ext然后覆盖掉模拟器中的版本。
+adb安装在Android-sdk路径下的platform-tools目录，这个工具是电脑与Android设备进行通信的通用命令行工具，同时可以检测或连接Android设备，所有有几个常用命令需要了解。<br />
+将来使用的时候需要保证本机的adb版本需要与Android设备内的adb版本一致，否则可能无法正常通信，解决办法是我们可以复制本机的adb.exe程序，然后覆盖掉模拟器中的版本。<br />
 
 - adb version        # 版本
 - adb devices        # 列出连接到本机的Android设备与状态
-- adb start-server  # 启动adb服务
+- adb connect        # 手动连接Android设备
+- adb start-server   # 启动adb服务
 - adb kill-server    # 关闭adb服务
 
 ```shell
