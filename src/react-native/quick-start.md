@@ -1,13 +1,15 @@
-# NativeEnvironment
+# Quick Start
+
+## 环境安装说明
 
 凡是安装开发环境，都需要注意以下几点，防止意外错误的发生：
 
 - 安装的软件目录中不要出现**中文**与**特殊字符**，尤其是**空格**
 - 计算机名称`(控制面板\所有控制面板项\系统中设置)`不要**中文**，改成**英文**，也不要**特殊字符**
 
-## Node环境
+- - - - - - - - - - - - - - - - - - - - - - - -
 
-- - - - - -
+## Node环境
 
 如果已经安装过Node并且是使用安装包单独安装，那么先卸载掉，然后使用nvm进行安装，好处是可以动态切换Node版本以适应不同环境的需求，目前ReactNative需要至少8.0以上的Node版本。<br />
 
@@ -91,6 +93,8 @@ npm config get registry
 npm config get disturl
 ```
 
+- - - - - - - - - - - - - - - - - - - - - - - -
+
 ## React-Native快速开发环境
 
 学习使用React-Native最令人头疼的就是环境问题，因为大多数web开发者，并不熟悉Android与IOS的开发环境，配置起来也比较繁琐，同时Android程序员也不熟悉IOS环境，IOS程序员也不熟悉Android环境，导致了很多人因为环境而放弃学习，为了解决这个问题，所以产生了所谓的快速开发环境。
@@ -119,6 +123,25 @@ create-react-native-app --version
 - [夜神]<https://www.yeshen.com/>
 - [雷电]<https://www.yeshen.com/>
 - [MuMu]<http://mumu.163.com/baidu/>
+
+### adb工具
+
+adb安装在Android-sdk路径下的platform-tools目录，这个工具是电脑与Android设备进行通信的通用命令行工具，有几个常用命令需要了解，将来打包调试的时候需要保证本机的adb版本需要与模拟器的adb一致，如果不一致可以复制本机的adb.ext然后覆盖掉模拟器中的版本。
+
+- adb version        # 版本
+- adb devices        # 列出连接到本机的Android设备与状态
+- adb start-server  # 启动adb服务
+- adb kill-server    # 关闭adb服务
+
+```shell
+adb version
+// 第一行显示的信息：Android Debug Bridge version 1.0.40
+// 其中40就代表adb的版本，将来可能把copy这个版本的adb工具覆盖掉模拟器版本
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - -
+
+## 开发方式
 
 ### **模拟器开发调试**
 
@@ -167,194 +190,6 @@ React-Native开发调试没有本地代码方便，但也是可以调的，在�
 
 ![调试菜单预览](https://note.youdao.com/yws/public/resource/6a301213468716d4d839ca93f6b26025/xmlnote/5F7D6A3BB20945BE8C521606F0DD0C76/6915)
 
-## React-Native完整开发环境
-
-前面我们使用的开发方式是进化过的方式，简述步骤就是，先安装一个Expo应用程序，然后使用扫一扫功能在Expo内运行我们的App，偏向传统的前端开发方式。<br />
-这在之前，React Native采用的开发方式是先把写好的项目打包编译成一个独立App，然后直接安装到手机上运行，偏向传统的Native开发方式。
-
-**环境预览**
-
-- [参照文档] <http://reactnative.cn/docs/0.42/getting-started.html>
-- ![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/environment_config.png?raw=true)
-
-### **Yarn与React-Native-Cli**
-
-Yarn是Facebook提供的替代npm的工具，可以加速node模块的下载。React Native的命令行工具用于执行创建、初始化、更新项目、运行打包服务（packager）等任务。<br />
-
-安装
-
-```shell
-npm install -g yarn react-native-cli
-
-# 检测
-yarn -v
-react-native -v
-```
-
-镜像配置
-
-```shell
-yarn config set registry https://registry.npm.taobao.org --global
-yarn config set disturl https://npm.taobao.org/dist --global
-
-# 检测
-yarn config get registry
-yarn config get disturl
-```
-
-### **Python2**
-
-需要注意，RN目前只支持`python2.x`版本，安装了3.x版本的需要更换。在安装python时，注意安装界面上的 `Add Python to path`选项, 勾选上会自动将Python配置到环境变量，否则需要手动配置。<br />
-
-- ![Add Python to path](https://github.com/guopengfei116/drop/blob/master/img/react-native/python.png?raw=true)
-- 安装完毕后, 在命令行中键入 `python --version` 进行测试，显示出版本号即成功
-
-### **Java**
-
-如果使用Android系统开发测试，那么需要安装 Java SE Development Kit (JDK)，安装后需要手动配置环境变量。打开控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量 -> 新建。环境变量配置后，需要关闭现有的命令行工具然后重新打开，新的环境变量才会生效。
-
-- [下载页面]<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
-- [环境变量配置参考文档]<https://jingyan.baidu.com/article/d45ad148ba5ab169552b80d3.html>
-
-```shell
-# 1. 创建 JAVA_HOME 环境变量，值为 jdk 的安装根路径，默认 C:\Program Files\Java\jdk1.8.0_112
-# 2. 编辑 Path 环境变量，在 Path 中加入 %JAVA_HOME%\bin;%JAVA_HOME%\jre\bin，如果是Win10一个一个添加即可
-# 3. 创建 CLASSPATH 变量, 值为 .;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
-# 4. 配置完毕后保存并退出, 然后运行下面命令进行检测
-java -version
-javac -version
-```
-
-### **Android Studio**
-
-Android Studio是谷歌推出的Android集成开发工具，其包含了运行和测试React Native应用所需的Android SDK和模拟器。<br />
-在安装时需要确定所有安装都勾选了，尤其是Android SDK和Android Device Emulator。在初步安装完成后，选择Custom进行自定义安装。其中Androoid SDK Location目录可以选择一个剩余空间比较大的磁盘存放，建议至少留有10G。<br />
-
-#### **安装**
-
-- ![Custom](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-custom-install-windows.png)
-- ![setup](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-verify-installs-windows.png)
-
-安装完成后，在Android Studio的欢迎界面中选择Configure | SDK Manager。
-
-- ![welcome](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-configure-sdk-windows.png)
-
-在SDK Platforms窗口中，选择Show Package Details，然后在Android 6.0 (Marshmallow)中勾选Google APIs、Android SDK Platform 23、Intel x86 Atom System Image、Intel x86 Atom_64 System Image以及Google APIs Intel x86 Atom_64 System Image。
-
-- ![SDK platforms](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-android-sdk-platforms-windows.png)
-
-在SDK Tools窗口中，选择Show Package Details，然后在Android SDK Build Tools中勾选Android SDK Build-Tools 23.0.1（必须包含有这个版本。当然如果其他插件需要其他版本，你可以同时安装其他多个版本）。然后还要勾选最底部的Android Support Repository.
-
-- ![SDK tools](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-android-sdk-build-tools-windows.png)
-
-#### **配置环境变量**
-
-通过Android Studio安装的SDK路径，需要配置到ANDROID_HOME环境变量中。
-
-![ANDROID_HOME](https://reactnative.cn/static/docs/0.51/img/react-native-android-sdk-environment-variable-windows.png)
-
-还可以把Android SDK的tools和platform-tools目录添加到PATH变量中，这样就可以在终端中运行一些Android工具，例如adb devices或android avd等。
-
-![path](https://reactnative.cn/static/docs/0.51/img/react-native-android-tools-environment-variable-windows.png)
-
-### adb工具
-
-adb安装在Android-sdk路径下的platform-tools目录，这个工具是电脑与Android设备进行通信的通用命令行工具，有几个常用命令需要了解，将来打包调试的时候需要保证本机的adb版本需要与模拟器的adb一致，如果不一致可以复制本机的adb.ext然后覆盖掉模拟器中的版本。
-
-- adb version        # 版本
-- adb devices        # 列出连接到本机的Android设备与状态
-- adb start-server  # 启动adb服务
-- adb kill-server    # 关闭adb服务
-
-```shell
-adb version
-// 第一行显示的信息：Android Debug Bridge version 1.0.40
-// 其中40就代表adb的版本，将来可能把copy这个版本的adb工具覆盖掉模拟器版本
-```
-
-### **开发步骤**
-
-#### 模拟器
-
-- 启动模拟器，运行adb devices命令，查看设备是否正常连接，
-- 如果提示adb版本不符合，那么就需要把本地Android-sdk目录下的adb.ext复制到模拟器目录下的bin中，进行覆盖。然后重启模拟器进行尝试。
-
-```shell
-adb devices
-// 连接正常的话会显示设备信息或地址信息，如：127.0.0.1:62001 device
-```
-
-#### 创建项目
-
-- 使用`命令行`工具切入一个`目录`, 保证该目录及整个`路径`中没有任何`中文`字符串，然后运行 `react-native init project-name` 命令初始化一个 `React-Native` 项目，创建时过程中需要联网`下载`依赖包，耐心等待
-
-```shell
-# 创建项目
-react-native init projectName
-```
-
-#### 启动服务
-
-- 在项目目录下运行`npm start`命令，在本地启动一个端口`8081`的服务器, 
-- 它的作用是向移动设备提供项目最新的打包生成的bundle.js文件，每当代码变更时，该服务就会重新打包js并推送给客户端使用。
-
-```shell
-cd projectName
-npm start
-```
-
-#### 打包运行
-
-- 在项目目录下运行 `react-native run-android` 命令便会打包 `android` 项目, 生成 `apk` 文件, 然后自动安装到Android设备并运行。
-
-```shell
-react-native run-android
-// 最后看到BUILD SUCCESSFUL提示就代表打包成功
-```
-
-接下来设备会自动启动应用，如果显示如下界面就代表一切正常可以开发调试了。<br />
-![成功运行](https://github.com/guopengfei116/drop/blob/master/img/react-native/react_welcome.png?raw=true)
-
-打包中途打包失败了，记得看提示信息，可能是网络问题，一般会提示timed out，那么重拾或者找个网络环境好的，手机热点也可以。
-
-![timed out](https://github.com/guopengfei116/drop/blob/master/img/react-native/bundle_error_timeout.jpg?raw=true)
-
-也可能会提示找不到android-sdk目录，那么需要手动创建一个配置文件放置到projectName/android/local.properties。
-
-```properties
-# 配置sdk所在目录
-sdk.dir=G:\\Android-sdk
-```
-
-#### 手动安装
-
-- 打包后的 `apk` 安装包, 可以在项目中找到，路径为 `projecrName/android/app/build/outputs/apk`，这个apk安装包可以手动安装到其它模拟器或真机中进行开发调试。
-- 如果自动安装失败, 可自行把apk文件拷贝到手机存储器, 然后手动安装。
-
-#### APP权限设置
-
-- app运行时需要`悬浮框`权限，可在`设置` => `授权管理` => `应用权限管理` 中找到对应的 APP , 然后`开启`悬浮框权限。<br />
-
-#### 设备直连
-
-- 准备一台Android手机, 通过数据线连接到电脑，设置启用USB调试
-- 一般的手机在设置中可以直接找到开发者选项进行开启, 部分手机开启的位置可能不同，根据需要自行百度一下
-- 手机连接成功后运行检测命令adb devices,如果有输出设备列表与ID相关的字符串就证明连接成功了
-- 附录: 小米手机开启USB调试步骤
-    + 首先进入`设置` => `我的设备` => `全部参数` => 连续`点击`MUI版本3次以上
-    + 然后重新进入`设置` => `更多设置` => `开发者选项`(在无障碍下面) => 找到`USB调试`点击开启
-    + 最后需要拉到底部找到`启用 MUI 优化`, 关掉重启
-
-![usb调试](https://github.com/guopengfei116/drop/blob/master/img/react-native/usb_debug.png?raw=true)
-
-局域网连接
-
-- 移动设备除了通过 `USB` 直连电脑调试开发, 还可以采用`无线`的方式进行调试
-- 只要保证手机和电脑在同一个`局域网`, 然后摇一摇唤出调试菜单
-- 点击 `Dev settings` => `Debuug server host` , 配置本地 `IP` 地址和端口号 `8081` 即可
-- 如果出现这个`错误`提示, 说明配置错了: `could not connect to development server`
-- ![摇一摇弹出框](img/react_debug_server.png)
-
 调试菜单说明
 
 - Reload: 重新加载整个页面
@@ -363,7 +198,9 @@ sdk.dir=G:\\Android-sdk
 - Enable Hot Reloading: 热更新, 代码变动自动的进行局部更新
 - Dev Sttings: 开发调试配置
 
-#### 开发初体验
+- - - - - - - - - - - - - - - - - - - - - - - -
+
+## 开发初体验
 
 - 在项目根目录下有个 `index.js` , 它是项目的`入口`文件, 负责注册根组件
 - 根目录下有个 `App.js` , 是默认生成的`根组件`, 我们在 APP 上看到的`欢迎界面`就是这个组件实现的
@@ -389,7 +226,7 @@ export default class App extends Component {
 }
 ```
 
-#### 根组件代码解读
+**根组件代码解读**
 
 ```jsx
 // 导包
@@ -453,13 +290,15 @@ const styles = StyleSheet.create({
 });
 ```
 
+- - - - - - - - - - - - - - - - - - - - - - - -
+
 ## 内置组件
 
 - 在 `React Native` 中你需要使用官方提供的`组件`进行应用构建
 - 因为是开发`原生`应用, 我们的代码最终会`转为`原生组件的方式渲染, 所以你不会看到任何以 `html` 标签命名的组件
 - [官方文档]<https://facebook.github.io/react-native/docs/getting-started>
 
-#### View
+### View
 
 - 视图容器，作用相当于 `html` 的 `div` 标签，它是创建UI所需的最基础组件，支持Flexbox布局、样式、触摸事件，它可以放到其它视图中，也可以包含任意多个任意子视图。
 - <http://reactnative.cn/docs/0.50/view.html#content>
@@ -502,7 +341,7 @@ let style = StyleSheet.create({
 });
 ```
 
-#### Text
+### Text
 
 - 文本容器，作用相当于 `html` 的 `span` 标签，为什么不是 `p` 标签呢，一会演示。Text标签支持嵌套、触摸事件。在RN中，文本必须放置到Text中才可以被渲染，否则报错。
 - 注意: 除了Text外, 别的组件内都不能包含文本
@@ -530,7 +369,7 @@ export default class TextTest extends Component {
 }
 ```
 
-样式继承
+**文本样式**
 
 在RN中，父文本的样式可以传递给后代文本，也就是样式继承。但是除了文本之外其它组件都无法继承样式。<br />
 
@@ -557,14 +396,14 @@ let style = StyleSheet.create({
 });
 ```
 
-#### Image
+### Image
 
 - 作用相当于 `html` 的 `img` 标签用于承载图片
 - 组件通过 `source` 属性设置图片地址
 - <http://reactnative.cn/docs/0.50/images.html#content>
 - <http://reactnative.cn/docs/0.50/image.html#content>
 
-###### 载入本地图片
+#### 载入本地图片
 
 - 本地图片通过`require`方法导入
 - 之前的版本中require方法必须传入`静态字符串`，不能使用表达式和字符串拼接, 也就是写死，同时图片名称也不允许以`数字`开头，现在的新版本已经修复了这两个bug
@@ -602,7 +441,7 @@ let styles = StyleSheet.create({
 });
 ```
 
-###### 载入网络图片
+#### 载入网络图片
 
 - 如果是通过uri载入的网络图片，必须要设置宽高，否则无法显示
 - 如果某些网站的图片载入失败尝试换一个域名图片试试
@@ -627,7 +466,7 @@ export default class ImageTest extends Component {
 }
 ```
 
-###### 批量载入网络图片
+#### 批量载入网络图片
 
 - 之前如果想`写活`地址, 必须定义一个`对象`赋值
 - `<Image source={对象} />`
@@ -658,7 +497,7 @@ export default class ImageTest extends Component {
 }
 ```
 
-#### Button
+### Button
 
 - 作用相当于 `html` 的 `button` 标签用于触发点击
 - 按钮需要通过 `title` 属性设置文本内容, 值必须为字符串，其他数值或者不设都会报错
@@ -693,7 +532,7 @@ export default class ButtonTest extends Component {
 }
 ```
 
-#### TextInput
+### TextInput
 
 - 作用相当于 `html` 的 `input` 标签用于输入文本
 - 需要通过 `value` 属性指定文本内容, 通过 `onChangeText` 属性监听文本的变化事件
@@ -726,7 +565,7 @@ export default class TextInputTest extends Component {
 }
 ```
 
-#### Alert
+### Alert
 
 ```jsx
 import React, { Component } from "react";
@@ -759,38 +598,117 @@ export default class AlertTest extends Component {
 }
 ```
 
-#### ScrollView
+### Dimensions
+
+有时候我们需要设置元素大小为屏幕的大小，在Web开发中可以使用%百分比单位，但是RN并不支持这种单位，这时候我们可以使用RN内置的`Dimensions`对象API方法动态获取屏幕宽高然后进行设置。
+
+```jsx
+const Dimensions = require('Dimensions');
+const screenSize = Dimensions.get("window");
+
+const styles = StyleSheet.create({
+    container: {
+        width: screenSize.width,
+        height: screenSize.height
+    }
+});
+```
+
+### ScrollView
 
 - 默认情况下, `超出`屏幕的内容是看不到的, 不像浏览器环境下会自动添加`滚动条`
 - 如果需要滚动, 可以使用这个`组件`把要相应的内容`包裹`起来, 被包裹的内容就会处于`滚动条`中
 - 滚动的过程中，可以通过onScroll绑定回调，每帧最多调用一次回调
 - <http://reactnative.cn/docs/0.50/scrollview.html#content>
 
+**基本使用**
+
+ScrollView使用非常简单，只需要把标签内容通过ScrollView组件包裹起来即可。
+
 ```jsx
 return (
     <ScrollView>
-    <View style={styles.container} onScroll={() => {this.onScrollHandler()}}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu1.</Text>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <ViewTest></ViewTest>
-        <TextTest></TextTest>
-        <ImageTest imgs={imgs}></ImageTest>
-        <ButtonTest></ButtonTest>
-        <TextInputTest></TextInputTest>
-        <AlertTest></AlertTest>
-    </View>
+        <View style={styles.container} onScroll={() => {this.onScrollHandler()}}>
+            <Text>Open up App.js to start working on your app!</Text>
+            <Text>Changes you make will automatically reload.</Text>
+            <Text>Shake your phone to open the developer menu1.</Text>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <ViewTest></ViewTest>
+            <TextTest></TextTest>
+            <ImageTest imgs={imgs}></ImageTest>
+            <ButtonTest></ButtonTest>
+            <TextInputTest></TextInputTest>
+            <AlertTest></AlertTest>
+        </View>
     </ScrollView>
 );
 ```
 
-#### FlatList
+**简易Swiper**
+
+我们可以利用ScrollView的几个特殊属性来实现一个简易的Swiper。
+
+```jsx
+import React, { Component } from 'react';
+import {
+    StyleSheet,
+    View,
+    Text,
+    ScrollView
+} from 'react-native';
+
+const Dimensions = require('Dimensions');
+const screenSize = Dimensions.get("window");
+
+export default class ScrollViewSwiper extends Component {
+
+    // 获取渲染列表
+    getList() {
+        const backgroundList = ["orange", "purple", "pink", "aqua"];
+        return backgroundList.map((color, i) => {
+            return (
+                <View
+                    key={ `key${i}` } 
+                    style={ [styles.swipeItem, {backgroundColor: color}] }>
+                    <Text>{ color }</Text>
+                </View>
+            )
+        });
+    }
+
+    render() {
+        return (
+            // horizontal属性可设置列表水平排列，
+            // pagingEnabled属性能够让列表一页一页切换，
+            // showsHorizontalScrollIndicator属性控制滚动条显示隐藏
+            <ScrollView
+                style={styles.swipe}
+                horizontal={ true }
+                pagingEnabled={ true }
+                showsHorizontalScrollIndicator={ false }>
+                { this.getList() }
+            </ScrollView>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    swipe: {
+        marginTop: 24,
+    },
+    swipeItem: {
+        width: screenSize.width,
+        height: 200
+    }
+});
+```
+
+### FlatList
 
 ```jsx
 import React, { Component } from "react";
@@ -828,7 +746,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-#### ActivityIndicator
+### ActivityIndicator
 
 - 展示一个小圆形的`loading`
 - 通过属性 `animating` 控制显示隐藏, `color` 设置颜色
@@ -853,4 +771,89 @@ export default class ActivityIndicatorTest extends Component {
         );
     }
 }
+```
+
+### 触控系列组件
+
+在需要捕捉用户点击操作时，可以使用`Touchable`开头的一系列组件。这些组件通过onPress属性设置点击事件的处理函数。当在本组件上按下手指并且抬起手指时也没有移开到组件外时，此函数会被调用。Touchable组件最大的特点是附带反馈效果。
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    StyleSheet, 
+    View, 
+    Image,
+    Text, 
+    TouchableHighlight, 
+    TouchableOpacity, 
+    TouchableNativeFeedback 
+} from 'react-native';
+import StyleBoxTest from './StyleBoxTest';
+
+export default class TouchableGroupTest extends Component {
+
+    opacityHandler() {
+        console.log("透明按钮");
+    }
+
+    HighlighrHandler() {
+        console.log("高亮按钮");
+    }
+
+    FeedbackHandler() {
+        console.log("原生反馈按钮");
+    }
+
+    render() {
+        return (
+            <View>
+                {/* 透明效果，支持多个子节点 */}
+                <TouchableOpacity 
+                    activeOpacity={0.5} 
+                    onPress={this.opacityHandler.bind(this)}>
+                    <View style={styles.base}>
+                        <Text style={styles.baseFont}>透明按钮</Text>
+                    </View>
+                </TouchableOpacity>
+
+                {/* 透明与底色两种效果，只支持一个子节点，可以用一个View再包装多个子节点 */}
+                {/* 可以包裹图片，点击时加深背景 */}
+                <TouchableHighlight
+                    activeOpacity={0.5} 
+                    underlayColor="#c1c1c1"
+                    onPress={this.HighlighrHandler.bind(this)}>
+                    <View style={styles.base}>
+                        <Image source={require("./56.jpg")} style={{width:300,height:100}} resizeMode="stretch"></Image>
+                    </View>
+                </TouchableHighlight>
+
+                {/* 使用原生状态渲染反馈效果，比如涟漪，只能放置一个view子组件 */}
+                {/* 效果有三个可选方法：SelectableBackground、SelectableBackgroundBorderless、Ripple(color)*/}
+                <TouchableNativeFeedback 
+                    background={TouchableNativeFeedback.SelectableBackground()}
+                    onPress={this.FeedbackHandler.bind(this)}>
+                    <View style={styles.base}>
+                        <Text style={styles.baseFont}>原生按钮</Text>
+                    </View>
+                </TouchableNativeFeedback>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    base: {
+        margin: 10,
+        width: 300,
+        height: 100,
+        borderRadius: 5,
+        backgroundColor: 'green',
+        justifyContent: 'center',
+    },
+    baseFont: {
+        color: "orange",
+        textAlign: "center",
+        lineHeight: 50
+    }
+});
 ```

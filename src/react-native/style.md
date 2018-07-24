@@ -243,22 +243,6 @@ const styles = StyleSheet.create({
 });
 ```
 
-### 屏幕宽高
-
-有时候我们需要设置元素宽高为屏幕的大小，这时候可以使用RN内置的`Dimensions`对象动态获取。
-
-```jsx
-const Dimensions = require('Dimensions');
-const screenSize = Dimensions.get("window");
-
-const styles = StyleSheet.create({
-    container: {
-        width: screenSize.width,
-        height: screenSize.height
-    }
-});
-```
-
 ## feach
 
 RN提供了和web标准一致的网络请求API，XMLHttpRequest与Fetch，Fetch用起来将对比较容易，且支持Promise，所以一般会选用Fetch。
@@ -300,90 +284,5 @@ fetch('http://api.douban.com/v2/movie/top250')
 })
 .catch((error) => {
     console.error(error);
-});
-```
-
-## 触控系列组件
-
-在需要捕捉用户点击操作时，可以使用`Touchable`开头的一系列组件。这些组件通过onPress属性设置点击事件的处理函数。当在本组件上按下手指并且抬起手指时也没有移开到组件外时，此函数会被调用。Touchable组件最大的特点是附带反馈效果。
-
-```jsx
-import React, { Component } from 'react';
-import { 
-    StyleSheet, 
-    View, 
-    Image,
-    Text, 
-    TouchableHighlight, 
-    TouchableOpacity, 
-    TouchableNativeFeedback 
-} from 'react-native';
-import StyleBoxTest from './StyleBoxTest';
-
-export default class TouchableGroupTest extends Component {
-
-    opacityHandler() {
-        console.log("透明按钮");
-    }
-
-    HighlighrHandler() {
-        console.log("高亮按钮");
-    }
-
-    FeedbackHandler() {
-        console.log("原生反馈按钮");
-    }
-
-    render() {
-        return (
-            <View>
-                {/* 透明效果，支持多个子节点 */}
-                <TouchableOpacity 
-                    activeOpacity={0.5} 
-                    onPress={this.opacityHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Text style={styles.baseFont}>透明按钮</Text>
-                    </View>
-                </TouchableOpacity>
-
-                {/* 透明与底色两种效果，只支持一个子节点，可以用一个View再包装多个子节点 */}
-                {/* 可以包裹图片，点击时加深背景 */}
-                <TouchableHighlight
-                    activeOpacity={0.5} 
-                    underlayColor="#c1c1c1"
-                    onPress={this.HighlighrHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Image source={require("./56.jpg")} style={{width:300,height:100}} resizeMode="stretch"></Image>
-                    </View>
-                </TouchableHighlight>
-
-                {/* 使用原生状态渲染反馈效果，比如涟漪，只能放置一个view子组件 */}
-                {/* 效果有三个可选方法：SelectableBackground、SelectableBackgroundBorderless、Ripple(color)*/}
-                <TouchableNativeFeedback 
-                    background={TouchableNativeFeedback.SelectableBackground()}
-                    onPress={this.FeedbackHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Text style={styles.baseFont}>原生按钮</Text>
-                    </View>
-                </TouchableNativeFeedback>
-            </View>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    base: {
-        margin: 10,
-        width: 300,
-        height: 100,
-        borderRadius: 5,
-        backgroundColor: 'green',
-        justifyContent: 'center',
-    },
-    baseFont: {
-        color: "orange",
-        textAlign: "center",
-        lineHeight: 50
-    }
 });
 ```

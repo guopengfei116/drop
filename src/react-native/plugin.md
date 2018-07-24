@@ -1,75 +1,13 @@
-# 第三方组件
+# 第三方插件
 
 ## react-native-swiper
 
-一个轮播图组件，对于android系统内部会采用ViewPagerAndroid组件实现，
-ios系统则采用ScrollView实现。
+这是一个可实现典型的轮播效果或翻页效果插件，该插件只提供了一个组件Swiper，全部功能由该组件提供。该插件在内部对android与ios系统提供了不同的实现方式，如果是android系统才采用ViewPagerAndroid组件实现，ios系统则采用ScrollView实现。
 
 - [github](https://github.com/leecade/react-native-swiper)
 - 安装: `yarn add react-native-swiper -S`
 
-### 简易Swiper
-
-在使用插件之前，我们可以利用ScrollView的几个特殊属性来实现一个简易的Swiper，方便大家理解学习。
-
-```jsx
-import React, { Component } from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    ScrollView
-} from 'react-native';
-
-const Dimensions = require('Dimensions');
-const screenSize = Dimensions.get("window");
-
-export default class ScrollViewSwiper extends Component {
-
-    // 获取渲染列表
-    getList() {
-        const backgroundList = ["orange", "purple", "pink", "aqua"];
-        return backgroundList.map((color, i) => {
-            return (
-                <View
-                    key={ `key${i}` } 
-                    style={ [styles.swipeItem, {backgroundColor: color}] }>
-                    <Text>{ color }</Text>
-                </View>
-            )
-        });
-    }
-
-    render() {
-        return (
-            // horizontal属性可设置列表水平排列，
-            // pagingEnabled属性能够让列表一页一页切换，
-            // showsHorizontalScrollIndicator属性控制滚动条显示隐藏
-            <ScrollView
-                style={styles.swipe}
-                horizontal={ true }
-                pagingEnabled={ true }
-                showsHorizontalScrollIndicator={ false }>
-                { this.getList() }
-            </ScrollView>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    swipe: {
-        marginTop: 24,
-    },
-    swipeItem: {
-        width: screenSize.width,
-        height: 200
-    }
-});
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - -
-
-### 插件使用
+### 使用范例
 
 需要注意，Swiper组件的高度依赖与父元素，所以在使用时嵌套一个View标签控制Swiper展示高度。<br />
 
@@ -93,15 +31,15 @@ export default class SwiperTest extends Component {
         <View style={[styles.wrapper, {height: height}]}>
             {/* showsButtons控制左右箭头显示，autoplay控制自动轮播 */}
             <Swiper showsButtons={true} autoplay={true}>
-            <View style={[styles.item, styles.item1]}>
-                <Text style={styles.text}>Banner one</Text>
-            </View>
-            <View style={[styles.item, styles.item2]}>
-                <Text style={styles.text}>Banner two</Text>
-            </View>
-            <View style={[styles.item, styles.item3]}>
-                <Text style={styles.text}>Banner three</Text>
-            </View>
+                <View style={[styles.item, styles.item1]}>
+                    <Text style={styles.text}>Banner one</Text>
+                </View>
+                <View style={[styles.item, styles.item2]}>
+                    <Text style={styles.text}>Banner two</Text>
+                </View>
+                <View style={[styles.item, styles.item3]}>
+                    <Text style={styles.text}>Banner three</Text>
+                </View>
             </Swiper>
         </View>
     );
