@@ -416,15 +416,6 @@ import Home from '../stackPage/Home';
 import List from '../stackPage/List';
 import { createStackNavigator } from 'react-navigation';
 
-const styles = StyleSheet.create({
-    item: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-});
-
-// 该工厂函数需要两个参数，第一个为路由配置对象，第二个为可选的个性化配置对象
 export default createStackNavigator(
     {
         Home: {
@@ -432,12 +423,19 @@ export default createStackNavigator(
             navigationOptions: ({navigation, navigationOptions}) => {
                 return {
                     // 两个都可以设置标题，下面的优化级更高
-                    title: '首页',    
-                    headerTitle: '首页高级',
+                    title: '首页标题',    
+                    headerTitle: '首页',
                 }
             }
         },
-        List,
+        List: {
+            screen: Home,
+            navigationOptions: ({navigation, navigationOptions}) => {
+                return {
+                    headerTitle: '列表页',
+                }
+            }
+        },
     },
     // 个性化的配置对象
     {
@@ -450,7 +448,15 @@ export default createStackNavigator(
 
 ## 路由控制
 
-实际上所有的导航组件都式可以进行路由跳转的，但是只有stackNavigation才会存储页面浏览记录，拥有栈相关的方法，比如push、pop，别的导航组件则没有。
+实际上所有的导航组件都式可以进行路由跳转的，区别是只有stackNavigation才会存储页面浏览记录，拥有栈相关的操作方法，比如push、pop等。
+
+### 参数传递
+
+准备两个页面，首页提供一个输入框，输入值后跳转到另一页进行展示
+
+### stack导航组件的重绘
+
+### Tab导航组件的重绘
 
 ### tab组件导航演示
 
@@ -467,23 +473,6 @@ import {
 } from 'react-native';
 
 export default class Home extends Component {
-    static navigationOptions = {
-        // 设置label文本，会覆盖掉默认值
-        tabBarLabel: "首页",
-        // 设置icon，这里选中与不选中显示不同的
-        tabBarIcon: ({focused}) => {
-            if (focused) {
-                return (
-                    <Image style={styles.tabBarIcon} source={require('../public/img/12.jpg')}/>
-                );
-            } else {
-                return (
-                    <Image style={styles.tabBarIcon} source={require('../public/img/12.jpg')}/>
-                );
-            }
-        }
-    }
-
     render() {
         console.log('首页渲染');
         return (
@@ -592,43 +581,12 @@ import Home from './Home';
 import MovieList from './MovieList';
 import MovieDetail from './MovieDetail';
 
-// 导航的标题文字与图标只能2选1，默认标题为路由配置时的key，
-// 组件可以通过静态属性navigationOptions进行配置，也可以在路由参数中进行配置。
 export default createMaterialTopTabNavigator(
 
     {
         Home,
         MovieList,
         MovieDetail, 
-    },
-
-    // 配置tabBar样式与响应处理
-    {
-        initialRouteName: 'MovieList',
-        tabBarPosition: 'bottom',
-        animationEnabled: true,
-        swipeEnabled: true,
-        backBehavior: 'initialRoute',
-        lazy: true,
-        tabBarOptions: {
-            activeTintColor: 'aqua',
-            inactiveTintColor: 'black',
-            // 是否显示icon，如果显示icon就不会显示文字
-            showIcon: false,
-            // 设置tabBar样式
-            style: {
-                backgroundColor: 'purple',
-                borderTopWidth: 1,
-                borderTopColor: '#ccc',
-                paddingVertical: 1,
-                height: 40
-            },
-            // 设置label样式
-            labelStyle: {
-                fontSize: 12,
-                marginTop: 1,
-            }
-        },
     }
 );
 ```
