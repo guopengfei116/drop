@@ -99,6 +99,101 @@ const styles = StyleSheet.create({
 });
 ```
 
+## scrollView实现轮播图
+
+利用scrollView的属性，可以很容易的实现一个简易的轮播图效果。
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    StyleSheet,  
+    View,
+    Text,
+    Image,
+    ScrollView
+} from 'react-native';
+
+const Dimensions = require('Dimensions');
+const { width:screenWidth, height:screenHeight } = Dimensions.get("window");
+
+export default class ScrollViewTest extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentPage: 0,
+            timer: null
+        }
+    }
+
+    autoSwipe() {
+        this.state.timer = setInterval(() => {
+            // 更新currentPage
+            this.setState((oldVal) => {
+                let currentPage = this.state.currentPage + 1;
+                currentPage = currentPage > (this.props.imgList.length-1) ? 0: currentPage;
+                return { currentPage };
+            });
+            console.log(this.state.timer)
+            // 更新视图
+            this.refs.scrollView.scrollTo({x: this.state.currentPage * screenWidth});
+        }, 2000);
+    }
+
+    startAutoSwipe() {
+        this.autoSwipe();
+    }
+
+    stopAutoSwipe() {
+        clearInterval(this.state.timer);
+    }
+
+    componentDidMount() {
+        this.autoSwipe();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.timer);
+    }
+
+    render() {
+        return (
+            <ScrollView 
+                ref="scrollView" style={[styles.swipe]} 
+                horizontal={true} pagingEnabled={true} showsHorizontalScrollIndicator={false}
+                onTouchStart={this.stopAutoSwipe.bind(this)} onTouchEnd={(e)=>{this.stopAutoSwipe.bind(this)}}>
+                {
+                    this.props.imgList.map((v, i) => {
+                        return (
+                            <View key={`key${i}`} style={[styles.swipeItem]}>
+                                <Image style={[styles.swipeImg]} source={{uri: v}}></Image>
+                            </View>
+                        )
+                    })
+                }
+            </ScrollView>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    swipe: {
+        marginTop: 24,
+        width: screenWidth,
+        height: screenHeight
+    },
+
+    swipeItem: {
+        width: screenWidth,
+        height: 100
+    },
+
+    swipeImg: {
+        flex: 1
+    }
+});
+```
+
 - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## react-navigation

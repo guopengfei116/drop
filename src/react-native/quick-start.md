@@ -147,11 +147,30 @@ adb version
 
 ### **模拟器开发调试**
 
-开发环境`create-react-native-app`与运行环境`模拟器`准备好之后，就可以开始RN开发了。首先打开模拟器，然后通过下面的命令创建并运行项目，CRNA会自动在模拟器中安装Expo软件，并在此APP中运行我们的项目，这种方式有点类似与微信小程序，即我们的项目最终是运行在一个叫Expo的App当中。<br />
+开发环境`create-react-native-app`与运行环境`模拟器`准备好之后，就可以开始RN开发了。<br />
+
+**启动模拟器**
+
+- 首先启动模拟器，运行adb devices命令，查看设备是否正常连接，
+- 如果提示adb版本不符合，那么就需要把本地Android-sdk目录下的adb.ext复制到模拟器目录下的bin中，进行覆盖。然后重启模拟器进行尝试。
 
 ```shell
-# 项目创建与运行
+// 连接正常的话会显示设备信息或地址信息，如：127.0.0.1:62001 device
+adb devices
+
+// 如果没有发现设备，那么需要手动进行连接，夜神模拟器端口62001，MUMU模拟器端口7555
+adb connect 127.0.0.1:7555
+```
+
+**项目创建与运行**
+
+然后通过下面的命令创建并运行项目，CRNA会自动在模拟器中安装Expo软件，并在此APP中运行我们的项目，这种方式有点类似与微信小程序，即我们的项目最终是运行在一个叫Expo的App当中。<br />
+
+```shell
+# 项目创建
 create-react-native-app projectName
+
+# 运行
 cd projectName
 yarn start
 ```
@@ -169,6 +188,7 @@ yarn start
 
 ```dos
 set REACT_NATIVE_PACKAGER_HOSTNAME=ip地址
+set REACT_NATIVE_PACKAGER_HOSTNAME=my-custom-ip-address
 ```
 
 ### **错误提示(红屏和黄屏)**
