@@ -53,9 +53,11 @@ rz
 sz file_path
 ```
 
-### httpd安装
+### httpd
 
 httpd是Apache超文本传输协议(HTTP)服务器的主程序，利用该工具我们可以测试服务器的端口是否正常被开放。首先安装该工具，安装成功后在本地会出现一个`/var/www/html`文件夹，可以向该文件夹内上传一些静态文件，比如index.html，然后启动服务器，如果前面配置开放了80端口，那么就可以通过公网IP访问这些静态文件。
+
+**安装与运行**
 
 ```shell
 # 安装
@@ -71,22 +73,24 @@ service httpd restart
 service httpd stop
 ```
 
-### nginx安装
+**测试与端口修改**
 
-nginx是一款应用广泛且很有名的服务器软件，可以作为静态文件服务器使用，也可以作为负载均衡服务器，还可以作为反向代理服务器使用。
+httpd安装之后，可以通过浏览器访问服务器IP地址进行测试，没有问题的话会展示httpd的欢迎界面。另外还有一个`/var/www/html`目录，这是httpd的默认DocumentRoot，可以在这里放置一些静态的html或其它文件，启动服务，就可以访问这些静态文件了。
+
+默认情况下，httpd监听的是80端口，如果觉得不妥，可以通过`/etc/httpd/conf/httpd.conf`配置文件进行修改，下面给出修改过程。
 
 ```shell
-# 安装
-yum install -y nginx
+// 编辑文件
+vim /etc/httpd/conf/httpd.conf
 
-# 启动
-service nginx start
+// 搜索Listen关键字，先输入问题，再输入要搜索的字符串
+?Listen
 
-# 重启
-service nginx restart
+// 修改为8080端口
+Listen 8080
 
-# 停止
-service nginx stop
+// 重启服务
+service httpd restart
 ```
 
 ### node环境
@@ -115,17 +119,101 @@ nvm install stable
 nvm list
 ```
 
-### nodemon安装
+### nodemon
 
 nodemon是一款可监听node代码变化，并自动重启服务的工具，非常适合用在开发环境中。
 [github官网]<https://github.com/remy/nodemon#nodemon>
+
+**安装**
 
 ```shell
 # 安装
 npm install -g nodemon
 
-# 使用
+# 验证
+nodemon -v
+```
+
+### 测试
+
+使用node写一段http服务代码，然后用nodemon命令运行。这样使用的端口为8866，用浏览器访问时，记得输入端口号。
+
+```shell
 nodemon [your node app]
+```
+
+### nginx
+
+nginx是一款应用广泛且很有名的服务器软件，可以作为静态文件服务器使用，也可以作为负载均衡服务器，还可以作为反向代理服务器使用。
+
+**安装与运行**
+
+```shell
+# 安装
+yum install -y nginx
+
+# 启动
+service nginx start
+
+# 重启
+service nginx restart
+
+# 停止
+service nginx stop
+```
+
+**测试与反向代理使用**
+
+nginx安装之后，也可以通过浏览器访问服务器IP地址进行测试，没有问题的话同样会展示相应的欢迎界面。
+
+这里我们使用nginx作为反向代理服务器，反向代理的含义是通过代理服务器接受网络请求，然后在内部转发给其他服务器，并将服务器的结果返回给客户端。
+
+我们通过配置把www二级域名的请求转向httpd启动的8080端口进行处理，把wx二级域名的请求转向node启动的8866端口进行处理，将来你也可以根据自己的需要增加配置。
+
+```shell
+# 修改配置文件
+vim /etc/nginx/nginx.conf
+
+# 在配置文件中的server中添加内容
+server {
+    listen 80;
+    server_name www.l77.top;
+
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $host;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_connect_timeout 1000;
+        proxy_read_timeout 1000;
+    }
+}
+
+server {
+    listen 80;
+    server_name wx.l77.top;
+
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $host;
+
+    location / {
+        proxy_pass http://127.0.0.1:8866;
+        proxy_connect_timeout 1000;
+        proxy_read_timeout 1000;
+    }
+}
+
+# 修改后检测配置文件是否正确
+/usr/sbin/nginx -t
+
+# 分别启动nginx、httpd、node服务，浏览器输入www.l77.top就会得到httpd服务结果，输入wx.l77.top就会得到node服务结果
+service nginx start
+service httpd start
+nodemon xxx.js
 ```
 
 ### git
@@ -262,220 +350,4 @@ vim /etc/ssh/sshd_config
 
 # 重启sshd
 systemctl restart sshd.service
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 微信接口配置
-
-拥有服务器后，需要与微信进行认证才能与微信服务器进行通信开发。认证方式是，我们按照微信公众号的要求编写一个接口，然后在公众号web页面中找到`服务器配置`，配置接口url与一个自定义token，让微信调用我们的接口完成认证。
-
-1. clone服务器仓库
-2. 使用NodeJS编写认证接口（接口使用任何语言实现都可以）
-3. 在服务器上拉取代码并运行
-4. 在微信公众平台上进行接口配置，认证测试
-
-```js
-const http = require('http');
-const url = require('url');
-const crypto = require('crypto');
-
-// 微信公众测试号
-const config = {
-    appID: 'wx6526e8044b491ab8',
-    appsecret: 'e43f21c9b5c1ea00b435b91102eb04b7',
-    token: 'gpf_wx_token'
-};
-
-const server = http.createServer(function(req, rep) {
-
-    // 设置响应数据的编码格式
-    rep.setHeader('Content-Type', "text/plain;charset=utf-8");
-
-    // 路由
-    if(req.url.startsWith('/authentication')) {
-        wxAuthentication(req, rep);
-    }
-    else {
-        // 默认返回
-        rep.write(JSON.stringify({msg: '数据不存在'}));
-        rep.end();
-    }
-
-});
-
-/**
- * 微信server认证:
- * 1 将 token timestamp nonce 三个参数进行字典序排序
- * 2 将 三个参数字符串拼接成一个字符串进行sha1加密
- * 3 将加密后的字符串与signature进行进行对比，如果相同，则返回echostr参数
- * 4 在公众号web页面配置接口url与token，微信就会调用接口进行验证
-*/
-function wxAuthentication(req, rep) {
-    let urlInfo = url.parse(req.url, true);
-    let urlQuery = urlInfo.query;
-
-    console.log(urlQuery);
-    
-    // 接口微信传递的4个参数
-    let signature = urlQuery.signature;
-    let timestamp = urlQuery.timestamp;
-    let nonce = urlQuery.nonce;
-    let echostr = urlQuery.echostr;
-
-    // 将 token timestamp nonce 三个参数进行字典序排序并用sha1加密
-    let token = config.token;
-    let str = [token, timestamp, nonce].sort().join('');
-    let hash = crypto.createHash('sha1').update(str);
-    let hashStr = hash.digest('hex');
-
-    console.log(signature, timestamp, nonce, echostr);
-    console.log(signature == hashStr);
-    
-    // 签名对比，相同则按照微信要求返回echostr参数值
-    if(signature == hashStr) {
-        rep.write(echostr);
-    }else {
-        rep.write("");
-    }
-
-    rep.end();
-}
-
-server.listen(80, () => console.log('监听80端口') );
-server.on('close', () => console.log('服务已终止') );
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 接口权限与返回码说明
-
-- [公众号接口调用权限说明]<https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433401084>
-- [公众号接口返回码说明]<https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433747234>
-- [公众号接口域名说明]<https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1465199793_BqlKA>
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 开始开发
-
-### 获取access_token
-
-> access_token是公众号的全局唯一接口调用凭据，公众号调用各接口时都需使用access_token。开发者需要进行妥善保存。access_token的存储至少要保留512个字符空间。access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效。
-
-- 请求方式：GET
-- 请求地址：/cgi-bin/token
-- 请求参数
-
-| 参数 | 是否必填 | 描述 |
-|:-----|:--------|:-----|
-| grant_type | 是 | 写固定值client_credential |
-| appid | 是 | 公众号ID |
-| secret | 是 | 公众号凭证密钥 |
-
-- 响应数据： JSON
-- 数据示例
-
-```json
-{
-    // 凭证
-    "access_token": "ACCESS_TOKEN",
-    // 有效时间，单位：秒
-    "expires_in":  7200
-}
-```
-
-### 消息处理
-
-```js
-let xml2js = require("xml2js");
-let parseString = xml2js.parseString;
-
-export default function(req, rep) {
-    let xml = "";
-
-    req.on("data", chunk => xml += chunk);
-
-    req.on("end", () => {
-        parseString(xml, {explicitArray : false, trim: true}, (err, data) => {
-            if(err) {
-                console.log(err);
-            }else {
-                // 处理接收到的消息
-                let handler = getHandler(data.xml.MsgType);
-                let sendData = handler(data);
-
-                // 返回消息
-                let sendXML = getXml(sendData, Date.now());
-                req.sendData(sendXML);
-            }
-        })
-    })
-}
-
-// 返回的xml模板
-function getXml(data, backTime){
-    var backXML = `
-            <xml>
-                <ToUserName><![CDATA[${data.FromUserName}]]></ToUserName>
-                <FromUserName><![CDATA[${data.ToUserName}]]></FromUserName>
-                <CreateTime>${backTime}</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[${data.content}]]></Content>
-            </xml>
-        `
-    return backXML;
-};
-
-// 根据数据类型返回对应处理器
-function getHandler(type) {
-    if(type == 'event') {
-        return eventHandler;
-    }else if(type == 'text') {
-        return textHandler;
-    }else if(type == 'image') {
-        return imageHandler;
-    }else if(type == 'voice') {
-        return voiceHandler;
-    }else if(type == 'video') {
-        return videoHandler;
-    }else if(type == 'shortvideo') {
-        return videoHandler;
-    }else if(type == 'location') {
-        return videoHandler;
-    }else if(type == 'link') {
-        return videoHandler;
-    }
-}
-
-function eventHandler() {
-
-}
-
-function textHandler() {
-    
-}
-
-function imageHandler() {
-    
-}
-
-function voiceHandler() {
-    
-}
-
-function videoHandler() {
-    
-}
-
-function shortvideoHandler() {
-    
-}
-
-function locationHandler() {
-    
-}
-
-function linkHandler() {
-    
-}
 ```
