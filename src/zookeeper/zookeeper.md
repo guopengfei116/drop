@@ -1,5 +1,43 @@
 # Zookeeper
 
+## ssh通信
+
+保证集群中的机器可以相互通过ssh登陆。
+
+*同步时间**
+
+```shell
+# 网络时间同步命令
+ntpdate -u ntp.api.bz
+
+# 中国国家授时中心：210.72.145.44
+# NTP服务器(上海)：ntp.api.bz
+```
+
+**host配置**
+
+```shell
+# 编辑host配置文件
+vim /etc/hosts
+# 添加配置
+192.168.12.201 Storm-1
+192.168.12.202 Storm-2
+192.168.12.203 Storm-3
+```
+
+**ssh配置**
+
+```shell
+# 生成公钥私钥
+ssh-keygen -t rsa
+# 公钥配置到其他机器上root用户
+ssh-copy-id -i .ssh/id_rsa.pub root@Storm-1
+ssh-copy-id -i .ssh/id_rsa.pub root@Storm-2
+ssh-copy-id -i .ssh/id_rsa.pub root@Storm-3
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ## 安装
 
 **JDK**
@@ -74,6 +112,9 @@ maxClientCnxns=60
 clientPort=2181
 dataDir=/root/data/zookeeper
 dataLogDir=/root/log/zookeeper
+
+quorumListenOnAllIPs=true # 监听全部端口，如果集群之间无法通讯，配置此项
+
 server.1=Storm-1:2888:3888 # (心跳端口、选举端口)
 server.2=Storm-2:2888:3888 # (心跳端口、选举端口)
 server.3=Storm-3:2888:3888 # (心跳端口、选举端口)
@@ -88,6 +129,16 @@ echo 1 > myid
 ```shell
 scp -r /root/export root@Storm-2:/root/
 scp -r /root/export root@Storm-3:/root/
+```
+
+**分发环境变量到其他机器**
+
+```shell
+scp -r /etc/profile root@Storm-2:/etc/profile
+scp -r /etc/profile root@Storm-3:/etc/profile
+
+# 记得更新环境变量
+source /etc/profile
 ```
 
 **修改其他机器唯一ID**
@@ -111,6 +162,8 @@ zkServer.sh start
 ```shell
 for host in "Storm-1 Storm-2 Storm-3"
 do ssh $host "/root/export/zookeeper/bin/zkServer.sh start"
+done
+echo "zookeeper started"
 ```
 
 **查看集群状态**
