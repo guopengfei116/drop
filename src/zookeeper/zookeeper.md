@@ -89,6 +89,9 @@ vim /etc/profile
 export ZOOKEEPER_HOME=/root/zookeeper
 export PATH=$PATH:$ZOOKEEPER_HOME/bin
 
+# Zookeeper启动时默认将Zookeeper.out输出到当前目录，不友好，改变位置。
+export ZOO_LOG_DIR=/root/log/zookeeper
+
 # 更新环境变量
 source /etc/profile
 ```
@@ -96,6 +99,8 @@ source /etc/profile
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## 集群配置
+
+### 单机操作
 
 **配置**
 
@@ -124,6 +129,15 @@ cd /root/data/zookeeper
 echo 1 > myid
 ```
 
+**创建data与log目录**
+
+```shell
+mkdir -p /root/data/zookeeper
+mkdir -p /root/log/zookeeper
+```
+
+### 集群操作
+
 **分发安装包到其他机器**
 
 ```shell
@@ -149,11 +163,17 @@ vim /root/data/zookeeper/myid
 # 在Storm-3上，修改myid为：2
 ```
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 启动（每台机器）
+**分别创建data与log目录**
 
 ```shell
+mkdir -p /root/data/zookeeper
+mkdir -p /root/log/zookeeper
+```
+
+### 启动测试
+
+```shell
+# 每台机器运行
 zkServer.sh start
 ```
 
@@ -173,6 +193,51 @@ echo "zookeeper started"
 ```shell
 jps                #查看进程
 zkServer.sh status #查看集群状态，主从信息
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 批处理脚本
+
+**创建脚本目录**
+
+```shell
+mkdir -p /root/onekey
+cd /root/onekey
+vim slave
+
+# 写入hostname或ip
+Storm-1
+Storm-2
+Storm-3
+```
+
+**编写start脚本**
+
+```shell
+cat /root/onekey/slave | while read line
+do
+{
+  echo "开始启动 --> "$line
+  ssh $line "source /etc/profile; nohup sh ${ZOOKEEPER_HOME}/bin/zkServer.sh start > /dev/null 2>&1 &"
+}&
+wait
+done
+echo "zookeeper启动完成"
+```
+
+**批处理stot脚本**
+
+```shell
+cat /root/onekey/slave | while read line
+do
+{
+  echo "开始停止 --> "$line
+  ssh $line "source /etc/profile; nohup sh ${ZOOKEEPER_HOME}/bin/zkServer.sh stop > /dev/null 2>&1 &"
+}&
+wait
+done
+echo "zookeeper已停止"
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,7 +262,15 @@ zkServer.sh status #查看集群状态，主从信息
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 操作
+## shell
+
+__创建节点__
+
+__获取节点数据__
+
+__删除节点__
+
+__查看节点__
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
