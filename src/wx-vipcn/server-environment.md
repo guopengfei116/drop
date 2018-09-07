@@ -277,7 +277,7 @@ chown -R git:git /git-store
 
 ```shell
 # clone命令
-git clone git@服务器地址/git-store/wx.git
+git clone git@服务器地址:/git-store/wx.git
 
 # 进入项目，创建一个文件
 cd wx
