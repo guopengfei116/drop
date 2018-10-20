@@ -28,6 +28,12 @@
 |  跨平台  | 低 | 高 | 中 |
 |   体验   | 差 | 高 | 中 |
 
+## 进化
+
+你会发现，Native App 性能体验好，Hybrid App 开发维护成本低。你可能会想，如果有一种技术能够同时拥有两者的优点就好了，facebook 公司的 ReactNative 因此而生，它使用js和React编写UI逻辑，然后生成原生控件进行渲染绘制，既拥有媲美原生应用的性能体验，又拥有混合应用跨平台、开发快等优点。
+
+当然这也不是绝对的，在特殊需求下，还是会有不足。首先框架本身需要处理大量平台相关的逻辑，随着系统与API的升级变化，开发者有可能也需要处理平台之间的差异，甚至有些特性只能在部分平台上实现，从而降低跨平台性。当然，这些问题也会随着 ReactNative 的版本迭代逐渐改善。
+
 # WEB技术开发框架
 
 ## 混合应用
@@ -36,14 +42,16 @@
 - Angular官网 <https://angular.io/>
 - Ionic官网 <http://ionicframework.com/>
 - Ionic中文网 <http://www.ionic.wang/>
+- Cordova官网 <https://cordova.apache.org/>
+- Cordova中文网 <http://cordova.axuer.com/>
 
 #### Html5+
 - 官网 <http://www.dcloud.io/>
 
 #### AppCan
-- 官网地址 <http://www.appcan.cn/>
+- 官网 <http://www.appcan.cn/>
 
-#### 微信小程序
+#### 微信公众号
 - 官网 <https://mp.weixin.qq.com/>
 - 其他 <https://my.oschina.net/u/1416844/blog/759209>
 
@@ -51,10 +59,14 @@
 
 #### ReactNative
 - React官网 <https://facebook.github.io/react/>
-- RN官网 <https://facebook.github.io/react-native/>
-- RN中文网 <http://react-native.cn/>
+- ReactNative官网 <https://facebook.github.io/react-native/>
+- ReactNative中文网 <https://reactnative.cn/>
 
-#### weex
-- vue官网 <https://cn.vuejs.org/>
-- weex官网 <http://weex.apache.org/cn/>
-- weexGithub <https://github.com/apache/incubator-weex>
+#### Weex
+- Vue官网 <https://cn.vuejs.org/>
+- Weex官网 <http://weex.apache.org/cn/>
+- WeexGithub <https://github.com/apache/incubator-weex>
+
+#### Flutter
+- Rlutter官网 <https://flutter.io/>
+- Rlutter中文网 <https://flutterchina.club/>
