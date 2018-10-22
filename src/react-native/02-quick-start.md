@@ -73,13 +73,63 @@ npm start
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 错误提示 - 红屏和黄屏
+## 开发初体验
 
-RN代码运行时会把错误分为红屏和黄屏两种，红屏会以全屏红色显示在应用中，导致程序无法正常运行，红屏通常是编码错误导致的，必须修复。<br />
+在项目根目录下有个 `App.js` , 这是应用的`根组件`, 我们手机上看到的`内容`就是这个组件实现的。
 
-黄屏代表警告，会显示在应用下方，不影响程序运行，不修复也可以，警告可以通过代码禁止。<br />
+```jsx
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-红屏和黄屏只在debug版本中才会显示，在rellease版本中不会。一般情况下，通过RN红屏中的错误提示信息，就可以定位问题，如果是语法等常见运行错误，RN也会给出错误代码所在位置与行数，所以出现红屏一定要阅读描述信息。<br />
+// 导出根组件, 组件的定于语法与之前学习的一样
+export default class App extends React.Component {
+  render() {
+    return (
+        // 返回的视图需要使用View组件包裹, 作用相当于Div标签
+        <View style={styles.container}>
+            {/* 文本内容使用Text组件包裹, 作用相当于P标签 */}
+            <Text>Open up App.js to start working on your app!</Text>
+        </View>
+    );
+  }
+}
+
+// 样式定义
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+```
+
+### 修改内容
+
+我们可以尝试修改 `App.js` 中的文本内容, 保存后APP就会自动更新
+
+1. 如果自动更新失败，也可以`摇一摇`手机或模拟器, 调出调试菜单，点击 `Reload` 选项手动触发更新
+2. 如果有adb工具，也可以直接在命令行中运行`adb shell input keyevent 82`来发送菜单键命令调出菜单
+
+### 给文本添加样式
+
+我们也可以给文本添加一些样式，但是这里的样式有一些注意事项
+
+1. 通过 `StyleSheet.create` API 进行样式的定义
+2. CSS 尺寸大小无需加任何单位，只有数值与百分比两种书写形式
+3. 绝大部分样式没有简写形式，只能逐个定义，比如font、background、border等
+4. 定义好的样式，需要通过组件的style属性进行绑定，通过数组可以引用多组定义的样式, 后面的优先级比前面的高
+
+### 错误提示 - 红屏和黄屏
+
+在开发时，如果代码运行错误，通常会有两种情况：1. 全屏红色报错 2. 底部黄色警告。<br />
+红屏通常是由错误编码导致，必须修复才能正常运行；黄屏通常是不规范写法或者建议信息，不影响程序运行，可以通过代码关掉警告。
+
+如果出现了红屏报错，一般情况下，根据报错信息就可以定位问题，修复后即可恢复正常。
+但是也有可能遇到 RN 不开心的时候，你的应用会直接奔溃，并没有错误提示，这时候可以重新启动重试或者诊断刚刚编写的代码。
+
+#### 报错相关代码
 
 ```javascript
 // 频闭黄色警告，参数为一个数组：数组中的字符串就是要屏蔽的警告的开头的内容。
@@ -94,7 +144,7 @@ console.warn("警告");
 
 ## 调试菜单
 
-React-Native开发调试没有本地代码方便，但也是可以调的，在调试菜单中可以进行开发调试相关的配置。调试菜单只在debug版本中可以被调出，如果是模拟器环境，Windows平台按window+m可调出，Mac平台按commond+m可调出，如果是真机，摇一摇就可以调出调试菜单。<br />
+React-Native开发调试没有本地代码方便，但也是可以调的，在调试菜单中可以进行开发调试相关的配置。调试菜单只在debug版本中可以被调出，如果是模拟器环境，Windows平台按window+m可调出，也可能是F1或F2，Mac平台按commond+m可调出，或者发送`adb shell input keyevent 82`指令。如果是真机，摇一摇就可以调出调试菜单。<br />
 
 ![调试菜单预览](https://note.youdao.com/yws/public/resource/6a301213468716d4d839ca93f6b26025/xmlnote/5F7D6A3BB20945BE8C521606F0DD0C76/6915)
 
@@ -108,108 +158,16 @@ React-Native开发调试没有本地代码方便，但也是可以调的，在�
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 开发初体验
-
-- 在项目根目录下有个 `index.js` , 它是项目的`入口`文件, 负责注册根组件
-- 根目录下有个 `App.js` , 是默认生成的`根组件`, 我们在 APP 上看到的`欢迎界面`就是这个组件实现的
-- 尝试修改 `App.js` 中的文本内容, 然后手机摇一摇 `Reload` 查看即可看到修改内容
-
-```jsx
-export default class App extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          你是我的了!
-        </Text>
-        <Text style={styles.instructions}>
-          哈哈, 开心不?
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
-  }
-}
-```
-
-**根组件代码解读**
-
-```jsx
-// 导包
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
-
-// Platform.select方法会根据运行环境得到配置的内容
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
-// 导出根组件, 组件的定于语法与之前学习的一样
-export default class App extends Component {
-  render() {
-    return (
-      // 返回的视图需要使用View组件包裹, 作用相当于Div标签
-      <View style={styles.container}>
-
-  		{/* 文本内容使用Text组件包裹, 作用相当于P标签 */}
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-
-      </View>
-    );
-  }
-}
-
-// 定义样式, 这里的尺寸大小无需加单位, 元素可以通过数组引用多个样式, 后面的样式优先级比前面的高
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - -
-
 ## 内置组件
 
 - 在 `React Native` 中你需要使用官方提供的`组件`进行应用构建
 - 因为是开发`原生`应用, 我们的代码最终会`转为`原生组件的方式渲染, 所以你不会看到任何以 `html` 标签命名的组件
-- [官方文档]<https://facebook.github.io/react-native/docs/getting-started>
+- [官方文档] <https://facebook.github.io/react-native/docs/getting-started>
 
 ### View
 
 - 视图容器，作用相当于 `html` 的 `div` 标签，它是创建UI所需的最基础组件，支持Flexbox布局、样式、触摸事件，它可以放到其它视图中，也可以包含任意多个任意子视图。
-- <http://reactnative.cn/docs/0.50/view.html#content>
+- <https://reactnative.cn/docs/view/>
 
 ```jsx
 import React, { Component } from 'react';
@@ -253,7 +211,7 @@ let style = StyleSheet.create({
 
 - 文本容器，作用相当于 `html` 的 `span` 标签，为什么不是 `p` 标签呢，一会演示。Text标签支持嵌套、触摸事件。在RN中，文本必须放置到Text中才可以被渲染，否则报错。
 - 注意: 除了Text外, 别的组件内都不能包含文本
-- <http://reactnative.cn/docs/0.50/text.html#content>
+- <https://reactnative.cn/docs/text/>
 
 文本布局
 
@@ -304,12 +262,48 @@ let style = StyleSheet.create({
 });
 ```
 
+### Button
+
+- 作用相当于 `html` 的 `button` 标签用于触发点击
+- 按钮需要通过 `title` 属性设置文本内容, 值必须为字符串，其他数值或者不设都会报错
+- 按钮通过 `onPress` 属性监听点击事件
+- <http://reactnative.cn/docs/0.50/button.html>
+
+```jsx
+import React, { Component } from "react";
+import { StyleSheet, View, Text, Button, Alert } from "react-native";
+
+export default class ButtonTest extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            num: 1
+        };
+    }
+
+    onPressHandler() {
+        this.setState({num: ++this.state.num});
+    }
+
+    render() {
+        return (
+            <View>
+                <Text>{this.state.num}</Text>
+                {/* 注意onPress的驼峰命名法，事件函数为了保证this指向组件，可以用箭头函数包裹，也可以用bind */}
+                <Button onPress={() => {this.onPressHandler()}} title="点我+1"></Button>
+            </View>
+        )
+    }
+}
+```
+
 ### Image
 
 - 作用相当于 `html` 的 `img` 标签用于承载图片
 - 组件通过 `source` 属性设置图片地址
+- <https://reactnative.cn/docs/image.html>
 - <http://reactnative.cn/docs/0.50/images.html#content>
-- <http://reactnative.cn/docs/0.50/image.html#content>
 
 #### 载入本地图片
 
@@ -405,40 +399,7 @@ export default class ImageTest extends Component {
 }
 ```
 
-### Button
 
-- 作用相当于 `html` 的 `button` 标签用于触发点击
-- 按钮需要通过 `title` 属性设置文本内容, 值必须为字符串，其他数值或者不设都会报错
-- 按钮通过 `onPress` 属性监听点击事件
-- <http://reactnative.cn/docs/0.50/button.html>
-
-```jsx
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Button, Alert } from "react-native";
-
-export default class ButtonTest extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            num: 1
-        };
-    }
-
-    onPressHandler() {
-        this.setState({num: ++this.state.num});
-    }
-
-    render() {
-        return (
-            <View>
-                <Text>{this.state.num}</Text>
-                <Button onPress={() => {this.onPressHandler()}} title="点我+1"></Button>
-            </View>
-        )
-    }
-}
-```
 
 ### TextInput
 
