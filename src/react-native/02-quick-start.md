@@ -166,7 +166,9 @@ React-Native开发调试没有本地代码方便，但也是可以调的，在�
 
 ### View
 
-- 视图容器，作用相当于 `html` 的 `div` 标签，它是创建UI所需的最基础组件，支持Flexbox布局、样式、触摸事件，它可以放到其它视图中，也可以包含任意多个任意子视图。
+视图容器，作用相当于 `html` 的 `div` 标签，它是创建UI所需的最基础组件，支持Flexbox布局、样式、触摸事件，它可以放到其它视图中，也可以包含任意多个任意子视图。
+
+- View组件内不能书写文本，子元素默认纵向排列
 - <https://reactnative.cn/docs/view/>
 
 ```jsx
@@ -176,7 +178,7 @@ import { StyleSheet, View, Text, Button } from 'react-native';
 export default class ViewTest extends Component {
     render() {
         return (
-            {/* View标签相当于div，可以嵌套 */}
+            {/* View标签相当于div，可以相互嵌套 */}
             <View style={style.container}>
                 <View>
                     <Text>React Native</Text>
@@ -209,11 +211,12 @@ let style = StyleSheet.create({
 
 ### Text
 
-- 文本容器，作用相当于 `html` 的 `span` 标签，为什么不是 `p` 标签呢，一会演示。Text标签支持嵌套、触摸事件。在RN中，文本必须放置到Text中才可以被渲染，否则报错。
+文本容器，作用相当于 `html` 的 `span` 标签。Text标签也支持嵌套、触摸事件。在RN中，文本必须放置到Text中才可以被渲染，否则报错。
+
 - 注意: 除了Text外, 别的组件内都不能包含文本
 - <https://reactnative.cn/docs/text/>
 
-文本布局
+#### 组件嵌套
 
 Text采用的是文本布局，多个子文本在渲染时会折叠合并在一起，如果把View理解成块级元素，那么Text就可以理解为行内元素。<br />
 
@@ -224,9 +227,8 @@ import { StyleSheet, View, Text } from "react-native";
 export default class TextTest extends Component {
     render() {
         return (
-            // 可以嵌套
+            // Text组件也允许相互嵌套，子Text会在一行显示，效果类似与行内元素
             <Text>
-                {/* 文本节点是span版本的p标签，行内元素，下面文字会合并在一行 */}
                 <Text>饿了吗</Text>
                 <Text>美图</Text>
             </Text>
@@ -235,7 +237,7 @@ export default class TextTest extends Component {
 }
 ```
 
-**文本样式**
+#### 样式继承
 
 在RN中，父文本的样式可以传递给后代文本，也就是样式继承。但是除了文本之外其它组件都无法继承样式。<br />
 
@@ -262,11 +264,28 @@ let style = StyleSheet.create({
 });
 ```
 
+#### 特殊现象
+
+```jsx
+render() {
+    return (
+        // View的子元素默认是纵向排列的，即便放置的是Text内行元素也是这样
+        // 那么因为View默认采用的是flex布局，方向为纵向
+        <View>
+            <Text>啦啦啦</Text>
+            <Text>我是卖报的小画家</Text>
+            <Text>我是行内元素，一行显示！！！</Text>
+        </View>
+    )
+}
+```
+
 ### Button
 
-- 作用相当于 `html` 的 `button` 标签用于触发点击
-- 按钮需要通过 `title` 属性设置文本内容, 值必须为字符串，其他数值或者不设都会报错
-- 按钮通过 `onPress` 属性监听点击事件
+作用相当于 `html` 的 `button` 标签，可监听点击事件，与用户交互。
+
+- 通过 `onPress` 属性监听点击事件
+- 通过 `title` 属性设置按钮文字, 且类型必须是字符串，其他类型或不设都会报错
 - <http://reactnative.cn/docs/0.50/button.html>
 
 ```jsx
@@ -278,451 +297,24 @@ export default class ButtonTest extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            num: 1
+            count: 0
         };
     }
 
-    onPressHandler() {
-        this.setState({num: ++this.state.num});
+    // 事件函数执行时，为了让this指向组件实例，可以使用箭头函数
+    // 也可以在绑定的时候使用bind绑定this，但是每次render都会生成新函数，不太好
+    _counter = () => {
+        this.setState({num: ++this.state.count});
     }
 
     render() {
         return (
             <View>
-                <Text>{this.state.num}</Text>
-                {/* 注意onPress的驼峰命名法，事件函数为了保证this指向组件，可以用箭头函数包裹，也可以用bind */}
-                <Button onPress={() => {this.onPressHandler()}} title="点我+1"></Button>
+                <Text>{this.state.count}</Text>
+                {/* 注意onPress的驼峰命名法，必须使用title设置文本 */}
+                <Button onPress={this._counter()} title="点我+1"></Button>
             </View>
         )
     }
 }
-```
-
-### Image
-
-- 作用相当于 `html` 的 `img` 标签用于承载图片
-- 组件通过 `source` 属性设置图片地址
-- <https://reactnative.cn/docs/image.html>
-- <http://reactnative.cn/docs/0.50/images.html#content>
-
-#### 载入本地图片
-
-- 本地图片通过`require`方法导入
-- 之前的版本中require方法必须传入`静态字符串`，不能使用表达式和字符串拼接, 也就是写死，同时图片名称也不允许以`数字`开头，现在的新版本已经修复了这两个bug
-
-```jsx
-import React, { Component } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-
-export default class ImageTest extends Component {
-    render() {
-        let pic = {
-            uri: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=645293140,2005760885&fm=173'
-        };
-        let imgBasePath = "../public/img/";
-        return (
-            <View >
-                {/* 通过source属性设置图片地址，通过require方法载入本地图片 */}
-                <Image style={styles.img} source={require('../public/img/12.jpg')}/>
-                
-                {/* 在之前的版本中，图片路径必须是静态的，不能写表达式，现在可以了 */}
-                <Image style={styles.img} source={require(imgBasePath + '12.jpg')} />
-                
-                {/* 在之前的版本中，图片名称也不能以数字开头，现在也可以了 */}
-                <Image style={styles.img} source={require('./56.jpg')} />
-            </View>
-        )
-    }
-}
-
-let styles = StyleSheet.create({
-    img: {
-        width: 55,
-        height: 55
-    }
-});
-```
-
-#### 载入网络图片
-
-- 如果是通过uri载入的网络图片，必须要设置宽高，否则无法显示
-- 如果某些网站的图片载入失败尝试换一个域名图片试试
-
-```jsx
-export default class ImageTest extends Component {
-    render() {
-        let pic = {
-            uri: 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=645293140,2005760885&fm=173'
-        };
-        let imgBasePath = "../public/img/";
-        return (
-            <View >
-                {/* 没有宽高，图片不会显示 */}
-                <Image source={pic} />
-
-                {/* 设置宽高，图片正常显示 */}
-                <Image source={pic} style={{width:200, height: 100}} />
-            </View>
-        )
-    }
-}
-```
-
-#### 批量载入网络图片
-
-- 之前如果想`写活`地址, 必须定义一个`对象`赋值
-- `<Image source={对象} />`
-- 现在更加灵活，只需要把uri写活就可以
-- `<Image source={{uri: 变量}} />`
-
-```jsx
-import React, { Component } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-
-export default class ImageTest extends Component {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <View>
-                {
-                    this.props.imgs && this.props.imgs.map((uri, i) => {
-                        return <Image key={`key${i}`} source={{uri: uri}} style={{width:200, height: 100}} />;
-                    })
-                }
-            </View>
-        )
-    }
-}
-```
-
-
-
-### TextInput
-
-- 作用相当于 `html` 的 `input` 标签用于输入文本
-- 需要通过 `value` 属性指定文本内容, 通过 `onChangeText` 属性监听文本的变化事件
-- <http://reactnative.cn/docs/0.50/textinput.html#content>
-
-```jsx
-import React, { Component } from 'react';
-import { StyleSheet, View, Text, TextInput } from 'react-native';
-
-export default class TextInputTest extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            text: '默认值'
-        }
-    }
-
-    render() {
-        return (
-            <View>
-                {/* 模拟双向数据绑定 */}
-      			<Text>{ this.state.text }</Text>
-                <TextInput value={ this.state.text } onChangeText={(text) => this.setState({text})} />
-                <Text>{ this.state.text }</Text>
-    			<TextInput placeholder="请输入密码" onChangeText={(text) => this.setState({text})} />
-	    	</View>
-        );
-    }
-}
-```
-
-### Alert
-
-```jsx
-import React, { Component } from "react";
-import { StyleSheet, View, Text, Button, Alert } from "react-native";
-
-export default class AlertTest extends Component {
-
-    onPressHanlder() {
-        Alert.alert(
-            // 标题
-            '温馨提示',
-            // 内容
-            '您的餐凉了，要不要热一下',
-            // 配置一个按钮是确定，两个按钮是取消与确定，三个按钮是稍后再试、取消与确定
-            [
-              {text: '再等一会', onPress: () => console.log('先聊会天')},
-              {text: '算了', onPress: () => console.log('凉着吃吧')},
-              {text: '好的', onPress: () => console.log('热的好吃')},
-            ],
-            // 点击屏幕关闭
-            { cancelable: false }
-        );
-    }
-
-    render() {
-        return (
-            <Button onPress={()=>{this.onPressHanlder()}} title="点我弹框"></Button>
-        )
-    }
-}
-```
-
-### Dimensions
-
-有时候我们需要设置元素大小为屏幕的大小，在Web开发中可以使用%百分比单位，但是RN并不支持这种单位，这时候我们可以使用RN内置的`Dimensions`对象API方法动态获取屏幕宽高然后进行设置。
-
-```jsx
-const Dimensions = require('Dimensions');
-const screenSize = Dimensions.get("window");
-
-const styles = StyleSheet.create({
-    container: {
-        width: screenSize.width,
-        height: screenSize.height
-    }
-});
-```
-
-### ScrollView
-
-- 默认情况下, `超出`屏幕的内容是看不到的, 不像浏览器环境下会自动添加`滚动条`
-- 如果需要滚动, 可以使用这个`组件`把要相应的内容`包裹`起来, 被包裹的内容就会处于`滚动条`中
-- 滚动的过程中，可以通过onScroll绑定回调，每帧最多调用一次回调
-- <http://reactnative.cn/docs/0.50/scrollview.html#content>
-
-**基本使用**
-
-ScrollView使用非常简单，只需要把标签内容通过ScrollView组件包裹起来即可。
-
-```jsx
-return (
-    <ScrollView>
-        <View style={styles.container} onScroll={() => {this.onScrollHandler()}}>
-            <Text>Open up App.js to start working on your app!</Text>
-            <Text>Changes you make will automatically reload.</Text>
-            <Text>Shake your phone to open the developer menu1.</Text>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <ViewTest></ViewTest>
-            <TextTest></TextTest>
-            <ImageTest imgs={imgs}></ImageTest>
-            <ButtonTest></ButtonTest>
-            <TextInputTest></TextInputTest>
-            <AlertTest></AlertTest>
-        </View>
-    </ScrollView>
-);
-```
-
-**简易Swiper**
-
-我们可以利用ScrollView的几个特殊属性来实现一个简易的Swiper。
-
-```jsx
-import React, { Component } from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    ScrollView
-} from 'react-native';
-
-const Dimensions = require('Dimensions');
-const screenSize = Dimensions.get("window");
-
-export default class ScrollViewSwiper extends Component {
-
-    // 获取渲染列表
-    getList() {
-        const backgroundList = ["orange", "purple", "pink", "aqua"];
-        return backgroundList.map((color, i) => {
-            return (
-                <View
-                    key={ `key${i}` } 
-                    style={ [styles.swipeItem, {backgroundColor: color}] }>
-                    <Text>{ color }</Text>
-                </View>
-            )
-        });
-    }
-
-    render() {
-        return (
-            // horizontal属性可设置列表水平排列，
-            // pagingEnabled属性能够让列表一页一页切换，
-            // showsHorizontalScrollIndicator属性控制滚动条显示隐藏
-            <ScrollView
-                style={styles.swipe}
-                horizontal={ true }
-                pagingEnabled={ true }
-                showsHorizontalScrollIndicator={ false }>
-                { this.getList() }
-            </ScrollView>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    swipe: {
-        marginTop: 24,
-    },
-    swipeItem: {
-        width: screenSize.width,
-        height: 200
-    }
-});
-```
-
-### FlatList
-
-```jsx
-import React, { Component } from "react";
-import { StyleSheet, View, Text, FlatList } from 'react-native';
-
-export default class FlatListTest extends Component {
-    render() {
-        return (
-            <View>
-                <FlatList
-                    data={[
-                        {key: 'Devin'},
-                        {key: 'Jackson'},
-                        {key: 'James'},
-                        {key: 'Joel'},
-                        {key: 'John'},
-                        {key: 'Jillian'},
-                        {key: 'Jimmy'},
-                        {key: 'Julie'},
-                    ]}
-                    renderItem={(e) => <Text style={styles.item}>{e.index + ":" + e.item.key}</Text>}
-                />
-            </View>
-        );
-        
-    }
-}
-
-const styles = StyleSheet.create({
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
-    },
-});
-```
-
-### ActivityIndicator
-
-- 展示一个小圆形的`loading`
-- 通过属性 `animating` 控制显示隐藏, `color` 设置颜色
-- <http://reactnative.cn/docs/0.50/activityindicator.html#content>
-
-```jsx
-import React, { Component } from "react";
-import { StyleSheet, ActivityIndicator } from "react-native";
-
-export default class ActivityIndicatorTest extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            isShow: true
-        }
-    }
-
-    render() {
-        return (
-            <ActivityIndicator animating={this.state.isShow} color="green" size="large"></ActivityIndicator>
-        );
-    }
-}
-```
-
-### 触控系列组件
-
-在需要捕捉用户点击操作时，可以使用`Touchable`开头的一系列组件。这些组件通过onPress属性设置点击事件的处理函数。当在本组件上按下手指并且抬起手指时也没有移开到组件外时，此函数会被调用。Touchable组件最大的特点是附带反馈效果。
-
-```jsx
-import React, { Component } from 'react';
-import { 
-    StyleSheet, 
-    View, 
-    Image,
-    Text, 
-    TouchableHighlight, 
-    TouchableOpacity, 
-    TouchableNativeFeedback 
-} from 'react-native';
-import StyleBoxTest from './StyleBoxTest';
-
-export default class TouchableGroupTest extends Component {
-
-    opacityHandler() {
-        console.log("透明按钮");
-    }
-
-    HighlighrHandler() {
-        console.log("高亮按钮");
-    }
-
-    FeedbackHandler() {
-        console.log("原生反馈按钮");
-    }
-
-    render() {
-        return (
-            <View>
-                {/* 透明效果，支持多个子节点 */}
-                <TouchableOpacity 
-                    activeOpacity={0.5} 
-                    onPress={this.opacityHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Text style={styles.baseFont}>透明按钮</Text>
-                    </View>
-                </TouchableOpacity>
-
-                {/* 透明与底色两种效果，只支持一个子节点，可以用一个View再包装多个子节点 */}
-                {/* 可以包裹图片，点击时加深背景 */}
-                <TouchableHighlight
-                    activeOpacity={0.5} 
-                    underlayColor="#c1c1c1"
-                    onPress={this.HighlighrHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Image source={require("./56.jpg")} style={{width:300,height:100}} resizeMode="stretch"></Image>
-                    </View>
-                </TouchableHighlight>
-
-                {/* 使用原生状态渲染反馈效果，比如涟漪，只能放置一个view子组件 */}
-                {/* 效果有三个可选方法：SelectableBackground、SelectableBackgroundBorderless、Ripple(color)*/}
-                <TouchableNativeFeedback 
-                    background={TouchableNativeFeedback.SelectableBackground()}
-                    onPress={this.FeedbackHandler.bind(this)}>
-                    <View style={styles.base}>
-                        <Text style={styles.baseFont}>原生按钮</Text>
-                    </View>
-                </TouchableNativeFeedback>
-            </View>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    base: {
-        margin: 10,
-        width: 300,
-        height: 100,
-        borderRadius: 5,
-        backgroundColor: 'green',
-        justifyContent: 'center',
-    },
-    baseFont: {
-        color: "orange",
-        textAlign: "center",
-        lineHeight: 50
-    }
-});
 ```
