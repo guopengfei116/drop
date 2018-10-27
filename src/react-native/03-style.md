@@ -1,4 +1,4 @@
-# 样式
+# Style
 
 ## StyleSheet
 
@@ -67,10 +67,11 @@ let styles = StyleSheet.create({
 });
 ```
 
-## 弹性布局
+## Flexbox
 
-ReactNative中组件默认采用flex弹性布局，使用flex可以使其在可利用的空间中动态地扩张或收缩，
-ReactNative中的flex工作原理和web上的CSS基本一致，当然也存在少许差异。首先是默认值不同：flexDirection的默认值是column而不是row，而flex也只能指定一个数字值。
+Flexible Box 缩写，又称弹性盒子布局。主要思想是让容器有能力让其子项目能够改变其宽度、高度，甚至顺序，以最佳方式填充可用空间，使其在可利用的空间中动态地扩张或收缩（主要是为了适应所有类型的显示社保和屏幕大小）。
+
+ReactNative 实现了 Flexbox 的大部分能力，在实际应用中使用，可以很好的解决屏幕适配问题。RN 中的 Flexbox 工作原理和 Web 开发基本一致，当然也存在少许差异。首先是默认值不同：flexDirection的默认值是column而不是row，而flex也只能指定一个数字值。
 
 ### 主轴方向
 

@@ -1,4 +1,4 @@
-# ReactNative 快速开始
+# Sandbox Environment & Quick Start
 
 学习使用 ReactNative 最令人头疼的就是环境问题，因为大多数 Web 开发者，并不熟悉 Android 与 IOS 的开发环境，配置起来比较繁琐。当然 Android 程序员也不熟悉 IOS 环境，反之亦然，这导致很多人因为繁杂的开发环境而放弃学习或者暂时搁浅。
 
@@ -42,11 +42,29 @@ expo start
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 真机运行
+## 真机运行环境
 
-准备工作：使用`create-react-native-app`创建一个项目，然后手机安装`Expo`应用，并确保手机与开发机处于同一局域网下。
+准备一台 Android 或 IOS 作为项目运行平台，土豪的话各准备一台更好。
 
-项目运行：`npm start`启动项目，打开`Expo`应用，使用里面的扫一扫功能，扫描项目启动后生成的巨大二维码，等待JS打包传输完毕，就会在手机上运行。
+然后安装上 Expo 应用，并确保手机与开发机处于同一局域网环境下。
+
+### 项目运行
+
+使用`create-react-native-app`创建一个项目，`cd`进入，然后运行`npm start`命令启动项目服务，带启动成功后就会看到巨大的二维码，如果二维码不全，可以在命令行中按下`c`键显示完整二维码。
+
+项目启动后，打开手机`Expo App`，使用里面的扫一扫功能，扫描项目启动后生成的巨大二维码，等待js打包传输完毕，就会在手机上运行。
+
+```shell
+# 项目创建
+create-react-native-app projectName
+
+# 运行
+cd projectName
+npm start
+
+# 显示二维码
+c
+```
 
 ### IP错误问题
 
@@ -69,6 +87,68 @@ set REACT_NATIVE_PACKAGER_HOSTNAME=my-custom-ip-address-or-hostname
 
 # 重启项目
 npm start
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 模拟器运行环境
+
+模拟器也称仿真器，是指主要透过软件模拟硬件处理器的功能和指令系统的程序使计算机或者其他多媒体平台（掌上电脑，手机）能够运行其他平台上的软件。我们的 App 除了使用真机运行外，也可以使用 Android 或 IOS 模拟器进行替代。
+
+模拟器有很多，以 Android 为例，有官方提供的 AndroidVirtualDevice(AVD) 模拟器，国外第三方厂商提供的 Genymotion 知名模拟器(需要创建账号，依赖VirtualBox虚拟机)，以及国内第三方厂商提供的各种模拟器。
+
+- [国外-Genymotion]<https://www.genymotion.com/>
+- [国内-夜神]<https://www.yeshen.com/>
+- [国内-雷电]<https://www.yeshen.com/>
+- [国内-MuMu]<http://mumu.163.com/baidu/>
+
+### adb工具
+
+这是一款用于电脑与 Android 设备进行通信的通用命令行工具，通常用它连接或进行设备检测。一般情况下安装 AndroidSdk，在安装的 platform-tools 目录内就会包含此工具。如果没有安装过，我们也可以把这款工具单独下载使用。
+
+将来使用的时候需要保证本机的 adb 版本需要与 Android 设备内的 adb 版本一致，否则可能无法正常通信，解决办法是我们可以复制本机的 adb.exe 程序，然后覆盖掉模拟器中的版本。
+
+下面是几个需要了解的常用命令。
+
+- adb version        # 版本，Android Debug Bridge version 1.0.40
+- adb devices        # 列出连接到本机的Android设备与状态
+- adb connect        # 手动连接Android设备
+- adb start-server   # 启动adb服务
+- adb kill-server    # 关闭adb服务
+
+### 启动连接模拟器
+
+首先启动模拟器，然后运行`adb devices`命令，检查模拟设备是否已连接，正常情况下会显示设备的地址信息，如：`127.0.0.1:7555 device`。
+
+如果没有发现设备，那么需要运行`adb connect 127.0.0.1:7555`命令手动连接，不同的模拟器端口不一样，夜神模拟器端口62001，MUMU模拟器端口7555。
+
+如果提示 adb 版本不符合，那么就需要把本地 AndroidSdk 目录下的 adb.exe 复制到模拟器的 bin 目录中，进行覆盖。然后重启模拟器进行尝试。
+
+```shell
+# 查看连接设备
+adb devices
+
+# 手动连接
+adb connect 127.0.0.1:7555
+
+# 检查是否连接成功
+adb devices
+```
+
+### 项目创建与运行
+
+使用`create-react-native-app`创建一个项目，然后`cd`进入，再运行`npm start`命令启动项目服务。启动成功后，在命令行按下a键，便会自动在模拟器中安装 Expo 并启动运行项目。
+
+```shell
+# 项目创建
+create-react-native-app projectName
+
+# 运行
+cd projectName
+npm start
+
+# 在虚拟设备种运行
+a
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
