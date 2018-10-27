@@ -1,20 +1,119 @@
-# React Native Enviroment
+# Complete Environment
 
-前面我们使用的开发方式是进化过的方式，简述步骤就是，先安装一个Expo应用程序，然后使用扫一扫功能在Expo内运行我们的App，偏向传统的前端开发方式。<br />
-这在之前，React Native采用的开发方式是先把写好的项目打包编译成一个独立App，然后直接安装到手机上运行，偏向传统的Native开发方式。
+前面我们使用的开发环境是简易的沙盒环境，开发好的 App 需要运行在 Expo 程序内，所以用户需要先安装 Expo。
 
-**环境预览**
+如果想要应用独立运行，那么我们需要安装一套完整的原生环境，相对而言会繁琐很多。不同的操作系统，不同的目标运行平台，环境不同。
 
-- [参照文档] <http://reactnative.cn/docs/0.42/getting-started.html>
-- ![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/environment_config.png?raw=true)
+## 完整环境说明
 
-- - - - - - - - - - - - - - - - - - - - 
+目前移动App应用主要由 IOS 与 Android 两大生态构成，开发 IOS 必须要用 MacOS 操作系统，开发 Android 则不受限，MacOS、Windows、Linux 皆可以。
 
-## 环境安装
+所以如果条件允许，使用 MacOS 操作系统开发 ReactNative 是最合适的。介于绝大部分人都有 Windows 系统设备，而无 MacOS 系统设备，所以这里先以 Windows 系统为基础搭建 Android 开发环境。
 
-### **Yarn与React-Native-Cli**
+- [中文网参考文档] <https://reactnative.cn/docs/getting-started.html>
+- Android(Windows)：Node8.3+、ReactNativeCli、Python2、JDK8、AndroidStudio
+- Android(MaxOS)：Node8.3+、ReactNativeCli、JDK8、AndroidStudio、Watchman
+- Android(Linux)：Node8.3+、ReactNativeCli、JDK8、AndroidStudio
+- IOS(MaxOS)：Node8.3+、ReactNativeCli、Xcode9.4+、Watchman
 
-Yarn是Facebook提供的替代npm的工具，可以加速node模块的下载。React Native的命令行工具用于执行创建、初始化、更新项目、运行打包服务（packager）等任务。<br />
+### 安装注释事项
+
+凡是安装开发环境，都需要注意以下几点，防止意外错误的发生：
+
+- 安装的软件目录中不要出现**中文**与**特殊字符**，尤其是**空格**
+- 计算机名称`(控制面板\所有控制面板项\系统中设置)`不要**中文**，改成**英文**，也不要**特殊字符**
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## Node环境
+
+如果已经安装过Node并且是使用安装包单独安装，那么先卸载掉，然后使用nvm进行安装，好处是可以动态切换Node版本以适应不同环境的需求，目前ReactNative需要至少8.0以上的Node版本。<br />
+
+卸载Node的时候最好把npm缓存也一起清掉，清除缓存运行`npm cache clean --force`命令就可以，Windows用户也可以在用户目录下手动删除缓存文件夹`C:\Users\UserName\AppData\Roaming\npm-cache`。<br />
+
+大多数情况下，如果遇到`Unexpected end of JSON input while parsing near`错误，都是因为安装的包与本地Node版本不符导致的，这时候清除缓存就可解决。<br />
+
+### **nvm**
+
+nvm是NodeJS的版本管理工具，使用它可以在本地安装多个不同版本的NodeJS，并根据需要动态切换。安装nvm之前，需要先卸载之前单独安装过的NodeJS，在控制面板中进行卸载即可。
+
+下载
+
+- [mac下载]<https://github.com/creationix/nvm/releases>
+- [windows下载]<https://github.com/coreybutler/nvm-windows/releases>
+
+安装说明
+
+windows用户下载一键安装版本`nvm-setup.zip`, 解压后傻瓜式安装即可。<br />
+安装过后，在命令行窗口运行`nvm version`命令进行检测，如果显示安装的版本号，即成功。<br />
+
+- [参考文档]<https://www.jianshu.com/p/1d80cf35abd2>
+
+配置淘宝镜像
+
+为了提高nvm在国内的下载速度，最好修改源镜像下载地址。首先找到nvm的安装目录，编辑settings.txt文件，添加如下配置，含义是使用淘宝镜像下载64位的node或npm，如果是32位操作系统，那么arch设为32。<br />
+
+- [参考文档]<https://www.jianshu.com/p/253cb9003411>
+
+```txt
+arch: 64
+node_mirror: http://npm.taobao.org/mirrors/node/
+npm_mirror: https://npm.taobao.org/mirrors/npm/
+```
+
+nvm常用命令
+
+- nvm install      # 安装指定版本
+- nvm uninstall    # 卸载指定版本
+- nvm list         # 列出已安装的版本
+- nvm use          # 版本切换
+- nvm on           # 启用nvm
+- nvm off          # 关闭nvm
+- nvm root         # nvm安装路径
+
+### **node**
+
+nvm安装配置成功后，接下来安装node只需一条命令即可。安装完毕后，通过use命令切换到指定版本的node，最好是官方推荐的稳定版本。然后运行`node -v`命令进行检测，只要显示出你刚刚切换的node版本，就大功告成了。<br />
+
+安装Node的时候，如果是开发使用，建议安装稳定版本，如果是为了尝试新特性无所谓，目前Node有个规范，奇数版本为实验版本，偶数版本为稳定版本，很多开源项目在版本号制定时都会参照这种方式，需要留意一下。<br />
+
+- [nvm安装参考文档]<https://www.jianshu.com/p/28bca6529150>
+- [node官方版本查阅]<https://nodejs.org/zh-cn/>
+
+安装
+
+```shell
+# 安装官方推荐的稳定版本
+nvm install 8.11.3
+nvm use 8.11.3
+
+# 安装最新的稳定版本，体验新特性
+nvm install stable
+nvm list
+nvm use xxx
+```
+
+npm淘宝镜像配置
+
+node安装后，npm就跟着一起被安装了，为了提供国内的下载速度，同样把npm的源镜像地址改为淘宝的，在命令行窗口中运行如下命令进行配置。<br />
+
+- [参考文档]<https://www.jianshu.com/p/253cb9003411>
+
+```shell
+# 配置
+npm config set registry https://registry.npm.taobao.org
+npm config set disturl https://npm.taobao.org/dist
+
+# 检测
+npm config get registry
+npm config get disturl
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## Yarn 与 React Native Cli
+
+Yarn 是 Facebook 公司开发的用以替代 npm 的包管理工具，可以提供更快的下载速度和更优的管理方式。ReactNativeCli 则用于执行创建、初始化、更新项目、运行打包服务（packager）等任务。<br />
 
 安装
 
@@ -37,16 +136,20 @@ yarn config get registry
 yarn config get disturl
 ```
 
-### **Python2**
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## Python2
 
 需要注意，RN目前只支持`python2.x`版本，安装了3.x版本的需要更换。在安装python时，注意安装界面上的 `Add Python to path`选项, 勾选上会自动将Python配置到环境变量，否则需要手动配置。<br />
 
 - ![Add Python to path](https://github.com/guopengfei116/drop/blob/master/img/react-native/python.png?raw=true)
 - 安装完毕后, 在命令行中键入 `python --version` 进行测试，显示出版本号即成功
 
-### **Java**
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-如果使用Android系统开发测试，那么需要安装 Java SE Development Kit (JDK)，安装后需要手动配置环境变量。打开控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量 -> 新建。环境变量配置后，需要关闭现有的命令行工具然后重新打开，新的环境变量才会生效。
+## Java
+
+如果使用 Android 系统开发测试，那么需要安装 `Java SE Development Kit (JDK)`，安装后需要手动配置环境变量。打开`控制面板 -> 系统和安全 -> 系统 -> 高级系统设置 -> 高级 -> 环境变量 -> 新建`。环境变量配置后，需要关闭现有的命令行工具然后重新打开，新的环境变量才会生效。
 
 - [下载页面]<http://www.oracle.com/technetwork/java/javase/downloads/index.html>
 - [环境变量配置参考文档]<https://jingyan.baidu.com/article/d45ad148ba5ab169552b80d3.html>
@@ -60,14 +163,20 @@ java -version
 javac -version
 ```
 
-### **Android Studio**
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-Android Studio是谷歌推出的Android集成开发工具，其包含了运行和测试React Native应用所需的Android SDK和模拟器。<br />
-在安装时需要确定所有安装都勾选了，尤其是Android SDK和Android Device Emulator。在初步安装完成后，选择Custom进行自定义安装。其中Androoid SDK Location目录可以选择一个剩余空间比较大的磁盘存放，建议至少留有10G。<br />
+## Android Studio
 
-#### **安装**
+Android Studio 是谷歌推出的 Android 集成开发工具，我们要使用它安装管理 Android SDK 以及官方的模拟器。
+
+在安装时需要确定所有安装都勾选了，尤其是 Android SDK 和 Android Device Emulator。
+
+在初步安装完成后，选择 Custom 进行自定义安装。其中 Androoid SDK Location 目录可以选择一个剩余空间比较大的磁盘存放，建议至少留有10G。
+
+### 安装
 
 - ![Custom](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-custom-install-windows.png)
+
 - ![setup](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-verify-installs-windows.png)
 
 安装完成后，在Android Studio的欢迎界面中选择Configure | SDK Manager。
@@ -82,9 +191,9 @@ Android Studio是谷歌推出的Android集成开发工具，其包含了运行�
 
 - ![SDK tools](https://reactnative.cn/static/docs/0.51/img/react-native-android-studio-android-sdk-build-tools-windows.png)
 
-#### **配置环境变量**
+### 配置环境变量
 
-通过Android Studio安装的SDK路径，需要配置到ANDROID_HOME环境变量中。
+通过 Android Studio 安装的 SDK 路径，需要配置到 ANDROID_HOME 环境变量中。
 
 ![ANDROID_HOME](https://reactnative.cn/static/docs/0.51/img/react-native-android-sdk-environment-variable-windows.png)
 
@@ -107,9 +216,9 @@ adb version
 // 其中40就代表adb的版本，将来可能把copy这个版本的adb工具覆盖掉模拟器版本
 ```
 
-- - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## **开发方式**
+## 环境测试
 
 ### 启动模拟器
 
@@ -186,7 +295,13 @@ react-native run-android
 sdk.dir=G:\\Android-sdk
 ```
 
-- - - - - - - - - - - - - - - - - - - - 
+### 开启悬浮框权限
+
+在开发中可能会需要调出调试菜单，为了菜单能够正常弹出，需要开启悬浮框权限。
+
+具体操作：在`设置` => `授权管理` => `应用权限管理` 中找到应用 App, 然后开启悬浮框权限。
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## 开发初体验
 
@@ -278,18 +393,36 @@ const styles = StyleSheet.create({
 });
 ```
 
-- - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 真机调试
+## 真机运行
+
+### 创建项目
+
+- 使用`命令行`工具切入一个`目录`, 保证该目录及整个`路径`中没有任何`中文`字符串
+- 然后运行 `react-native init project-name` 命令初始化一个 `React-Native` 项目
+- 创建时过程中需要联网`下载`依赖包, 所以可能比较慢, 建议设置 `npm 或 yarn` 为国内镜像源
+
+### 初始打包
+
+- 运行 `cd project-name` 命令进入`项目`根目录
+- 然后运行 `react-native run-android` 命令
+- 该命令首先在本地启动一个端口`8081`的本地`服务器`, 用于向移动设备提供最新的项目打包生成的 `js` 文件
+- 其次命令会打包 `android` 项目, 生成 `apk` 文件, 如果有移动设备连接了电脑, 还会自动帮你`安装`
 
 ### app手动安装
 
-- 打包后的 `apk` 安装包, 可以在项目中找到，路径为 `projecrName/android/app/build/outputs/apk`，这个apk安装包可以手动安装到其它模拟器或真机中进行开发调试。
-- 如果自动安装失败, 可自行把apk文件拷贝到手机存储器, 然后手动安装。
+打包后的 `apk` 安装包, 可以在项目中找到，路径为 `projecrName/android/app/build/outputs/apk`，这个apk安装包可以手动安装到其它模拟器或真机中进行开发调试。
+
+如果没有设备连接电脑, 或自动安装失败, 可自行把 `apk` 文件`拷贝`到手机存储器, 然后手动`安装`。
 
 ### app权限设置
 
-- app运行时需要`悬浮框`权限，可在`设置` => `授权管理` => `应用权限管理` 中找到对应的 APP , 然后`开启`悬浮框权限。<br />
+在开发中可能会需要调出调试菜单，为了菜单能够正常弹出，需要开启悬浮框权限。
+
+具体操作：在`设置` => `授权管理` => `应用权限管理` 中找到应用 App, 然后开启悬浮框权限。
+
+有些手机需要关闭优化，比如 MIUI 系统手机需要进入开发者模式，关闭"MIUI优化"。
 
 ### 连接方式
 
@@ -312,100 +445,6 @@ const styles = StyleSheet.create({
 - 点击 `Dev settings` => `Debuug server host` , 配置本地 `IP` 地址和端口号 `8081` 即可
 - 如果出现这个`错误`提示, 说明配置错了: `could not connect to development server`
 - ![摇一摇弹出框](img/react_debug_server.png)
-
-- - - - - - - - - - - - - - - - - - - - 
-
-## 旧版环境安装，备份保留
-
-### **注册事项**
-- 安装的目录结构中`不要`出现`中文`与`特殊字符`
-- 如果`计算机`名称是中文改成`英文`
-- 因为这些环境都依赖我们的操作系统，如果系统是被优化阉割的版本可能会安装失败
-
-### **环境预览**
-
-- 参照文档 <http://reactnative.cn/docs/0.42/getting-started.html>
-- ![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/environment_config.png?raw=true)
-
-### **Node环境**
-
-- 下载最新的长期`稳定版本`<https://nodejs.org/en/>
-- 安装完毕后，在命令行中键入 `node -v` 进行测试，显示出版本号即成功
-- 在国内的话如有需要可以`修改` npm 的`下载地址`, 或在下载包的时候临时指定
-    + `npm config set registry https://registry.npm.taobao.org -g`
-    + `npm config set disturl https://npm.taobao.org/dist -g`
-
-### **React-Native-Cli与Yarn**
-
-- `Yarn` 是 `Facebook` 推出的`包管理`工具, 可以加速 node 模块的下载, `React-Native` 脚手架安装包的时候会使用
-- `React-Native-Cli` 是一款命令行工具, 用于 `React-Native` 项目的创建、初始化、更新、运行与打包
-- 安装命令: `npm install yarn react-native-cli -g`
-- 测试命令: `yarn -v` `react-native -v`
-- 安装完毕后可以设置 `Yarn` 安装模块的`镜像`地址
-    + `yarn config set registry https://registry.npm.taobao.org -g`
-    + `yarn config set disturl https://npm.taobao.org/dist -g`
-
-### **Python环境**
-
-- 安装 `2.×` 的版本的 `python`, 安装时注意勾选安装界面上的 `Add Python to path`, 自动将Python添加到`环境变量`
-- 安装完毕后, 在命令行中键入 `python --version` 进行测试，显示出版本号即成功
-![预览](https://github.com/guopengfei116/drop/blob/master/img/react-native/python.png?raw=true)
-
-### **Java环境**
-
-- 下载1.8版本JDK, <http://www.oracle.com/technetwork/java/javase/overview/index.html>
-- 安装完毕后, 需要手动配置环境变量<http://jingyan.baidu.com/article/f96699bb8b38e0894e3c1bef.html>
-    1. 系统环境变量中新增 `JAVA_HOME` 变量，值为 `C:\Program Files\Java\jdk1.8.0_112`, 即 jdk 的`安装`根路径
-    2. 修改系统环境变量 `Path`, 在 Path 之后新增 `%JAVA_HOME%\bin;%JAVA_HOME%\jre\bin`
-    3. 新增 `CLASSPATH` 变量, 值为 `.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar`
-    4. 配置完毕后保存并退出, 在命令行中分别键入`java` 与 `javac` 进行测试, 出现命令选项即配置成功
-
-### **Android环境**
-
-1. 双击`installer_r24.3.4-windows.exe`安装androidSDK
-![每个用户](https://github.com/guopengfei116/drop/blob/master/img/react-native/android_sdk.png?raw=true)
-
-2. 进入安装目录，将`android-25`、`android-23`(react-native依赖)压缩包复制到`platforms`文件夹下，右键`解压`到当前文件夹
-
-3. 将`platform-tools_r23.1.0-windows`压缩包复制到`安装目录`，右键`解压`到当前文件夹
-
-4. **tools文件夹不解压覆盖也行；**~~解压`tools`，放到`tools`文件夹下~~
-
-5. 在安装目录新建一个`build-tools`文件夹，然后将`build-tools_r23.0.1-windows.zip(react-native依赖)`、
-`build-tools_r23.0.2-windows.zip(weex依赖)`和`build-tools_r23.0.3-windows.zip`压缩包复制到`build-tools`，
-然后依次右键解压到当前文件夹，`解压后`的文件夹需要`修改名字`为对应的版本号`23.0.1`、`23.0.2`和`23.0.3`
-
-6. 在安装目录中，新建`extras`文件夹，在`extras`文件夹下新建`android`文件夹
-将`android_m2repository_r40.zip`与`support_r23.2.1.zip`压缩包复制到这个`android`文件夹，右键解压到当前文件夹
-
-7. 配置安装环境变量：在系统环境变量中新建`ANDROID_HOME`变量，值为SDK安装目录,
-然后在Path中新增 `;%ANDROID_HOME%\tools;%ANDROID_HOME%\platform-tools;`
-
-## 环境测试与APP打包
-
-### 创建项目
-
-- 使用`命令行`工具切入一个`目录`, 保证该目录及整个`路径`中没有任何`中文`字符串
-- 然后运行 `react-native init project-name` 命令初始化一个 `React-Native` 项目
-- 创建时过程中需要联网`下载`依赖包, 所以可能比较慢, 建议设置 `npm 或 yarn` 为国内镜像源
-
-### 初始打包
-
-- 运行 `cd project-name` 命令进入`项目`根目录
-- 然后运行 `react-native run-android` 命令
-- 该命令首先在本地启动一个端口`8081`的本地`服务器`, 用于向移动设备提供最新的项目打包生成的 `js` 文件
-- 其次命令会打包 `android` 项目, 生成 `apk` 文件, 如果有移动设备连接了电脑, 还会自动帮你`安装`
-
-### 手动安装
-
-- 打包好的 `apk` 安装包, 被放置到了 `/android/app/build/outputs/apk` 目录下
-- 如果没有设备连接电脑, 或自动安装失败, 可自行把 `apk` 文件`拷贝`到手机存储器, 然后手动`安装`
-
-### 设置App权限
-
-- `App` 安装完毕要后`执行`, 需要确保其拥有`悬浮框`权限
-- 可在`设置` => `授权管理` => `应用权限管理` 中找到对应的 APP , 然后`开启`悬浮框权限
-- 有些手机需要关闭优化，比如MIUI系统手机需要进入开发者模式，关闭 “MIUI优化”
 
 ### 测试运行
 
@@ -440,35 +479,11 @@ const styles = StyleSheet.create({
 
 ![连接超时截图与解决方案](https://github.com/guopengfei116/drop/blob/master/img/react-native/bundle_error_timeout.jpg?raw=true)
 
-- - - - - - - - - - - - - - - - - - - - 
-
-## 开发
-
-### 启动本地服务器
+### 后续开发项目启动
 
 - 之前运行 `react-native run-android` 打包命令的时候会自动启动一个本地`服务器`用于更新 js 代码
 - 如果是项目的`后续`开发, 我们只需单独运行 `react-native start` 命令重新启动`服务器`即可
 - 只要启动了, 我们就可以修改 `web` 代码, 将来移动设备 `Reload` 新代码即可预览最新效果
-
-### 设备直连
-
-1. 准备一台 `Android` 手机, 通过数据线`连接`到电脑，设置启用`USB调试`
-2. 一般的手机在`设置`中可以直接找到`开发者选项`进行开启, 如果`找不到`, 就自行百度查一下
-3. 手机连接成功后运行检测命令 `adb devices` , 如果有输出设备列表与 `ID` 相关的字符串就证明连接成功了
-![调试模式](https://github.com/guopengfei116/drop/blob/master/img/react-native/usb_debug.png?raw=true)
-![查看连接设备](https://github.com/guopengfei116/drop/blob/master/img/react-native/adb_devices.png?raw=true)
-4. 附录: 小米手机开启USB调试步骤
-    + 首先进入`设置` => `我的设备` => `全部参数` => 连续`点击`MUI版本3次以上
-    + 然后重新进入`设置` => `更多设置` => `开发者选项`(在无障碍下面) => 找到`USB调试`点击开启
-    + 最后需要拉到底部找到`启用 MUI 优化`, 关掉重启
-
-### 局域网连接
-
-- 移动设备除了通过 `USB` 直连电脑调试开发, 还可以采用`无线`的方式进行调试
-- 只要保证手机和电脑在同一个`局域网`, 然后摇一摇唤出调试菜单
-- 点击 `Dev settings` => `Debuug server host` , 配置本地 `IP` 地址和端口号 `8081` 即可
-- 如果出现这个`错误`提示, 说明配置错了: `could not connect to development server`
-- ![摇一摇弹出框](https://github.com/guopengfei116/drop/blob/master/img/react-native/react_debug_server.png?raw=true)
 
 ### 调试菜单说明
 
@@ -478,56 +493,3 @@ const styles = StyleSheet.create({
 - Enable Hot Reloading: 热更新, 代码变动自动的进行局部更新
 - Show Perf Monitor: 打开性能监控，可查看UI与JS运行性能
 - Dev Sttings: 开发调试配置
-
-- - - - - - - - - - - - - - - - - - - - 
-
-## 打包正式版
-
-1、产生签名的key
-
-该过程会用到keytool密钥和证书管理工具，在项目的主目录（不是android文件夹）中执行：
-
-```shell
-// 生成签名key，注意记下你的密钥和存储密码，后面配置文件需要使用
-keytool -genkey -v -keystore my-release-key.keystore -alias 自己起的别名 -keyalg RSA -keysize 2048 -validity 10000
-
-// 将keystore文件移动至android/app/文件夹
-move my-release-key.keystore android/app/
-```
-
-2、修改android/gradle.properties文件，增加如下配置
-
-```properties
-MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
-MYAPP_RELEASE_KEY_ALIAS=自己起的别名
-MYAPP_RELEASE_STORE_PASSWORD=存储密码
-MYAPP_RELEASE_KEY_PASSWORD=密钥
-```
-
-3、修改android/app/build.gradle文件，增加如下签名配置
-
-```gradle
-android { 
-  signingConfigs { 
-    release { 
-        storeFile file(MYAPP_RELEASE_STORE_FILE) 
-        storePassword MYAPP_RELEASE_STORE_PASSWORD 
-        keyAlias MYAPP_RELEASE_KEY_ALIAS 
-        keyPassword MYAPP_RELEASE_KEY_PASSWORD 
-    } 
-  }
-  buildTypes { 
-    release { 
-      signingConfig signingConfigs.release 
-    } 
-  }
-}
-```
-
-4、打包
-
-```
-// 在android/app/build/outputs/apk/文件夹中生产可以发布的app-release.apk文件
-cd android
-gradlew assembleRelease
-```
