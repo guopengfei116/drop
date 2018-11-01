@@ -185,6 +185,7 @@ export default class Searchbar extends Component {
             <View style={styles.searchbar}>
                 <TextInput 
                     placeholder="输入搜索关键字"
+                    underlineColorAndroid="transparent"
                     value={this.state.searchval}
                     onChangeText={this._changeText}
                     style={styles.input} 
@@ -211,6 +212,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginRight: 10,
         paddingLeft: 6,
+        paddingVertical: 6,
         height: 30,
         borderWidth: 2,
         borderColor: "#ccc",
@@ -226,9 +228,9 @@ const styles = StyleSheet.create({
 })
 ```
 
-### 轮播广告组件
+### 广告组件
 
-版本一，使用ScrollView实现轮播效果
+版本一，使用ScrollView实现幻灯片效果
 
 ```jsx
 import React, { Component } from 'react'
@@ -249,13 +251,16 @@ export default class Adverticement extends Component {
             currentPage: 0,
             advertisements: [
                 {
-                    uri: require("../image/double-11.png")
+                    uri: require("../image/double-11.png"),
+                    backgroundColor: "blue"
                 },
                 {
-                    uri: require("../image/eyes.png")
+                    uri: require("../image/eyes.png"),
+                    backgroundColor: "yellow"
                 },
                 {
-                    uri: require("../image/five-year.png")
+                    uri: require("../image/five-year.png"),
+                    backgroundColor: "pink"
                 }
             ]
         }
@@ -269,20 +274,21 @@ export default class Adverticement extends Component {
                     showsHorizontalScrollIndicator={false}
                     pagingEnabled={true}
                 >
-                    {
-                        this.state.advertisements.map((item, index) => {
-                            return (
-                                <View 
-                                    key={index}
-                                    style={[styles.item, {backgroundColor: "blue"}]}>
-                                    <Image 
-                                        source={item.uri}
-                                        style={styles.image}>
-                                    </Image>
-                                </View>
-                            )
-                        })
-                    }
+                  {
+                      this.state.advertisements.map((item, index) => {
+                          return (
+                              <View 
+                                  key={index}
+                                  style={[styles.advert, item.backgroundColor]}
+                              >
+                                  <Image 
+                                      source={item.uri}
+                                      style={styles.image}>
+                                  </Image>
+                              </View>
+                          )
+                      })
+                  }
                 </ScrollView>
             </View>
         )
@@ -294,14 +300,18 @@ const styles = StyleSheet.create({
         height: 200,
         backgroundColor: "yellow",
     },
-    item: {
+    advert: {
         width: Dimensions.get("window").width,
         height: 200
-    }
+    },
+    image: {
+        width: "100%",
+        height: "100%"
+    },
 })
 ```
 
-版本二，自动轮播效果
+版本二，幻灯片自动切换效果
 
 ```jsx
 import React, { Component } from 'react'
@@ -315,13 +325,7 @@ import {
 
 export default class Adverticement extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentPage: 0,
-            advertisements: ["1", "2", '3']
-        }
-    }
+    // 此处省略未作改变的代码...
 
     // 挂载后启动定时器
     componentDidMount() {
@@ -335,14 +339,15 @@ export default class Adverticement extends Component {
 
     _startTimer = () => {
         this.timerId = setInterval(() => {
-            // 计算下一页码
+            // 循环页码
             let nextPage = this.state.currentPage + 1;
             nextPage = nextPage >= this.state.advertisements.length? 0 : nextPage;
-            this.setState({currentPage: nextPage});
 
-            // 计算scrollView组件的offsetX值，实现自动轮播
-            let offsetX = Dimensions.get("window").width * this.state.currentPage;
-            this.refs.scrollView.scrollTo({x: offsetX, y: 0, animated: true});
+            // 状态更新后更新幻灯片(通过修改scrollView组件的offsetX值实现)
+            this.setState({currentPage: nextPage}, () => {
+                let offsetX = Dimensions.get("window").width * this.state.currentPage;
+                this.refs.scrollView.scrollTo({x: offsetX, y: 0, animated: true});
+            });
         }, 1500);
     }
 
@@ -359,46 +364,95 @@ export default class Adverticement extends Component {
                     pagingEnabled={true}
                     ref="scrollView"
                 >
-                    <View style={[styles.item, {backgroundColor: "blue"}]}>
-                        <Text>广告1</Text>
-                    </View>
-                    <View style={[styles.item, {backgroundColor: "pink"}]}>
-                        <Text>广告2</Text>
-                    </View>
-                    <View style={[styles.item, {backgroundColor: "orange"}]}>
-                        <Text>广告3</Text>
-                    </View>
+                    {/* 此处省略未作改变的代码... */}
                 </ScrollView>
             </View>
         )
     }
 }
 
-const styles = StyleSheet.create({
-    advertisement: {
-        height: 200,
-        backgroundColor: "yellow",
-    },
-    item: {
-        width: Dimensions.get("window").width,
-        height: 200
+// 此处省略未作改变的代码...
+```
+
+版本三，增加幻灯片指示器
+
+```jsx
+export default class Adverticement extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentPage: 0,
+            circleSize: 8,
+            circleMargin: 5,
+            // 此处省略未作改变的代码...
+        }
     }
+
+    // 此处省略未作改变的代码...
+
+    // 计算轮播指示器位置
+    _computeIndicatorOffset = () => {
+        const advertisementCount = this.state.advertisements.length;
+        const indicatorWidth = (this.state.circleSize * advertisementCount)
+            + (this.state.circleMargin * advertisementCount * 2);
+        return {
+            left: (Dimensions.get("window").width - indicatorWidth) / 2,
+            bottom: 10
+        };
+    }
+
+    render() {
+        return (
+            <View style={styles.advertisement}>
+                {/* 此处省略未作改变的代码... */}
+                <View 
+                    style={[
+                        styles.indicator, 
+                        this._computeIndicatorOffset()
+                    ]}
+                >
+                    {
+                        (()=>{
+                            const circleStyle = {
+                                marginHorizontal: this.state.circleMargin,
+                                width: this.state.circleSize,
+                                height: this.state.circleSize,
+                                borderRadius: this.state.circleSize / 2,
+                            };
+                            return this.state.advertisements.map((item, i) => {
+                                const dynamicStyle = 
+                                    i === this.state.currentPage
+                                    ? styles.circleSelected
+                                    : {};
+                                return (<View key={i} style={[styles.circle, circleStyle, dynamicStyle]}></View>)
+                            })
+                        })()
+                    }
+                </View>
+            </View>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    // 此处省略未作改变的代码...
+    indicator: {
+        position: "absolute",
+        flexDirection: "row"
+    },
+    circle: {
+        backgroundColor: '#ccc',
+    },
+    circleSelected: {
+        backgroundColor: '#fff',
+    },
 })
 ```
 
-版本三，增加点状指示器
-
-```jsx
-
-```
-
-版本四，点击路由跳转
-
-```jsx
-
-```
-
 ### 商品列表组件
+
+版本一，商品列表
 
 ```jsx
 import React, { Component } from 'react'
@@ -456,6 +510,7 @@ export default class Products extends Component {
         }
     }
 
+    // 生成FlatList的每一项
     _renderItem = ({item, index}) => {
         return (
             <View style={styles.item}>
@@ -471,6 +526,7 @@ export default class Products extends Component {
         )
     }
 
+    // 为FlatList的每一项生成唯一key
     _keyExtractor = (item, index) => {
         return item.id;
     }
@@ -519,6 +575,66 @@ const styles = StyleSheet.create({
         color: "#ccc"
     }
 })
+```
+
+版本二，添加下拉刷新功能
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    Text, 
+    StyleSheet, 
+    View,
+    FlatList,
+    Image,
+    RefreshControl,
+} from 'react-native';
+
+export default class Products extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            isRefreshing: false,
+            products: [...]
+        }
+    }
+
+    // 此处省略未作改变的代码...
+
+    // 下拉刷新取出新商品
+    _renderRefreshContrl = () => {
+        this.setState({isRefreshing: true});
+        setTimeout(() => {
+          const newProducts = Array.from(Array(10)).map((v, i) => ({
+            id: "" + i,
+            title: `新商品${i+1}`,
+            subTitle: `新描述${i+1}`,
+            image: require("../image/eyes.png"),
+          }));
+          this.setState({isRefreshing: false, products: newProducts});
+        }, 2000);
+    }
+
+    render() {
+        return (
+            <FlatList
+                data={this.state.products}
+                renderItem={this._renderItem}
+                keyExtractor={this._keyExtractor}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.isRefreshing}
+                        onRefresh={this._renderRefreshContrl}
+                        title="正在刷新"
+                        colors={["red", "yellow"]}
+                        progressBackgroundColor="blue"
+                        progressViewOffset={50}/>
+                }
+            ></FlatList>
+        )
+    }
+}
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
