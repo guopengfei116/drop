@@ -639,6 +639,222 @@ export default class Products extends Component {
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+## 页面导航
+
+现在我们的首页功能基本开发完毕，接下来要添加其它页面，那么势必就会存在页面之间的跳转，那么如何管理这些页面就是我们首要解决的问题，这里我们采用由官方推荐的第三方导航插件`react-navigation`来解决我们的问题。
+
+既然是非内置插件，那么我们首先得安装它，运行命令：`yarn add react-navigation`。
+
+### 项目结构调整
+
+引入了导航插件，那么就意味着接下来会有更多的页面功能需要实现，为了让项目结构更清晰，让页面管理更容易梳理，我们需要重新设计一下项目目录结构。
+
+主要是新增了`navigation`目录，并创建了`navigation/GlobalStack.js`组件。
+
+再然后是新增了`page`目录，并添加了`page/main`与`page/product`子目录。
+`page/main`里放置的都是入口页面，就是App打开时进入的页面，一般是个可Tab切换的多页面控件，目前我们没有Tab功能，只有一个`page/main/Home.js`首页。
+`page/product`里放置的都是商品相关的页面，目前我们只有一个`Detail.js`详情页。
+
+```txt
+- app
+    |-- image                                 *图片资源
+    |-- api                                    接口
+        └── index.js:                          模块入口
+    |-- constant                              *常量
+        └── index.js:                          模块入口
+    |-- components                            *公共组件
+        └── Searchbar.js:                      搜索条                
+        └── Advertisement.js:                  幻灯片广告
+        └── Products.js:                       商品列表      
+    |-- navigation                            *导航配置
+        └── GlobalStack.js                     全局堆栈导航
+    |-- page                                  *页面容器
+        |-- main                               *入口模块页面
+            └── Home.js                         首页
+        |-- product                            *商品模块页面
+            └── Detail.js                       详情页
+```
+
+### 首页
+
+我们把之前`App.js`的代码全部搬过来，但是注意要修改内部导入其它组件的路径。
+
+```jsx
+// 此处代码未做任何修改...
+
+import Searchbar from '../../components/Searchbar';
+import Adverticement from '../../components/Adverticement';
+import Products from '../../components/Products';
+
+// 此处代码未做任何修改...
+```
+
+### 详情页
+
+商品对应的详情页，点击首页的商品列表，便会跳转到这里。
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    Text, 
+    StyleSheet, 
+    View, 
+    TouchableOpacity 
+} from 'react-native';
+
+export default class Detail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.navigation = this.props.navigation;
+        this.navigationParams = this.navigation.state.params;
+    }
+
+    _pressBack = () => {
+        const {navigation} = this.props;
+        navigation && navigation.pop();
+    }
+
+    render() {
+        return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={this._pressBack}>
+                <Text style={styles.back}>返回{this.navigationParams && this.navigationParams.a}</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}> 商品详情 </Text>
+        </View>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 20
+    },
+    back: {
+        fontSize: 20,
+        color: "yellow"
+    }
+})
+```
+
+### 全局导航
+
+我们在这里把`Home`首页和`Detail`详情页分别导入进来，然后进行导航配置。
+如果配置没有问题，项目能够顺利跑起来的话，修改`initialRouteName`配置，就会看到不同的页面。
+
+```jsx
+import { createStackNavigator } from 'react-navigation';
+import Home from '../../app/page/main/Home';
+import Detail from '../../app/page/product/Detail';
+
+export default createStackNavigator(
+  // 导航配置
+  {
+    home: {
+      screen: Home,
+      navigationOptions: ({navigation, navigationOptions}) => ({
+        header: null,
+      })
+    },
+    detail: {
+      screen: Detail,
+      navigationOptions: ({navigation, navigationOptions}) => ({
+        title: "商品详情",
+      })
+    }
+  },
+  // 默认页面
+  {
+    initialRouteName: "home"
+  }
+)
+```
+
+### App.js
+
+我们以及把`App.js`的代码移植了出去，现在我们这里只需做个搬运工，把全局导航组件抛出即可。
+
+```jsx
+import GlobalNavigator from './app/navigation/GlobalNavigator';
+export default GlobalNavigator;
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 把导航入口交由App根组件控制
+
+### 全局导航组件
+
+修改的项目下`app/navigation/GlobalNavigator.js`，把之前的代码改成一个工厂函数，传入导航入口，然后再返回相应的导航组件。
+
+```jsx
+// 此处代码未做任何修改...
+
+export default function(initialRouteName) {
+  return createStackNavigator(
+    {
+      home: {
+        screen: Home,
+        navigationOptions: ({navigation, navigationOptions}) => ({
+          header: null,
+        })
+      },
+      detail: {
+        screen: Detail,
+        navigationOptions: ({navigation, navigationOptions}) => ({
+          title: "商品详情",
+        })
+      }
+    },
+    {
+      initialRouteName
+    }
+  );
+}
+```
+
+### 根组件
+
+修改的项目下的`App.js`
+
+```jsx
+import GlobalNavigator from './app/navigation/GlobalNavigator';
+export default (GlobalNavigator("home"));
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 处理首页与详情页的跳转
+
+### 修改商品列表
+
+修改的项目下的`xxx`，点击列表中的商品进行页面跳转。
+
+```jsx
+
+```
+
+### 修改详情页
+
+修改的项目下的`xxx`，点击返回按钮返回上一页。
+
+```jsx
+
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## Tab入口导航
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ## 首页完整代码
 
 ```jsx
