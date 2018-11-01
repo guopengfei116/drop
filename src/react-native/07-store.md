@@ -781,8 +781,8 @@ export default createStackNavigator(
 我们以及把`App.js`的代码移植了出去，现在我们这里只需做个搬运工，把全局导航组件抛出即可。
 
 ```jsx
-import GlobalNavigator from './app/navigation/GlobalNavigator';
-export default GlobalNavigator;
+import GlobalStackNavigator from './app/navigation/GlobalStack';
+export default GlobalStackNavigator;
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -791,7 +791,7 @@ export default GlobalNavigator;
 
 ### 全局导航组件
 
-修改的项目下`app/navigation/GlobalNavigator.js`，把之前的代码改成一个工厂函数，传入导航入口，然后再返回相应的导航组件。
+修改的项目下`app/navigation/GlobalStack.js`，把之前的代码改成一个工厂函数，传入导航入口，然后再返回相应的导航组件。
 
 ```jsx
 // 此处代码未做任何修改...
@@ -824,8 +824,8 @@ export default function(initialRouteName) {
 修改的项目下的`App.js`
 
 ```jsx
-import GlobalNavigator from './app/navigation/GlobalNavigator';
-export default (GlobalNavigator("home"));
+import GlobalStackNavigator from './app/navigation/GlobalStack';
+export default (GlobalStackNavigator("home"));
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -834,7 +834,7 @@ export default (GlobalNavigator("home"));
 
 ### 修改商品列表
 
-修改的项目下的`xxx`，点击列表中的商品进行页面跳转。
+修改的项目下的`app/page/main/Home.js`，点击列表中的商品进行页面跳转。
 
 ```jsx
 
@@ -842,7 +842,7 @@ export default (GlobalNavigator("home"));
 
 ### 修改详情页
 
-修改的项目下的`xxx`，点击返回按钮返回上一页。
+修改的项目下的`app/page/product/Detail.js`，点击返回按钮返回上一页。
 
 ```jsx
 
@@ -850,8 +850,102 @@ export default (GlobalNavigator("home"));
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## Tab入口导航
+## 具有Tab切换功能的入口页
 
+### 新增个人主页
+
+创建`app/page/main/Profile.js`，这是承载一些个人信息的页面。
+
+```jsx
+import React from "react";
+import { StyleSheet, View, Text } from 'react-native';
+
+export default MovieDetail = (props) => {
+    return (
+        <View style={styles.container}>
+            <Text>个人信息</Text>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
+```
+
+### Tab导航
+
+创建`app/navigation/MainTab.js`。
+
+我们要求，App进入的首页下方要有一个Tab栏，可以进行几个页面间的切换，那么我们就需要创建一个Tab导航组件，这有别与我们前面创建的stack导航组件。
+
+```jsx
+import { createBottomTabNavigator } from 'react-navigation';
+import Home from '../../app/page/main/Home';
+import Profile from '../../app/page/main/Profile'
+
+export default createBottomTabNavigator(
+    {
+        // 路由配置，key值会作为tabBar的label显示
+        Home: {
+            screen: Home,
+            navigationOptions: () => ({
+                tabBarLabel: "首页"
+            })
+        },
+        Profile: {
+            screen: Profile,
+            navigationOptions: () => ({
+                tabBarLabel: "我的"
+            })
+        },
+    }, 
+    {
+
+    }
+)
+```
+
+### 全局stack导航
+
+我们可以把这个Tab导航组件设计为stack导航的子页面，只不过这个子页面比较特殊，它是一个嵌套的导航，这样我们可以控制什么时候进入tab入口，什么时候切换到其它页面。
+
+```jsx
+import { createStackNavigator } from 'react-navigation';
+import MainTab from './MainTab';
+import Home from '../../app/page/main/Home';
+import Detail from '../../app/page/product/Detail';
+
+export default function(initialRouteName) {
+  return createStackNavigator(
+    {
+      main: {
+        screen: MainTab,
+        navigationOptions: ({navigation, navigationOptions}) => ({
+          header: null,
+        })
+      },
+      // 此处代码未做任何改动...
+    },
+    {
+      initialRouteName
+    }
+  );
+}
+```
+
+### 配置新的入口
+
+打开App想看到的是带有Tab导航的入口页，那么修改`App.js`根组件中的入口名称即可。
+
+```jsx
+// 此处代码未做任何改动...
+export default (GlobalStackNavigator("main"));
+```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
