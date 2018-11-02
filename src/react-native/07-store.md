@@ -677,7 +677,7 @@ export default class Products extends Component {
 
 ### 首页
 
-我们把之前`App.js`的代码全部搬过来，但是注意要修改内部导入其它组件的路径。
+打开`app/page/main/Home.js`首页，把之前`App.js`的代码全部搬过来，但是注意要修改内部导入其它组件的路径。
 
 ```jsx
 // 此处代码未做任何修改...
@@ -691,7 +691,7 @@ import Products from '../../components/Products';
 
 ### 详情页
 
-商品对应的详情页，点击首页的商品列表，便会跳转到这里。
+先简单实现`app/page/product/Detail.js`商品详情页，以便在首页点击商品列表时可以正确跳转到这里。
 
 ```jsx
 import React, { Component } from 'react';
@@ -745,31 +745,34 @@ const styles = StyleSheet.create({
 
 ### 全局导航
 
-我们在这里把`Home`首页和`Detail`详情页分别导入进来，然后进行导航配置。
+编写`app/navigation/GlobalStack.js`全局导航，首先导入我们需要的`createStackNavigator`栈导航器工厂，然后导入`Home`首页和`Detail`商品详情页进行导航。
+
 如果配置没有问题，项目能够顺利跑起来的话，修改`initialRouteName`配置，就会看到不同的页面。
 
 ```jsx
 import { createStackNavigator } from 'react-navigation';
 import Home from '../../app/page/main/Home';
-import Detail from '../../app/page/product/Detail';
+import ProductDetail from '../../app/page/product/Detail';
 
 export default createStackNavigator(
   // 导航配置
   {
     home: {
       screen: Home,
+      // 首页不需要header
       navigationOptions: ({navigation, navigationOptions}) => ({
         header: null,
       })
     },
-    detail: {
-      screen: Detail,
+    productDetail: {
+      screen: ProductDetail,
+      // 商品详情需要header，并且需要设置header的标题
       navigationOptions: ({navigation, navigationOptions}) => ({
         title: "商品详情",
       })
     }
   },
-  // 默认页面
+  // 默认启动的导航配置
   {
     initialRouteName: "home"
   }
@@ -787,74 +790,116 @@ export default GlobalStackNavigator;
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 把导航入口交由App根组件控制
+## 处理首页与详情页的跳转
 
-### 全局导航组件
+一切准备就绪，接下来我们实现`Home`和`Detail`页面之间的跳转，要实现这个跳转功能，需要使用一个关键的对象，navigation对象，这个对象默认会传递给被导航的组件，也就是说`Home`和`Detail`页面是可以拿到的，可以打印`this.props.navigation`查看该对象的功能方法。
 
-修改的项目下`app/navigation/GlobalStack.js`，把之前的代码改成一个工厂函数，传入导航入口，然后再返回相应的导航组件。
+但是我们需要修改的是`Products.js`商品列表子组件，这个组件并没有被直接配置到导航中，所以是没有`this.props.navigation`对象的，所以我们需要先手动把`Home`组件得到的导航对象传递给`Products`组件。
+
+### 传递导航对象
+
+修改项目下的`app/page/main/Home.js`，把来自导航的props参数传递给`Products`组件使用。
 
 ```jsx
 // 此处代码未做任何修改...
 
-export default function(initialRouteName) {
-  return createStackNavigator(
-    {
-      home: {
-        screen: Home,
-        navigationOptions: ({navigation, navigationOptions}) => ({
-          header: null,
-        })
-      },
-      detail: {
-        screen: Detail,
-        navigationOptions: ({navigation, navigationOptions}) => ({
-          title: "商品详情",
-        })
-      }
-    },
-    {
-      initialRouteName
-    }
-  );
+render() {
+    return (
+        // 此处代码未做任何修改...
+
+        {/* 商品列表 */}
+        <Products {...this.props}></Products>
+
+        // 此处代码未做任何修改...
+    );
 }
+
+// 此处代码未做任何修改...
 ```
 
-### 根组件
+### 首页 to 商品详情页
 
-修改的项目下的`App.js`
+修改项目下的`app/components/Products.js`，使用`Touchable`系列组件包裹商品Item，然后在点击时利用传递进来的`this.props.navigation.push`方法实现页面跳转。
+
+push方法第一个参数是配置导航时自定义的名称，第二个参数是路由参数，这个参数可以在新跳转的页面中使用，实现跨页面的参数传递。通常我们会把某某某的id携带过去，这样新页面就可以通过id得到数据。
 
 ```jsx
-import GlobalStackNavigator from './app/navigation/GlobalStack';
-export default (GlobalStackNavigator("home"));
+// 此处代码未做任何修改...
+
+// 跳转到详情页
+_toProductDetail = (item) => {
+    const { navigation } = this.props;
+    navigation && navigation.push("productDetail", item.id);
+}
+
+// FlatList组件渲染列表
+_renderItem = ({item, index}) => {
+    return (
+        <TouchableNativeFeedback onPress={this._toProductDetail.bind(this, item)}>
+            <View style={styles.item}>
+                <Image 
+                    source={item.uri}
+                    style={styles.image}>
+                </Image>
+                <View style={styles.content}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.subTitle}>{item.subTitle}</Text>
+                </View>
+            </View>
+        </TouchableNativeFeedback>
+    )
+}
+
+// 此处代码未做任何修改...
+```
+
+### 商品详情页 to 首页
+
+修改的项目下的`app/page/product/Detail.js`，这里可以通过导航传递的`this.props.navigation.pop`方法实现上一页返回，如果有多次push，那么就可以多次pop，其实就是一个进栈出栈的过程。
+
+如果要获取由上一页面传递的路由参数，通过`this.props.navigation.state.params`就可以拿到。
+
+```jsx
+// 此处代码未做任何修改...
+
+export default class Detail extends Component {
+  constructor(props) {  
+    super(props);
+    this.state = {
+      id: props.navigation.state.params
+    }
+  }
+
+  // 返回上一页
+  _goBack = () => {
+    const { navigation } = this.props;
+    navigation.pop();
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Button title="返回" onPress={this._goBack}></Button>
+        <Text style={styles.content}>{ `当前商品的ID为：${this.state.id}` }</Text>
+      </View>
+    )
+  }
+}
+
+// 此处代码未做任何修改...
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-## 处理首页与详情页的跳转
+## createBottomTabNavigator的使用
 
-### 修改商品列表
+现在我们要给首页底部添加TabBar按钮，实现tab点击页面切换效果。`createBottomTabNavigator`就是`react-navigation`插件给我们提供的解决方案。可以认为这个导航组件提供了一个容器，可以把几个页面聚合在一起，并且以TabBar的形式进行切换。
 
-修改的项目下的`app/page/main/Home.js`，点击列表中的商品进行页面跳转。
+一个很重要的特性是，不同的导航之间可以互相嵌套。这样的话我们就可以把TabBar导航组件看作是一个复合页面，然后配置到我们前面创建的全局堆栈导航组件中，并配置为默认首页，完美融入我们的导航体系。
 
-```jsx
+### 创建个人页
 
-```
-
-### 修改详情页
-
-修改的项目下的`app/page/product/Detail.js`，点击返回按钮返回上一页。
-
-```jsx
-
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 修改入口页改为带有TabBar的复合页面
-
-### 新增个人主页
-
-创建`app/page/main/Profile.js`，这是承载一些个人信息的页面。
+为了让Tab导航能够管理更多页面，我们创建`app/page/main/Profile.js`个人信息页，这是承载一些个人信息的页面，将来会和`Home`首页一起由`Tab导航`组件承载，通过TabBar切换。
 
 ```jsx
 import React from "react";
@@ -879,7 +924,7 @@ const styles = StyleSheet.create({
 
 ### Tab导航
 
-创建`app/navigation/MainTab.js`。
+创建`app/navigation/MainTab.js`，导入`createBottomTabNavigator`工厂以及`Home`和`Profile`受控制页面。
 
 我们要求，App进入的首页下方要有一个Tab栏，可以进行几个页面间的切换，那么我们就需要创建一个Tab导航组件，这有别与我们前面创建的stack导航组件。
 
@@ -903,28 +948,25 @@ export default createBottomTabNavigator(
                 tabBarLabel: "我的"
             })
         },
-    }, 
-    {
-
     }
 )
 ```
 
-### 全局stack导航
+### stack导航修改
 
-我们可以把这个Tab导航组件设计为stack导航的子页面，只不过这个子页面比较特殊，它是一个嵌套的导航，这样我们可以控制什么时候进入tab入口，什么时候切换到其它页面。
+修改`app/navigation/GlobalStack.js`，在这里我们导入刚刚创建的Tab导航组件，把它看作一个子页面进行配置，这样我们就可以控制什么时候进入Tab首页，什么时候切换到其它页。
 
 ```jsx
 import { createStackNavigator } from 'react-navigation';
-import MainTab from './MainTab';
 import Home from '../../app/page/main/Home';
-import Detail from '../../app/page/product/Detail';
+import ProductDetail from '../../app/page/product/Detail';
+import MainTabNavigator from './MainTab';
 
-export default function(initialRouteName) {
-  return createStackNavigator(
+export default createStackNavigator(
+    // 导航配置
     {
       main: {
-        screen: MainTab,
+        screen: MainTabNavigator,
         navigationOptions: ({navigation, navigationOptions}) => ({
           header: null,
         })
@@ -932,17 +974,49 @@ export default function(initialRouteName) {
       // 此处代码未做任何改动...
     },
     {
+      initialRouteName: "main"
+    }
+)
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 提升初始页面控制权
+
+### 堆栈导航包装成工厂函数
+
+修改的项目下`app/navigation/GlobalStack.js`，把之前的代码改成一个工厂函数，可以指定默认路由，最后返回堆栈导航组件。
+
+```jsx
+// 此处代码未做任何修改...
+
+// 注意：导出的是一个函数
+export default function(initialRouteName = "main") {
+  return createStackNavigator(
+    {
+      main: {
+        screen: MainTabNavigator,
+        navigationOptions: () => ({
+          header: null  
+        })
+      },
+      // 此处代码未做任何修改...
+    },
+    {
       initialRouteName
     }
-  );
+  )
 }
 ```
 
-### 配置新的入口
+### 根组件
 
-打开App想看到的是带有Tab导航的入口页，那么修改`App.js`根组件中的入口名称即可。
+修改的项目下的`App.js`，调用改造后的工厂函数，传入那个入口，默认就渲染那个入口。
 
 ```jsx
-// 此处代码未做任何改动...
-export default (GlobalStackNavigator("main"));
+import navigatorFactory from './app/navigation/GlobalStack';
+
+// APP入口配置
+const root = "main";
+export default navigatorFactory(root);
 ```
