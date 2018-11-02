@@ -801,3 +801,154 @@ cameraAction = () => {
 ### 打包
 
 退出之前调试的App，重新运行`react-native run-android`进行打包部署，打包时会下载一些jar包，需要耐心等待。
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+备份备份备份备份备份备份备份
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## Tab路由管理
+
+运行`yarn add react-navigation`安装路由插件。
+
+### Tab首页
+
+把App.js内容复制到app/page/Home.js
+
+### Tab个人页
+
+创建app/page/Profile.js
+
+```jsx
+import React from "react";
+import { StyleSheet, View, Text } from 'react-native';
+
+export default MovieDetail = (props) => {
+    return (
+        <View style={styles.container}>
+            <Text>个人信息</Text>
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
+```
+
+### Tab路由
+
+app/page/index.js
+
+```jsx
+import React from "react";
+import Home from './home'
+import Profile from './profile'
+
+export default createBottomTabNavigator(
+    {
+        // 路由配置，key值会作为tabBar的label显示
+        Home: {
+            screen: Home,
+            navigationOptions: () => ({
+                tabBarLabel: "首页"
+            })
+        },
+        Profile: {
+            screen: Profile,
+            navigationOptions: () => ({
+                tabBarLabel: "我的"
+            })
+        },
+    }, 
+    {
+
+    }
+)
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 主路由
+
+### 商品详情页
+
+app/page/Detail.js
+
+```jsx
+import React, { Component } from 'react';
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
+
+export default class Detail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.navigation = this.props.navigation;
+        this.navigationParams = this.navigation.state.params;
+    }
+
+    _pressBack = () => {
+        const {navigation} = this.props;
+        navigation && navigation.pop();
+    }
+
+    render() {
+        return (
+        <View style={styles.container}>
+            <TouchableOpacity onPress={this._pressBack}>
+                <Text style={styles.back}>返回{this.navigationParams.a}</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}> 商品详情 </Text>
+        </View>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 20
+    },
+    back: {
+        fontSize: 20,
+        color: "yellow"
+    }
+})
+```
+
+### 主路由配置
+
+App.js
+
+```jsx
+import {createStackNavigator} from 'react-navigation';
+import Main from './app/page/Main';
+import Detail from './app/page/Detail';
+
+export default createStackNavigator(
+  {
+    main: {
+      screen: Main,
+      navigationOptions: ({navigation, navigationOptions}) => ({
+        header: null,
+      })
+    },
+    detail: {
+      screen: Detail,
+      navigationOptions: ({navigationOptions}) => ({
+        title: "商品详情",
+      })
+    }
+  }, 
+  {
+    initialRouteName: "main"
+  }
+)
+```
