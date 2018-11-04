@@ -68,10 +68,10 @@ keytool -genkeypair -v -keyalg RSA -keysize 2048 -validity 365  -keystore my-sto
 修改`项目/android/gradle.properties`文件，增加如下配置
 
 ```properties
-MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
-MYAPP_RELEASE_KEY_ALIAS=my-store
-MYAPP_RELEASE_STORE_PASSWORD=123456789
-MYAPP_RELEASE_KEY_PASSWORD=123456789
+MY_STORE_RELEASE_STORE_FILE=my-store-release-key.keystore
+MY_STORE_RELEASE_KEY_ALIAS=my-store
+MY_STORE_RELEASE_STORE_PASSWORD=123456789
+MY_STORE_RELEASE_KEY_PASSWORD=123456789
 ```
 
 #### gradle构建配置
@@ -107,6 +107,14 @@ android {
 // 未作改动...
 ```
 
+### 修改App名称和图标
+
+在项目下有个`android/app/src/main/AndroidManifest.xml`描述文件，里面配置了App的各种信息，从里面我们可以得知，App的名称使用了`@string/app_name`，Icon使用了`@mipmap/ic_launcher`。
+
+修改App名称，需要打开`android/app/src/main/res/valuse/strings.xml`配置文件，修改标签里面的值就可以修改App名称。
+
+修改App图标，需要替换`android/app/src/main/res/mipmap–xxx`目录下的图片，分为mdpi(48*48)、hdpi(72*72)、xhdpi(96*96)、xxhdpi(144*144)、xxxhdpi(192*192)五种大小，每种大小都有圆形和方形两种图标。
+
 ### 打包
 
 进入`项目/android`目录下，执行目录下的构建脚本。
@@ -132,4 +140,3 @@ gradlew assembleRelease
 - 豌豆荚：http://www.wandoujia.com
 
 当然，还有一些可以一键发布到N多市场的平台，比如[酷传]<http://www.kuchuan.com/>，这样就可以节省Android应用发布的时间和精力。
-
