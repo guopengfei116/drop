@@ -1,4 +1,4 @@
-# 第三方插件
+# Plugins
 
 ## react-native-swiper
 
@@ -9,9 +9,9 @@
 
 ### 使用范例
 
-需要注意，Swiper组件的高度依赖与父元素，所以在使用时嵌套一个View标签控制Swiper展示高度。<br />
+需要注意，Swiper组件的宽高与其父元素相关，如果父元素没有宽或者高，那么Swiper无法正常渲染。所以在使用该组件时要保证父组件有宽高，或者自己嵌套一个View组件根据自身需要指定宽高。
 
-另外该库的源码使用了一个叫`Arial`的字体，模拟器中可以没有这个字体导致报错，可以修改为`normal、serif、monospace`中的任意一个字体，或者删除该样式也可以。<br />
+另外该库的源码使用了一个叫`Arial`的字体，模拟器中可以没有这个字体导致报错，可以修改为`normal、serif、monospace`中的任意一个字体，或者删除该样式也可以。
 
 ```jsx
 import React, { Component } from 'react';
@@ -99,102 +99,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-## scrollView实现轮播图
-
-利用scrollView的属性，可以很容易的实现一个简易的轮播图效果。
-
-```jsx
-import React, { Component } from 'react';
-import { 
-    StyleSheet,  
-    View,
-    Text,
-    Image,
-    ScrollView
-} from 'react-native';
-
-const Dimensions = require('Dimensions');
-const { width:screenWidth, height:screenHeight } = Dimensions.get("window");
-
-export default class ScrollViewTest extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentPage: 0,
-            timer: null
-        }
-    }
-
-    autoSwipe() {
-        this.state.timer = setInterval(() => {
-            // 更新currentPage
-            this.setState((oldVal) => {
-                let currentPage = this.state.currentPage + 1;
-                currentPage = currentPage > (this.props.imgList.length-1) ? 0: currentPage;
-                return { currentPage };
-            });
-            console.log(this.state.timer)
-            // 更新视图
-            this.refs.scrollView.scrollTo({x: this.state.currentPage * screenWidth});
-        }, 2000);
-    }
-
-    startAutoSwipe() {
-        this.autoSwipe();
-    }
-
-    stopAutoSwipe() {
-        clearInterval(this.state.timer);
-    }
-
-    componentDidMount() {
-        this.autoSwipe();
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.state.timer);
-    }
-
-    render() {
-        return (
-            <ScrollView 
-                ref="scrollView" style={[styles.swipe]} 
-                horizontal={true} pagingEnabled={true} showsHorizontalScrollIndicator={false}
-                onTouchStart={this.stopAutoSwipe.bind(this)} onTouchEnd={(e)=>{this.stopAutoSwipe.bind(this)}}>
-                {
-                    this.props.imgList.map((v, i) => {
-                        return (
-                            <View key={`key${i}`} style={[styles.swipeItem]}>
-                                <Image style={[styles.swipeImg]} source={{uri: v}}></Image>
-                            </View>
-                        )
-                    })
-                }
-            </ScrollView>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    swipe: {
-        marginTop: 24,
-        width: screenWidth,
-        height: screenHeight
-    },
-
-    swipeItem: {
-        width: screenWidth,
-        height: 100
-    },
-
-    swipeImg: {
-        flex: 1
-    }
-});
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## react-navigation
 
@@ -686,13 +591,38 @@ export default createMaterialTopTabNavigator(
 );
 ```
 
-- - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 集成react-native-router-flux
+
+- 这是一个基于 react-native-navigator 开发的第三方路由插件
+- [详情可查看github官方文档](https://github.com/aksonov/react-native-router-flux)
+- 运行安装命令: `yarn add react-native-router-flux -S`
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## react-native-maps
+
+官方推荐的第三方地图组件。
+
+- [npm官网]<https://www.npmjs.com/package/react-native-maps>
+- [github官网]<https://github.com/airbnb/react-native-maps>
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## react-native-amap3d
+
+react-native 高德地图组件。
+
+- [github官网]<https://github.com/qiuxiang/react-native-amap3d>
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## react-native-vector-icons
 
 [github]<https://github.com/oblador/react-native-vector-icons#installation>
 
-- - - - - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## react-native-image-picker
 
@@ -801,154 +731,3 @@ cameraAction = () => {
 ### 打包
 
 退出之前调试的App，重新运行`react-native run-android`进行打包部署，打包时会下载一些jar包，需要耐心等待。
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-备份备份备份备份备份备份备份
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## Tab路由管理
-
-运行`yarn add react-navigation`安装路由插件。
-
-### Tab首页
-
-把App.js内容复制到app/page/Home.js
-
-### Tab个人页
-
-创建app/page/Profile.js
-
-```jsx
-import React from "react";
-import { StyleSheet, View, Text } from 'react-native';
-
-export default MovieDetail = (props) => {
-    return (
-        <View style={styles.container}>
-            <Text>个人信息</Text>
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
-});
-```
-
-### Tab路由
-
-app/page/index.js
-
-```jsx
-import React from "react";
-import Home from './home'
-import Profile from './profile'
-
-export default createBottomTabNavigator(
-    {
-        // 路由配置，key值会作为tabBar的label显示
-        Home: {
-            screen: Home,
-            navigationOptions: () => ({
-                tabBarLabel: "首页"
-            })
-        },
-        Profile: {
-            screen: Profile,
-            navigationOptions: () => ({
-                tabBarLabel: "我的"
-            })
-        },
-    }, 
-    {
-
-    }
-)
-```
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-## 主路由
-
-### 商品详情页
-
-app/page/Detail.js
-
-```jsx
-import React, { Component } from 'react';
-import { Text, StyleSheet, View, TouchableOpacity } from 'react-native'
-
-export default class Detail extends Component {
-
-    constructor(props) {
-        super(props);
-        this.navigation = this.props.navigation;
-        this.navigationParams = this.navigation.state.params;
-    }
-
-    _pressBack = () => {
-        const {navigation} = this.props;
-        navigation && navigation.pop();
-    }
-
-    render() {
-        return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={this._pressBack}>
-                <Text style={styles.back}>返回{this.navigationParams.a}</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}> 商品详情 </Text>
-        </View>
-        )
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 20
-    },
-    back: {
-        fontSize: 20,
-        color: "yellow"
-    }
-})
-```
-
-### 主路由配置
-
-App.js
-
-```jsx
-import {createStackNavigator} from 'react-navigation';
-import Main from './app/page/Main';
-import Detail from './app/page/Detail';
-
-export default createStackNavigator(
-  {
-    main: {
-      screen: Main,
-      navigationOptions: ({navigation, navigationOptions}) => ({
-        header: null,
-      })
-    },
-    detail: {
-      screen: Detail,
-      navigationOptions: ({navigationOptions}) => ({
-        title: "商品详情",
-      })
-    }
-  }, 
-  {
-    initialRouteName: "main"
-  }
-)
-```
