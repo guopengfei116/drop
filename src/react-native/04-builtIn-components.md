@@ -450,6 +450,8 @@ const styles = StyleSheet.create({
 
 一个列表选择器，在Android当中有对话框和下拉菜单两种形态，IOS中只有对话框形态。
 
+组件有个mode属性设置菜单形态，默认为dialog，Android平台下可以改为dropdown形式。
+
 ```jsx
 import React from "react";
 import { 
@@ -464,14 +466,32 @@ export default class Profile extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            language: "",
+            selectedLanguage: "",
             languageOptions: [
-                "javascript",
-                "java",
-                "python",
-                "php",
-                "c++",
-                "golang"
+                {
+                    id: 1,
+                    label: "html"
+                },
+                {
+                    id: 2,
+                    label: "css"
+                },
+                {
+                    id: 3,
+                    label: "javascript"
+                },
+                {
+                    id: 4,
+                    label: "react"
+                },
+                {
+                    id: 5,
+                    label: "vue"
+                },
+                {
+                    id: 6,
+                    label: "angular"
+                },
             ]
         }
     }
@@ -483,20 +503,20 @@ export default class Profile extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* mode默认为dialog，Android平台下可以改为dropdown形式 */}
+                
                 <Picker
                     style={styles.picker}
                     mode="dropdown"
-                    selectedValue={this.state.language}
+                    selectedValue={this.state.selectedLanguage}
                     onValueChange={this._onPickerValueChange}>
                     {
-                        this.state.languageOptions.map((language) => {
+                        this.state.languageOptions.map((item) => {
                             return (
-                                <Picker.Item 
-                                    key={language}
-                                    label={language} 
-                                    value={language}>
-                                </Picker.Item>
+                                <Picker.Item
+                                    key={item.id}
+                                    label={item.label}
+                                    value={item.id}
+                                />
                             )
                         })
                     }
@@ -512,6 +532,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    // width和height对组件的外观都有影响
     picker: {
         width: 200,
         height: 20,
@@ -556,8 +577,8 @@ export default class Profile extends React.Component {
                     minimumValue={0}
                     maximumValue={10}
                     step={1}
-                    minimumTrackTintColor="blue"
-                    maximumTrackTintColor="red"
+                    minimumTrackTintColor="skyblue"
+                    maximumTrackTintColor="hotpink"
                     onValueChange={this._onSliderValueChange}
                 />
                 <Text>Slider值：{ this.state.sliderValue }</Text>
@@ -572,6 +593,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    // width对于组件的外观有影响，height没有影响，只是改变了组件占据的高度
     slider: {
         width: 200
     }
@@ -611,8 +633,8 @@ export default class Profile extends React.Component {
                     style={styles.switch}
                     value={this.state.isOn}
                     onValueChange={this._onSwitchValueChange}
-                    trackColor={{true: "blue", false: "black"}}
-                    thumbColor={this.state.isOn? "skyblue" : "gray"}
+                    trackColor={{true: "green", false: "gray"}}
+                    thumbColor={this.state.isOn? "hotpink" : "black"}
                 />
                 <Text>Switch值：{ this.state.isOn }</Text>
             </View>
@@ -625,11 +647,18 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    // width和height对组件的外观都没有效果
+    switch: {
+        width: 300,
+        height: 50,
     }
 });
 ```
 
 ### Modal
+
+animationType属性: slide底部滑入，fade淡入淡出，none没有动画。
 
 ```jsx
 import React from "react";
@@ -651,7 +680,7 @@ export default class Profile extends React.Component {
         }
     }
 
-    // Modal显示时按下返回按钮时的回调
+    // 在Modal模式下，响应物理返回按钮
     _onModalRequestClose = () => {
         this._setModalVisible(false);
         Alert.alert("模态框已关闭");
@@ -665,7 +694,6 @@ export default class Profile extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* animationType: slide底部滑入，fade淡入淡出，none没有动画 */}
                 <Modal
                     visible={this.state.modalVisible}
                     transparent={false}
@@ -673,16 +701,16 @@ export default class Profile extends React.Component {
                     onRequestClose={this._onModalRequestClose}
                 >
                     <View>
-                        <Text>Hello</Text>
+                        <Text>hei，我是 Modal !!!</Text>
                         <Button 
                             title="关闭"
-                            onPress={()=>this._setModalVisible(false)}
+                            onPress={this._setModalVisible.bind(this, false)}
                         />
                     </View>
                 </Modal>
                 <Button 
                     title="查看详情" 
-                    onPress={()=>this._setModalVisible(true)}
+                    onPress={this._setModalVisible.bind(this, true)}
                 />
             </View>
         );
@@ -709,19 +737,18 @@ import {
   StyleSheet, 
   View,
   WebView,
-  Dimensions,
 } from 'react-native';
 
-export default class MyWebView extends Component {
+export default class Search extends Component {
 
   state = {
-    url: { uri: "https://www.baidu.com/" },
+    url: {uri: "https://www.baidu.com"}
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <WebView style={styles.web} source={this.state.url}></WebView>
+        <WebView style={styles.webView} source={this.state.url}></WebView>
       </View>
     )
   }
@@ -730,12 +757,10 @@ export default class MyWebView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  web: {
-    flex: 1,
-    width: Dimensions.get("window").width
+  webView: {
+    width: "100%",
+    height: "100%",
   }
 })
 ```
