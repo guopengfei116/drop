@@ -622,19 +622,53 @@ export default class Products extends Component {
                 data={this.state.products}
                 renderItem={this._renderItem}
                 keyExtractor={this._keyExtractor}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.isRefreshing}
-                        onRefresh={this._renderRefreshContrl}
-                        title="正在刷新"
-                        colors={["red", "yellow"]}
-                        progressBackgroundColor="blue"
-                        progressViewOffset={50}/>
-                }
+                ItemSeparatorComponent={this._renderSeparator}
+                refreshControl={ {/*此处未做任何修改...*/} }
             ></FlatList>
         )
     }
 }
+
+// 此处未做任何修改...
+```
+
+版本三，商品之间添加分割线
+
+```jsx
+// 此处省略未修改内容...
+
+export default class Products extends Component {
+    // 此处省略未修改内容...
+
+    // 为FlatList的子项之间添加分割线，头尾没有
+    _renderSeparator = (section) => {
+        return (
+          <View key={section.leadingItem.id} style={styles.divider}></View>
+        )
+    }
+
+    render() {
+        return (
+            <FlatList
+                // 此处省略未修改内容...
+                ItemSeparatorComponent={this._renderSeparator}
+            >
+            </FlatList>
+        )
+    }
+
+    // 此处省略未修改内容...
+}
+
+const styles = StyleSheet.create({
+    // 此处省略未修改内容...
+    divider: {
+        height: 1,
+        marginHorizontal: 5,
+        backgroundColor: "lightgray"
+    },
+    // 此处省略未修改内容...
+})
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -891,6 +925,189 @@ export default class Detail extends Component {
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+## 商品详情页
+
+修改`app/page/product/Detail.js`组件。
+
+**版本一：使用`react-native-swiper`插件实现商品图片预览**
+
+- 安装`yarn add react-native-swiper`
+- [github文档]<https://github.com/leecade/react-native-swiper>
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    Text, 
+    StyleSheet, 
+    View, 
+    TouchableOpacity,
+    Dimensions,
+    Image
+} from 'react-native';
+import Swiper from 'react-native-swiper';
+
+export default class Detail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            product: {
+                images: [
+                    require("../../image/products/mix3/one.webp"),
+                    require("../../image/products/mix3/two.webp"),
+                    require("../../image/products/mix3/three.webp"),
+                    require("../../image/products/mix3/four.webp"),
+                    require("../../image/products/mix3/five.webp"),
+                ],
+            }
+        }
+    }
+
+    render() {
+        return (
+        <View style={styles.container}>
+            <View style={styles.SwiperSize}>
+                <Swiper showsButtons={true} autoplay={true}>
+                    {
+                        this.state.product.images.map((image, index) => {
+                            return (
+                                <View style={styles.SwiperItem}>
+                                    // enum('cover', 'contain', 'stretch', 'repeat', 'center')
+                                    <Image 
+                                        style={styles.SwiperImage}
+                                        source={image}
+                                        resizeMode="contain"
+                                    />
+                                </View>
+                            )
+                        })
+                    }
+                </Swiper>
+            </View>
+        </View>
+        )
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    SwiperSize: {
+        width: Dimensions.get("window").width,
+        height: 400
+    },
+    SwiperItem: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "rgb(246, 246, 246)"
+    },
+    SwiperImage: {
+        width: "100%",
+        height: "100%",
+    },
+})
+```
+
+**版本二：使用`Modal`组件实现全屏预览**
+
+```jsx
+
+```
+
+**版本三，接口调用与loading处理**
+
+```jsx
+import React, { Component } from 'react';
+import { 
+    Text, 
+    StyleSheet, 
+    View, 
+    TouchableOpacity,
+    Dimensions,
+    Image
+} from 'react-native';
+import Swiper from 'react-native-swiper';
+import api from '../../api/douban';
+
+export default class Detail extends Component {
+
+    constructor(props) {
+        super(props);
+        this.navigation = this.props.navigation;
+        this.navigationParams = this.navigation.state.params;
+        this.state = {
+            movieIds: [26741061, 26685451, 10759740, 25917789],
+            isLoading: true,
+            images: [
+                require("../../image/products/mix3/one.webp"),
+                require("../../image/products/mix3/two.webp"),
+                require("../../image/products/mix3/three.webp"),
+                require("../../image/products/mix3/four.webp"),
+                require("../../image/products/mix3/five.webp"),
+            ],
+            product: {}
+        }
+    }
+
+    componentDidMount() {
+        fetch(api.movie.detail + this.state.movieIds[0])
+            .then(res => res.json())
+            .then(data => {
+                // 数据拿到后，修改loading状态，存储数据列表
+                this.setState({
+                    isLoading: false,
+                    product: data
+                })
+            })
+    }
+    
+    // 获取loading组件
+    _getLoading() {
+        return (
+            <ActivityIndicator size="large" color="hotpink"/>
+        )
+    }
+
+    // 返回上一页
+    _pressBack = () => {
+        const {navigation} = this.props;
+        navigation && navigation.pop();
+    }
+
+    render() {
+        return (
+        <View style={styles.container}>
+            <View style={styles.SwiperSize}>
+                <Swiper showsButtons={true} autoplay={true}>
+                    {
+                        this.state.images.map((image, index) => {
+                            return (
+                                <View style={styles.SwiperItem}>
+                                    <Image 
+                                        style={styles.SwiperImage}
+                                        source={image}
+                                        resizeMode="contain"
+                                    />
+                                </View>
+                            )
+                        })
+                    }
+                </Swiper>
+            </View>
+            <TouchableOpacity onPress={this._pressBack}>
+                <Text style={styles.back}>返回{this.navigationParams && this.navigationParams.a}</Text>
+            </TouchableOpacity>
+            <Text style={styles.text}> 商品详情 </Text>
+        </View>
+        )
+    }
+}
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ## createBottomTabNavigator的使用
 
 现在我们要给首页底部添加TabBar按钮，实现tab点击页面切换效果。`createBottomTabNavigator`就是`react-navigation`插件给我们提供的解决方案。可以认为这个导航组件提供了一个容器，可以把几个页面聚合在一起，并且以TabBar的形式进行切换。
@@ -1019,4 +1236,371 @@ import navigatorFactory from './app/navigation/GlobalStack';
 // APP入口配置
 const root = "main";
 export default navigatorFactory(root);
+```
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+## 新增首屏海报
+
+创建`app/page/entry/index.js`，在这里我们使用`ViewPagerAndroid`组件实现该功能，但是这个组件只能在Android手机有效，如果是ios的话可以使用`TabBarIOS`组件或者之前的导航插件，但是需要隐藏底部tab。
+
+**版本一：实现基本效果**
+
+```jsx
+import React, { Component } from 'react'
+import { 
+  Text, 
+  StyleSheet, 
+  View,
+  ViewPagerAndroid,
+  StatusBar,
+  Image,
+  Dimensions,
+} from 'react-native';
+
+export default class index extends Component {
+
+  state = {
+    posters: [
+      require("../../image/entry/shiyiyue.png"),
+      require("../../image/entry/shiyiyuedong.png"),
+      require("../../image/entry/daojishi.png"),
+    ]
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* 隐藏状态栏 */}
+        <StatusBar hidden={true}/>
+
+        {/* 宣传海报 */}
+        <ViewPagerAndroid style={styles.container}>
+          {
+            this.state.posters.map((poster, index) => {
+              return (
+                <View style={styles.container} key={index}>
+                  <Image style={styles.poster} source={poster}></Image>
+                </View>
+              )
+            })
+          }
+        </ViewPagerAndroid>
+
+        {/* 跳过按钮 */}
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+  },
+  poster: {
+    width: "100%",
+    height: "100%",
+  },
+})
+```
+
+**版本二：实现倒计时跳过按钮**
+
+```jsx
+import React, { Component } from 'react'
+import { 
+  Text, 
+  StyleSheet, 
+  View,
+  ViewPagerAndroid,
+  StatusBar,
+  Image,
+  Dimensions,
+} from 'react-native';
+
+export default class index extends Component {
+
+  state = {
+    isAllowLeave: false,
+    isAllowLeaveTime: 2,
+    posters: [
+      require("../../image/entry/shiyiyue.png"),
+      require("../../image/entry/shiyiyuedong.png"),
+      require("../../image/entry/daojishi.png"),
+    ]
+  }
+
+  // 在这里我们用timeout-loop的方式每秒倒计时-1，当时间为0时，结束loop
+  componentDidMount() {
+    (function loop() {
+      // 时间为0，用户可以离开，停止loop
+      if (this.state.isAllowLeaveTime <= 0) {
+        this.setState({isAllowLeave: true});
+        return;
+      }
+
+      // 倒计时，loop
+      setTimeout(() => {
+        this.setState({isAllowLeaveTime: this.state.isAllowLeaveTime - 1});
+        loop.call(this);
+      }, 1000);
+    }).call(this);
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* 隐藏状态栏 */}
+        <StatusBar hidden={true}/>
+
+        {/* 宣传海报 */}
+        <ViewPagerAndroid style={styles.container}>
+          {
+            this.state.posters.map((poster, index) => {
+              return (
+                <View style={styles.container} key={index}>
+                  <Image style={styles.poster} source={poster}></Image>
+                </View>
+              )
+            })
+          }
+        </ViewPagerAndroid>
+
+        {/* 跳过按钮 */}
+        <View style={[styles.leaveButton, this.state.isAllowLeave? styles.leaveButtonActive : ""]}>
+          <Text style={[styles.leaveText, this.state.isAllowLeave? styles.leaveTextActive : ""]}>
+            <Text>跳过</Text>
+            <Text>({this.state.isAllowLeaveTime}s)</Text>
+          </Text>
+        </View>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: Dimensions.get("window").width,
+  },
+  poster: {
+    width: "100%",
+    height: "100%",
+  },
+  leaveButton: {
+    justifyContent: "center",
+    alignContent: "center",
+    position: "absolute",
+    left: (Dimensions.get("window").width - 150) / 2,
+    bottom: 50,
+    width: 150,
+    height: 40,
+    backgroundColor: "rgba(200, 200, 200, 0.7)",
+    borderRadius: 6,
+    // Android不生效
+    shadowColor: "black",
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    shadowOffset: { width:2, height:2 }
+  },
+  leaveButtonActive: {
+    backgroundColor: "rgba(72, 72, 72, 0.9)"
+  },
+  leaveText: {
+    textAlign: "center",
+    fontSize: 24,
+    color: "rgb(144, 144, 144)",
+  },
+  leaveTextActive: {
+    color: "#fff",
+    fontWeight: "bold"
+  }
+})
+```
+
+**版本三：实现不留痕迹跳转**
+
+```jsx
+import React, { Component } from 'react'
+import { 
+  Text, 
+  StyleSheet, 
+  View,
+  ViewPagerAndroid,
+  StatusBar,
+  Image,
+  Dimensions,
+  TouchableNativeFeedback,
+} from 'react-native';
+
+export default class index extends Component {
+
+  state = {
+    isAllowLeave: false,
+    isAllowLeaveTime: 3,
+    posters: [
+      require("../../image/entry/shiyiyue.png"),
+      require("../../image/entry/shiyiyuedong.png"),
+      require("../../image/entry/daojishi.png"),
+    ]
+  }
+
+  // 在这里我们用timeout-loop的方式每秒倒计时-1，当时间为0时，结束loop
+  componentDidMount() {
+    (function loop() {
+      // 时间为0，用户可以离开，停止loop
+      if (this.state.isAllowLeaveTime <= 0) {
+        this.setState({isAllowLeave: true});
+        return;
+      }
+
+      // 倒计时，loop
+      setTimeout(() => {
+        this.setState({isAllowLeaveTime: this.state.isAllowLeaveTime - 1});
+        loop.call(this);
+      }, 1000);
+    }).call(this);
+  }
+
+  // 离开，跳转到首页
+  _leave = () => {
+    if (!this.state.isAllowLeave) return;
+    const navigation = this.props.navigation;
+    navigation.replace("main");
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* 隐藏状态栏 */}
+        <StatusBar hidden={true}/>
+
+        {/* 宣传海报 */}
+        <ViewPagerAndroid style={styles.container} initialPage={0}>
+          {
+            this.state.posters.map((poster, index) => {
+              return (
+                <View style={styles.container} key={index}>
+                  <Image style={styles.poster} resizeMode="cover" source={poster}></Image>
+                </View>
+              )
+            })
+          }
+        </ViewPagerAndroid>
+
+        {/* 跳过按钮，这里因为View使用了定位，所以不能使用其它两个touchable组件，因为他们俩会有自己的组件层，不一样能够覆盖住定位的元素 */}
+        <TouchableNativeFeedback onPress={this._leave}>
+          <View style={[styles.leaveButton, this.state.isAllowLeave? styles.leaveButtonActive : ""]}>
+            <Text style={[styles.leaveText, this.state.isAllowLeave? styles.leaveTextActive : ""]}>
+              <Text>跳过</Text>
+              {
+                !this.state.isAllowLeave? <Text>({this.state.isAllowLeaveTime}s)</Text> : ""
+              }
+            </Text>
+          </View>
+        </TouchableNativeFeedback>
+      </View>
+    )
+  }
+}
+```
+
+**补充：直接在View监听触摸响应事件**
+
+```jsx
+import React, { Component } from 'react'
+import { 
+  Text, 
+  StyleSheet, 
+  View,
+  Image,
+  ViewPagerAndroid,
+  Dimensions,
+  StatusBar,
+} from 'react-native';
+
+export default class One extends Component {
+
+  state = {
+    isAllowLeave: false,
+    isAllowLeaveTime: 3,
+    posters: [
+      require("../../image/entry/shiyiyue.png"),
+      require("../../image/entry/shiyiyuedong.png"),
+      require("../../image/entry/daojishi.png"),
+    ]
+  }
+
+  componentDidMount() {
+    (function loop() {
+      // 到时间为0的时候允许用户跳过
+      if(this.state.isAllowLeaveTime <= 0) {
+        this.setState({isAllowLeave: true});
+        return;
+      }
+      // 倒计时
+      setTimeout(() => {
+        const isAllowLeaveTime = this.state.isAllowLeaveTime - 1;
+        this.setState({isAllowLeaveTime});
+        loop.call(this);
+      }, 1000);
+    }).call(this);
+  }
+
+  // 控制按钮是否应该响应触屏事件
+  _hasResponder = () => {
+    return this.state.isAllowLeave;
+  }
+
+  // 跳出入场海报
+  _leave = () => {
+    this.props.navigation.replace(this.props.nextRouteName || "main");
+  }
+
+  // 渲染海报Item
+  _renderPosterItem = () => {
+    return this.state.posters.map((poster, index) => {
+      return (
+        <View key={index}>
+          <Image
+            style={styles.poster} 
+            resizeMode="stretch"
+            resizeMethod="scale"
+            source={poster}>
+          </Image>
+        </View>
+      )
+    });
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* 隐藏状态栏 */}
+        <StatusBar hidden={true}/>
+
+        {/* 首屏海报 */}
+        <ViewPagerAndroid style={styles.container} initialPage={0}>
+          { this._renderPosterItem() }
+        </ViewPagerAndroid>
+        
+        {/* 跳过按钮 */}
+        <View
+            style={[styles.leaveButton, this.state.isAllowLeave && styles.leaveButtonActive]}
+            onStartShouldSetResponder={this._hasResponder}
+            onResponderGrant={this._leave}
+            color="red">
+            <Text style={[styles.leaveText, this.state.isAllowLeave && styles.leaveTextActive]}>
+              <Text>跳过</Text>
+              {
+                !this.state.isAllowLeave
+                && <Text>{'(' + this.state.isAllowLeaveTime + 's)'}</Text>
+              }
+            </Text>
+          </View>
+      </View>
+    )
+  }
+}
 ```
