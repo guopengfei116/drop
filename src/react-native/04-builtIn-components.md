@@ -101,8 +101,6 @@ export default class ImageTest extends Component {
 }
 ```
 
-
-
 ### TextInput
 
 - 作用相当于 `html` 的 `input` 标签用于输入文本
@@ -431,7 +429,7 @@ const styles = StyleSheet.create({
 
 ### refreshControl
 
-在不同平台下的效果是不同的。
+此组件需要配合使用在`ScrollView`和`FlatList`列表组件中，从而实现下拉刷新的功能，同时下拉刷新的效果在不同平台下是不同的。
 
 ```jsx
 <FlatList 
@@ -446,4 +444,298 @@ const styles = StyleSheet.create({
         progressViewOffset={50}
     />}>
 </FlatList>
+```
+
+### Picker
+
+一个列表选择器，在Android当中有对话框和下拉菜单两种形态，IOS中只有对话框形态。
+
+```jsx
+import React from "react";
+import { 
+    StyleSheet, 
+    View, 
+    Text,
+    Picker,
+} from 'react-native';
+
+export default class Profile extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            language: "",
+            languageOptions: [
+                "javascript",
+                "java",
+                "python",
+                "php",
+                "c++",
+                "golang"
+            ]
+        }
+    }
+
+    _onPickerValueChange = (language) => {
+        this.setState({language});
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                {/* mode默认为dialog，Android平台下可以改为dropdown形式 */}
+                <Picker
+                    style={styles.picker}
+                    mode="dropdown"
+                    selectedValue={this.state.language}
+                    onValueChange={this._onPickerValueChange}>
+                    {
+                        this.state.languageOptions.map((language) => {
+                            return (
+                                <Picker.Item 
+                                    key={language}
+                                    label={language} 
+                                    value={language}>
+                                </Picker.Item>
+                            )
+                        })
+                    }
+                </Picker>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    picker: {
+        width: 200,
+        height: 20,
+        backgroundColor: "skyblue",
+        color: "red",
+    }
+});
+```
+
+### Slider
+
+这是一个范围选择器。
+
+```jsx
+import React from "react";
+import { 
+    StyleSheet, 
+    View, 
+    Text,
+    Slider,
+} from 'react-native';
+
+export default class Profile extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            sliderValue: 2,
+        }
+    }
+
+    _onSliderValueChange = (sliderValue) => {
+        this.setState({sliderValue});
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <Slider
+                    style={styles.slider}
+                    value={this.state.sliderValue}
+                    minimumValue={0}
+                    maximumValue={10}
+                    step={1}
+                    minimumTrackTintColor="blue"
+                    maximumTrackTintColor="red"
+                    onValueChange={this._onSliderValueChange}
+                />
+                <Text>Slider值：{ this.state.sliderValue }</Text>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    slider: {
+        width: 200
+    }
+});
+```
+
+### Switch
+
+用来进行两个状态的切换，俗称开关。
+
+```jsx
+import React from "react";
+import { 
+    StyleSheet, 
+    View, 
+    Text,
+    Switch
+} from 'react-native';
+
+export default class Profile extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            isOn: false,
+        }
+    }
+
+    _onSwitchValueChange = (isOn) => {
+        this.setState({isOn});
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <Switch
+                    style={styles.switch}
+                    value={this.state.isOn}
+                    onValueChange={this._onSwitchValueChange}
+                    trackColor={{true: "blue", false: "black"}}
+                    thumbColor={this.state.isOn? "skyblue" : "gray"}
+                />
+                <Text>Switch值：{ this.state.isOn }</Text>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
+```
+
+### Modal
+
+```jsx
+import React from "react";
+import { 
+    StyleSheet, 
+    View, 
+    Text,
+    Modal,
+    Alert,
+    Button
+} from 'react-native';
+
+export default class Profile extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            modalVisible: false,
+        }
+    }
+
+    // Modal显示时按下返回按钮时的回调
+    _onModalRequestClose = () => {
+        this._setModalVisible(false);
+        Alert.alert("模态框已关闭");
+    }
+
+    // Modal显示隐藏
+    _setModalVisible = (visible) => {
+        this.setState({modalVisible: visible});
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                {/* animationType: slide底部滑入，fade淡入淡出，none没有动画 */}
+                <Modal
+                    visible={this.state.modalVisible}
+                    transparent={false}
+                    animationType="slide"
+                    onRequestClose={this._onModalRequestClose}
+                >
+                    <View>
+                        <Text>Hello</Text>
+                        <Button 
+                            title="关闭"
+                            onPress={()=>this._setModalVisible(false)}
+                        />
+                    </View>
+                </Modal>
+                <Button 
+                    title="查看详情" 
+                    onPress={()=>this._setModalVisible(true)}
+                />
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
+```
+
+### WebView
+
+此组件就是一个内置的手机浏览器，可以用来开发网页。
+
+```jsx
+import React, { Component } from 'react'
+import { 
+  Text, 
+  StyleSheet, 
+  View,
+  WebView,
+  Dimensions,
+} from 'react-native';
+
+export default class MyWebView extends Component {
+
+  state = {
+    url: { uri: "https://www.baidu.com/" },
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <WebView style={styles.web} source={this.state.url}></WebView>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  web: {
+    flex: 1,
+    width: Dimensions.get("window").width
+  }
+})
 ```
