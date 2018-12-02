@@ -90,121 +90,98 @@
 }
 ```
 
+#### 编写一个配置文件
+
+application.json
+
+```json
+{
+  "appID": "公众账号开发者ID(AppID)",
+  "appSecret": "公众账号开发者密码(AppSecret)",
+  "token": "服务器配置里填写的自定义token",
+  "grantType": "如果要获取access_token，固定填写client_credential",
+  "mainService": {
+    "domaon": "与微信对接的服务器域名",
+    "port": "服务端口"
+  },
+  "getTokenService": {
+    "domaon": "专门获取access_token的服务器域名",
+    "port": "服务端口"
+  },
+  "wxAPI": {
+    "domain": "https://api.weixin.qq.com",
+    "path": "/cgi-bin/token",
+    "params": "?grant_type=client_credential&appid=替换自己的AppID&secret=替换自己的AppSecret"
+  }
+}
+```
+
 ### 编码
 
 access_token的有效期目前为2个小时，需定时刷新，重复获取将导致上次获取的access_token失效，另外每天access_token的获取次数还有限制，目前是每天2000次，所以我们应该编写一个通用接口，专门负责access_token的获取与维护。
 
+get-token.js
+
 ```js
+const axios = require('axios');
 const http = require('http');
-const url = require('url');
+const appConfig = require('./application.json');
+const { getTokenService, wxAPI } = appConfig;
 
-// 服务器配置
-const serverConfig = {
-    port: 8867
-};
+/**
+ * @method 负责请求微信的接口获取token
+ * @return Promise
+*/
+function requestAccessToken() {
+  const url = `${wxAPI.domain}${wxAPI.path}${wxAPI.params}`;
 
-// token缓存，因为token每天只能获取2000次，而且获取了新的旧的就会失效，所以要缓存
-const tokenCache = {
+  return axios.get(url).then((resp) => {
+    return Promise.resolve(resp.data);
+  });
+}
+
+/**
+ * @method 获取access_token
+ * 因为token每天只能获取2000次，而且获取了新的旧的就会失效，所以这个函数对access_token进行了缓存封装
+ * @return Promise
+*/
+const getAccessToken = (function() {
+  // token缓存
+  const tokenCache = {
     access_token: null,
     update_time: Date.now(),
-    expires_in: 7200
-};
+    expires: 7200
+  };
 
-// 微信接口所需参数
-const wxParams = {
-    appID: 'wx6526e8044b491ab8',
-    appsecret: 'e43f21c9b5c1ea00b435b91102eb04b7',
-    grantType: 'client_credential'
-};
-
-// wx接口
-const wxAPI = {
-    domain: 'https://api.weixin.qq.com',
-    path: `/cgi-bin/token?grant_type=${wxParams.grantType}&appid=${wxParams.appID}&secret=${wxParams.appsecret}`
-};
-
-// 这个接口是供我们自己使用的，当我们需要access-token的时候调用
-const server = http.createServer(function(req, rep) {
-
-    // 编码与跨域设置
-    rep.writeHead(200, {
-        "Content-Type": "application/json;charset=utf-8",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*"
-    });
-
-    // 路由
-    if(req.method == 'GET') {
-        wxAccessToken(req, rep);
+  // 返回获取access_token的异步函数  
+  return async function (req, resp) {
+    // 优先使用缓存
+    if (tokenCache.access_token && (Date.now() - tokenCache.update_time) / 1000 < tokenCache.expires) {
+      return tokenCache.access_token;
     }
-    // 默认返回
-    else {
-        rep.write(JSON.stringify({msg: '数据不存在'}));
-        rep.end();
+    // 无缓存，请求微信API，然后缓存结果
+    try {
+      let result = await requestAccessToken();
+      Object.assign(tokenCache, result, { update_time: Date.now() });
+      return tokenCache.access_token;
+    } catch(e) {
+      return null;
     }
+  }
+}());
 
+// 接口服务
+http.createServer(async (req, resp) => {
+  resp.setHeader('Content-Type', 'application/json;charset=utf-8');
+  const access_token = await getAccessToken();
+
+  // 成功直接返回，失败给出提示  
+  if (access_token) {
+    resp.end(access_token);
+  } else {
+    resp.end(JSON.stringify({code: 500, msg: 'access_token获取失败'}));
+  }
 })
-.listen(serverConfig.port, () => {
-    console.log(`Node服务已启动，监听端口为${serverConfig.port}`)
-})
-.on('close', () => {
-    console.log(`Node${serverConfig.port}端口服务已终止`)
-});
-
-/**
- * 负责请求微信的接口获取token，返回一个Promise对象
-*/
-function getAccessToken() {
-    return new Promise(function(resolve, reject) {
-
-        // 请求微信接口
-        http.request({
-            hostname: wxAPI.domain,
-            path: wxAPI.path,
-            callback: rep => {
-                let result = "";
-                rep.on("data", chunk => result += chunk);
-                res.on('end', () => {
-                    try {
-                        result = JSON.parse(result);
-                        console.log("微信token接口调用成功，并且解析成功");
-                        resolve(result);
-                    } catch (e) {
-                        console.log("微信token接口调用成功，但是解析失败");
-                        reject(e);
-                    }
-                });
-            }
-        }).on('error', (e) => {
-            console.error(`微信token接口调用失败: ${e.message}`);
-            reject(e);
-        });
-    });
-}
-
-/**
- * 处理token获取的请求，优先有缓存里取，如果没有则通过getAccessToken方法调用微信接口取
-*/
-async function wxAccessToken(req, rep) {
-    let repData = { code: 200, accessToken: null };
-
-    // 有缓存，保证有值，并且时间有效
-    if((Date.now() - tokenCache.update_time) / 1000 < tokenCache.expires_in && tokenCache.access_token) {
-        repData.accessToken = tokenCache.access_token;
-    }
-    // 无缓存，得到微信新的token，同时更新缓存数据
-    else {
-        try{
-            let result = await getAccessToken();
-            Object.assign(tokenCache, result, { update_time: Date.now() });
-            repData.accessToken = tokenCache.access_token;
-        } catch(e) {
-            repData.code = 500;
-            console.log(e.message);
-        }
-    }
-
-    rep.write(JSON.stringify(repData));
-    rep.end();
-}
+.listen(getTokenService.port, () => console.log(`启动wx-token服务:${getTokenService.port}`))
+.on('close', () => console.log(`终止wx-token服务:${getTokenService.port}`));
 ```
