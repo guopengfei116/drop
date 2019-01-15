@@ -2,23 +2,40 @@
 
 ## 项目创建与目录结构设计
 
+### 手机模拟器
+
+```
+adb connect 127.0.0.1:7555
+adb devices
+```
+
+### 项目创建
+
+```shell
+react-native init ${AppName}
+cd ${AppName}
+react-native run-android
+```
+
+### 创建目录结构
+
 ```txt
 - app
-    - image
-        - *.(jpg|png|git|*): 图片资源
-    - api
-        - index.js: 项目所需接口
-    - constant
-        - index.js: 项目常量数据
-    - components
-        - Searchbar.js: 搜索条
-        - Advertisement.js: 轮播广告
-        - Products.js: 商品列表
-    - page
-        - Home.js 首页
-        - Profile.js 个人页
-    - navigation
-        - Main.js 入口Tab页导航
+  - image
+    - *.(jpg|png|git|*): 图片资源
+  - api
+    - index.js: 项目所需接口
+  - constant
+    - index.js: 项目常量数据
+  - components
+    - Searchbar.js: 搜索条
+    - Advertisement.js: 轮播广告
+    - Products.js: 商品列表
+  - pages
+    - Home.js 首页
+    - Profile.js 个人页
+  - navigation
+    - Main.js 入口Tab页导航
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +61,7 @@ export default class App extends Component {
 
         {/* 状态栏配置 */}
         <StatusBar
-          hidden={false}
+          hidden={true}
           animated={true}
           backgroundColor="#ccc"
           barStyle="light-content"
@@ -87,7 +104,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "blue"
   }
-});
+})
 ```
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,17 +143,17 @@ export default class App extends Component {
           backgroundColor="#ccc"
           barStyle="light-content"
           translucent={false}
-        ></StatusBar>
+        />
 
         {/* 搜索条 */}
-        <Searchbar></Searchbar>
+        <Searchbar />
 
         {/* 轮播广告 */}
-        <Adverticement></Adverticement>
+        <Adverticement />
 
         {/* 商品列表 */}
-        <Products></Products>
-        
+        <Products />
+      
       </View>
     );
   }
@@ -146,8 +163,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-  },
-});
+  }
+})
 ```
 
 ### 搜索条组件
@@ -155,76 +172,73 @@ const styles = StyleSheet.create({
 ```jsx
 import React, { Component } from 'react'
 import { 
-    Text, 
-    StyleSheet, 
-    View,
-    TextInput,
-    Button,
-    Alert
+  Text, 
+  StyleSheet, 
+  View,
+  TextInput,
+  Button,
+  Alert
 } from 'react-native'
 
 export default class Searchbar extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            searchValue: ""
-        }
-    }
+  state = {
+    searchValue: ""
+  }
 
-    _changeText = (newValue) => {
-        this.setState({searchValue: newValue})
-    }
+  _changeText = (value) => {
+    this.setState({searchValue: value})
+  }
 
-    _search = () => {
-        Alert.alert(this.state.searchValue);
-    }
+  _search = () => {
+    Alert.alert(this.state.searchValue);
+  }
 
-    render() {
-        return (
-            <View style={styles.searchbar}>
-                <TextInput 
-                    placeholder="输入搜索关键字"
-                    underlineColorAndroid="transparent"
-                    value={this.state.searchval}
-                    onChangeText={this._changeText}
-                    style={styles.input} 
-                ></TextInput>
-                <Button
-                    title="搜索"
-                    onPress={this._search}
-                    style={styles.button}
-                ></Button>
-            </View>
-        )
-    }
+  render() {
+    return (
+      <View style={styles.searchbar}>
+        <TextInput 
+          style={styles.input} 
+          value={this.state.searchval}
+          placeholder="搜索你喜欢的商品"
+          underlineColorAndroid="transparent"
+          onChangeText={this._changeText}
+        />
+        <Button
+          style={styles.button}
+          title="搜索"
+          onPress={this._search}
+        />
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    searchbar: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: 'center',
-        paddingHorizontal: 10,
-        height: 40,
-    },
-    input: {
-        flex: 1,
-        marginRight: 10,
-        paddingLeft: 6,
-        paddingVertical: 6,
-        height: 30,
-        borderWidth: 2,
-        borderColor: "#ccc",
-        borderRadius: 5,
-        lineHeight: 12,
-        fontSize: 12
-    },
-    button: {
-        width: 40,
-        height: 30,
-        backgroundColor: "green"
-    }
+  searchbar: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    height: 40,
+  },
+  input: {
+    flex: 1,
+    marginRight: 10,
+    paddingLeft: 6,
+    paddingVertical: 6,
+    height: 30,
+    borderWidth: 2,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    lineHeight: 12,
+    fontSize: 12
+  },
+  button: {
+    width: 40,
+    height: 30,
+    backgroundColor: "green"
+  }
 })
 ```
 
@@ -235,79 +249,74 @@ const styles = StyleSheet.create({
 ```jsx
 import React, { Component } from 'react'
 import { 
-    Text, 
-    StyleSheet, 
-    View,
-    ScrollView,
-    Dimensions,
-    Image
+  Text, 
+  StyleSheet, 
+  View,
+  ScrollView,
+  Dimensions,
+  Image
 } from 'react-native'
 
 export default class Adverticement extends Component {
 
-  constructor(props) {
-        super(props);
-        this.state = {
-            currentPage: 0,
-            advertisements: [
-                {
-                    uri: require("../image/double-11.png"),
-                    backgroundColor: "blue"
-                },
-                {
-                    uri: require("../image/eyes.png"),
-                    backgroundColor: "yellow"
-                },
-                {
-                    uri: require("../image/five-year.png"),
-                    backgroundColor: "pink"
-                }
-            ]
-        }
-    }
+  state = {
+    currentPage: 0,
+    advertisements: [
+      {
+        uri: require("../image/double-11.png"),
+        backgroundColor: "blue"
+      },
+      {
+        uri: require("../image/eyes.png"),
+        backgroundColor: "yellow"
+      },
+      {
+        uri: require("../image/five-year.png"),
+        backgroundColor: "pink"
+      }
+    ]
+  }
 
-    render() {
-        return (
-            <View style={styles.advertisement}>
-                <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    pagingEnabled={true}
-                >
-                  {
-                      this.state.advertisements.map((item, index) => {
-                          return (
-                              <View 
-                                  key={index}
-                                  style={[styles.advert, item.backgroundColor]}
-                              >
-                                  <Image 
-                                      source={item.uri}
-                                      style={styles.image}>
-                                  </Image>
-                              </View>
-                          )
-                      })
-                  }
-                </ScrollView>
-            </View>
-        )
-    }
+  render() {
+    return (
+      <View style={styles.advertisement}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={true}>
+          {
+            this.state.advertisements.map((item, index) => {
+              return (
+                <View 
+                  key={index}
+                  style={[styles.advert, item.backgroundColor]}>
+                  <Image 
+                    source={item.uri}
+                    style={styles.image}
+                  />
+                </View>
+              )
+            })
+          }
+        </ScrollView>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    advertisement: {
-        height: 200,
-        backgroundColor: "yellow",
-    },
-    advert: {
-        width: Dimensions.get("window").width,
-        height: 200
-    },
-    image: {
-        width: "100%",
-        height: "100%"
-    },
+  advertisement: {
+    height: 200,
+    backgroundColor: "yellow",
+  },
+  advert: {
+    width: Dimensions.get("window").width,
+    height: 200
+  },
+  image: {
+    width: "100%",
+    height: "100%"
+  },
 })
 ```
 
@@ -316,59 +325,58 @@ const styles = StyleSheet.create({
 ```jsx
 import React, { Component } from 'react'
 import { 
-    Text, 
-    StyleSheet, 
-    View,
-    ScrollView,
-    Dimensions
+  Text, 
+  StyleSheet, 
+  View,
+  ScrollView,
+  Dimensions
 } from 'react-native'
 
 export default class Adverticement extends Component {
 
-    // 此处省略未作改变的代码...
+  // 此处省略未作改变的代码...
 
-    // 挂载后启动定时器
-    componentDidMount() {
-        this._startTimer();
-    }
+  // 挂载后启动定时器
+  componentDidMount() {
+    this._startTimer();
+  }
 
-    // 下载后清除定时器
-    componentWillUnmount() {
-        this._endTimer();
-    }
+  // 下载后清除定时器
+  componentWillUnmount() {
+    this._endTimer();
+  }
 
-    _startTimer = () => {
-        this.timerId = setInterval(() => {
-            // 循环页码
-            let nextPage = this.state.currentPage + 1;
-            nextPage = nextPage >= this.state.advertisements.length? 0 : nextPage;
+  _startTimer = () => {
+    this.timerId = setInterval(() => {
+      // 循环页码
+      let nextPage = this.state.currentPage + 1;
+      nextPage = nextPage >= this.state.advertisements.length? 0 : nextPage;
 
-            // 状态更新后更新幻灯片(通过修改scrollView组件的offsetX值实现)
-            this.setState({currentPage: nextPage}, () => {
-                let offsetX = Dimensions.get("window").width * this.state.currentPage;
-                this.refs.scrollView.scrollTo({x: offsetX, y: 0, animated: true});
-            });
-        }, 1500);
-    }
+      // 状态更新后更新幻灯片(通过修改scrollView组件的offsetX值实现)
+      this.setState({currentPage: nextPage}, () => {
+        let offsetX = Dimensions.get("window").width * this.state.currentPage;
+        this.refs.scrollView.scrollTo({x: offsetX, y: 0, animated: true});
+      });
+    }, 1500);
+  }
 
-    _endTimer = () => {
-        clearInterval(this.timerId);
-    }
+  _endTimer = () => {
+    clearInterval(this.timerId);
+  }
 
-    render() {
-        return (
-            <View style={styles.advertisement}>
-                <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    pagingEnabled={true}
-                    ref="scrollView"
-                >
-                    {/* 此处省略未作改变的代码... */}
-                </ScrollView>
-            </View>
-        )
-    }
+  render() {
+    return (
+      <View style={styles.advertisement}>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={true}
+          ref="scrollView">
+          {/* 此处省略未作改变的代码... */}
+        </ScrollView>
+      </View>
+    )
+  }
 }
 
 // 此处省略未作改变的代码...
@@ -379,74 +387,71 @@ export default class Adverticement extends Component {
 ```jsx
 export default class Adverticement extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentPage: 0,
-            circleSize: 8,
-            circleMargin: 5,
-            // 此处省略未作改变的代码...
-        }
-    }
-
+  state = {
+    currentPage: 0,
+    circleSize: 8,
+    circleMargin: 5,
     // 此处省略未作改变的代码...
+  }
 
-    // 计算轮播指示器位置
-    _computeIndicatorOffset = () => {
-        const advertisementCount = this.state.advertisements.length;
-        const indicatorWidth = (this.state.circleSize * advertisementCount)
-            + (this.state.circleMargin * advertisementCount * 2);
-        return {
-            left: (Dimensions.get("window").width - indicatorWidth) / 2,
-            bottom: 10
-        };
-    }
+  // 此处省略未作改变的代码...
 
-    render() {
-        return (
-            <View style={styles.advertisement}>
-                {/* 此处省略未作改变的代码... */}
-                <View 
-                    style={[
-                        styles.indicator, 
-                        this._computeIndicatorOffset()
-                    ]}
-                >
-                    {
-                        (()=>{
-                            const circleStyle = {
-                                marginHorizontal: this.state.circleMargin,
-                                width: this.state.circleSize,
-                                height: this.state.circleSize,
-                                borderRadius: this.state.circleSize / 2,
-                            };
-                            return this.state.advertisements.map((item, i) => {
-                                const dynamicStyle = 
-                                    i === this.state.currentPage
-                                    ? styles.circleSelected
-                                    : {};
-                                return (<View key={i} style={[styles.circle, circleStyle, dynamicStyle]}></View>)
-                            })
-                        })()
-                    }
-                </View>
-            </View>
-        )
-    }
+  // 计算轮播指示器位置
+  _computeIndicatorOffset = () => {
+    const advertisementCount = this.state.advertisements.length;
+    const indicatorWidth = (this.state.circleSize * advertisementCount)
+      + (this.state.circleMargin * advertisementCount * 2);
+    return {
+      left: (Dimensions.get("window").width - indicatorWidth) / 2,
+      bottom: 10
+    };
+  }
+
+  render() {
+    return (
+      <View style={styles.advertisement}>
+        {/* 此处省略未作改变的代码... */}
+        <View 
+          style={[
+            styles.indicator, 
+            this._computeIndicatorOffset()
+          ]}
+        >
+          {
+            (()=>{
+              const circleStyle = {
+                marginHorizontal: this.state.circleMargin,
+                width: this.state.circleSize,
+                height: this.state.circleSize,
+                borderRadius: this.state.circleSize / 2,
+              };
+              return this.state.advertisements.map((item, i) => {
+                const dynamicStyle = 
+                  i === this.state.currentPage
+                  ? styles.circleSelected
+                  : {};
+                return (<View key={i} style={[styles.circle, circleStyle, dynamicStyle]}></View>)
+              })
+            })()
+          }
+        </View>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    // 此处省略未作改变的代码...
-    indicator: {
-        position: "absolute",
-        flexDirection: "row"
-    },
-    circle: {
-        backgroundColor: '#ccc',
-    },
-    circleSelected: {
-        backgroundColor: '#fff',
-    },
+  // 此处省略未作改变的代码...
+  indicator: {
+    position: "absolute",
+    flexDirection: "row"
+  },
+  circle: {
+    backgroundColor: '#ccc',
+  },
+  circleSelected: {
+    backgroundColor: '#fff',
+  },
 })
 ```
 
@@ -457,176 +462,176 @@ const styles = StyleSheet.create({
 ```jsx
 import React, { Component } from 'react'
 import { 
-    Text, 
-    StyleSheet, 
-    View,
-    FlatList,
-    Image
+  Text, 
+  StyleSheet, 
+  View,
+  FlatList,
+  Image
 } from 'react-native'
 
 export default class Products extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            products: [
-                {
-                    id: "1",
-                    title: "小米MIX3",
-                    subTitle: "滑盖手机，咔咔咔",
-                    image: ""
-                },
-                {
-                    id: "2",
-                    title: "华为Mate20",
-                    subTitle: "黑科技，牛逼牛逼",
-                    image: ""
-                },
-                {
-                    id: "3",
-                    title: "魅族",
-                    subTitle: "漂亮无需多言",
-                    image: ""
-                },
-                {
-                    id: "4",
-                    title: "锤子",
-                    subTitle: "漂亮的不像实力派",
-                    image: ""
-                },
-                {
-                    id: "5",
-                    title: "三星",
-                    subTitle: "我的电池绝对靠谱",
-                    image: ""
-                },
-                {
-                    id: "6",
-                    title: "苹果",
-                    subTitle: "我的价格是真的不贵",
-                    image: ""
-                }
-            ]
-        }
-    }
+  state = {
+    products: [
+      {
+        id: "1",
+        title: "小米MIX3",
+        subTitle: "滑盖手机，咔咔咔",
+        image: "https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2501604651,2110932308&fm=173&app=25&f=JPEG?w=640&h=357&s=1320FC052025A31B839554C603007052"
+      },
+      {
+        id: "2",
+        title: "华为Mate20Pro",
+        subTitle: "黑科技，牛逼牛逼",
+        image: "https://res.vmallres.com/pimages//product/6901443281237/428_428_1546486111927mp.png"
+      },
+      {
+        id: "3",
+        title: "魅族16th",
+        subTitle: "漂亮无需多言",
+        image: "https://openfile.meizu.com/group1/M00/05/E1/Cgbj0FtqgmuAHzQbAAflWG0_wvs749.png680x680.jpg"
+      },
+      {
+        id: "4",
+        title: "锤子R1",
+        subTitle: "漂亮的不像实力派",
+        image: "https://resource.smartisan.com/resource/2077bb9819a652c36da473f379fe510b.png?x-oss-process=image/resize,w_659/format,webp"
+      },
+      {
+        id: "5",
+        title: "三星S8",
+        subTitle: "我的电池绝对靠谱",
+        image: "https://paimgcdn.baidu.com/E9276F589ED9446E?src=http%3A%2F%2Fms.bdimg.com%2Fdsp-image%2F1341815126.jpg&rz=urar_2_968_600&v=0"
+      },
+      {
+        id: "6",
+        title: "苹果IphoneXS",
+        subTitle: "我的价格是真的不贵",
+        image: "https://imgservice.suning.cn/uimg1/pcms/newcatentries/_krqrDCn14hmtmAjVfS8uw==.png_800w_800h_4e"
+      }
+    ]
+  }
 
-    // 生成FlatList的每一项
-    _renderItem = ({item, index}) => {
-        return (
-            <View style={styles.item}>
-                <Image 
-                    source={item.uri}
-                    style={styles.image}>
-                </Image>
-                <View style={styles.content}>
-                    <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.subTitle}>{item.subTitle}</Text>
-                </View>
-            </View>
-        )
-    }
+  // 渲染FlatList的每个Item
+  _renderItem = ({item, index}) => {
+    return (
+      <View style={styles.item}>
+        {/* 网络图片必须有宽高 */}
+        <Image
+          style={styles.image}
+          source={{uri: item.image}}
+        />
+        <View style={styles.content}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.subTitle}>{item.subTitle}</Text>
+        </View>
+      </View>
+    )
+  }
 
-    // 为FlatList的每一项生成唯一key
-    _keyExtractor = (item, index) => {
-        return item.id;
-    }
+  // 为FlatList的每一项生成唯一key
+  _keyExtractor = (item, index) => {
+    return item.id;
+  }
 
-    render() {
-        return (
-            <FlatList
-                data={this.state.products}
-                renderItem={this._renderItem}
-                keyExtractor={this._keyExtractor}
-            ></FlatList>
-        )
-    }
+  render() {
+    return (
+      <FlatList
+        data={this.state.products}
+        renderItem={this._renderItem}
+        keyExtractor={this._keyExtractor}
+      />
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    products: {
-        flex: 1,
-        backgroundColor: "blue"
-    },
-    item: {
-        flexDirection: 'row',
-        justifyContent: "center",
-        alignContent: 'center',
-        marginHorizontal: 10,
-        marginTop: 10,
-        height: 60,
-    },
-    image: {
-        marginRight: 10,
-        width: 50,
-        height: 50,
-        backgroundColor: "green"
-    },
-    content: {
-        flex: 1
-    },
-    title: {
-        lineHeight: 28,
-        fontSize: 16,
-        color: "#000"
-    },
-    subTitle: {
-        lineHeight: 18,
-        fontSize: 12,
-        color: "#ccc"
-    }
+  products: {
+    flex: 1,
+    backgroundColor: "blue"
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: "center",
+    alignContent: 'center',
+    marginHorizontal: 10,
+    marginTop: 10,
+    height: 60,
+  },
+  image: {
+    marginRight: 10,
+    width: 50,
+    height: 50,
+    backgroundColor: "green"
+  },
+  content: {
+    flex: 1
+  },
+  title: {
+    lineHeight: 28,
+    fontSize: 16,
+    color: "#000"
+  },
+  subTitle: {
+    lineHeight: 18,
+    fontSize: 12,
+    color: "#ccc"
+  }
 })
 ```
 
 版本二，添加下拉刷新功能
 
 ```jsx
-import React, { Component } from 'react';
-import { 
-    Text, 
-    StyleSheet, 
-    View,
-    FlatList,
-    Image,
-    RefreshControl,
-} from 'react-native';
+// 此处未做任何修改...
+import { RefreshControl } from 'react-native';
 
 export default class Products extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isRefreshing: false,
-            products: [...]
-        }
-    }
+  state = {
+    // 此处未做任何修改...
+    isRefreshing: false,
+  }
 
-    // 此处省略未作改变的代码...
+  // 此处未做任何修改...
 
-    // 下拉刷新取出新商品
-    _renderRefreshContrl = () => {
-        this.setState({isRefreshing: true});
-        setTimeout(() => {
-          const newProducts = Array.from(Array(10)).map((v, i) => ({
-            id: "" + i,
-            title: `新商品${i+1}`,
-            subTitle: `新描述${i+1}`,
-            image: require("../image/eyes.png"),
-          }));
-          this.setState({isRefreshing: false, products: newProducts});
-        }, 2000);
-    }
+  // 下拉刷新取出新商品
+  _renderRefreshContrl = () => {
+    this.setState({isRefreshing: true});
 
-    render() {
-        return (
-            <FlatList
-                data={this.state.products}
-                renderItem={this._renderItem}
-                keyExtractor={this._keyExtractor}
-                ItemSeparatorComponent={this._renderSeparator}
-                refreshControl={ {/*此处未做任何修改...*/} }
-            ></FlatList>
-        )
-    }
+    // 使用定时器模拟异步接口请求
+    setTimeout(() => {
+      const newProducts = Array.from(Array(10)).map((v, i) => ({
+        id: "" + i,
+        title: `新商品${i+1}`,
+        subTitle: `新描述${i+1}`,
+        image: require("../image/eyes.png"),
+      }));
+      this.setState({isRefreshing: false, products: newProducts});
+    }, 2000);
+  }
+
+  // 返回下拉刷新组件
+  _refreshControl = () => {
+    return (
+      <RefreshControl
+        refreshing={this.state.isRefreshing}
+        onRefresh={this._renderRefreshContrl}
+      />
+    )
+  }
+
+  render() {
+    return (
+      <FlatList
+        data={this.state.products}
+        renderItem={this._renderItem}
+        keyExtractor={this._keyExtractor}
+        ItemSeparatorComponent={this._renderSeparator}
+        refreshControl={this._refreshControl()}
+      />
+    )
+  }
 }
 
 // 此处未做任何修改...
@@ -635,39 +640,38 @@ export default class Products extends Component {
 版本三，商品之间添加分割线
 
 ```jsx
-// 此处省略未修改内容...
+// 此处未做任何修改...
 
 export default class Products extends Component {
-    // 此处省略未修改内容...
+  // 此处未做任何修改...
 
-    // 为FlatList的子项之间添加分割线，头尾没有
-    _renderSeparator = (section) => {
-        return (
-          <View key={section.leadingItem.id} style={styles.divider}></View>
-        )
-    }
+  // 为FlatList的子项之间添加分割线，头尾没有
+  _renderSeparator = (section) => {
+    return (
+      <View key={section.leadingItem.id} style={styles.divider}></View>
+    )
+  }
 
-    render() {
-        return (
-            <FlatList
-                // 此处省略未修改内容...
-                ItemSeparatorComponent={this._renderSeparator}
-            >
-            </FlatList>
-        )
-    }
+  render() {
+    return (
+      <FlatList
+        // 此处未做任何修改...
+        ItemSeparatorComponent={this._renderSeparator}
+      />
+    )
+  }
 
-    // 此处省略未修改内容...
+  // 此处未做任何修改...
 }
 
 const styles = StyleSheet.create({
-    // 此处省略未修改内容...
-    divider: {
-        height: 1,
-        marginHorizontal: 5,
-        backgroundColor: "lightgray"
-    },
-    // 此处省略未修改内容...
+  // 此处未做任何修改...
+  divider: {
+    height: 1,
+    marginHorizontal: 5,
+    backgroundColor: "lightgray"
+  },
+  // 此处未做任何修改...
 })
 ```
 
@@ -691,22 +695,22 @@ const styles = StyleSheet.create({
 
 ```txt
 - app
-    |-- image                                 *图片资源
-    |-- api                                    接口
-        └── index.js:                          模块入口
-    |-- constant                              *常量
-        └── index.js:                          模块入口
-    |-- components                            *公共组件
-        └── Searchbar.js:                      搜索条                
-        └── Advertisement.js:                  幻灯片广告
-        └── Products.js:                       商品列表      
-    |-- navigation                            *导航配置
-        └── GlobalStack.js                     全局堆栈导航
-    |-- page                                  *页面容器
-        |-- main                               *入口模块页面
-            └── Home.js                         首页
-        |-- product                            *商品模块页面
-            └── Detail.js                       详情页
+  |-- image                  *图片资源
+  |-- api                    接口
+    └── index.js:            模块入口
+  |-- constant               *常量
+    └── index.js:            模块入口
+  |-- components             *公共组件
+    └── Searchbar.js:        搜索条        
+    └── Advertisement.js:    幻灯片广告
+    └── Products.js:         商品列表    
+  |-- navigation             *导航配置
+    └── GlobalStack.js       全局堆栈导航
+  |-- page                   *页面容器
+    |-- main                 *入口模块页面
+      └── Home.js            首页
+    |-- product              *商品模块页面
+      └── Detail.js          详情页
 ```
 
 ### 首页
@@ -730,50 +734,52 @@ import Products from '../../components/Products';
 ```jsx
 import React, { Component } from 'react';
 import { 
-    Text, 
-    StyleSheet, 
-    View, 
-    TouchableOpacity 
+  Text, 
+  StyleSheet, 
+  View, 
+  TouchableOpacity 
 } from 'react-native';
 
 export default class Detail extends Component {
 
-    constructor(props) {
-        super(props);
-        this.navigation = this.props.navigation;
-        this.navigationParams = this.navigation.state.params;
-    }
+  constructor(props) {
+    super(props);
+    this.navigation = this.props.navigation;
+    this.navigationParams = this.navigation.state.params;
+  }
 
-    _pressBack = () => {
-        const {navigation} = this.props;
-        navigation && navigation.pop();
-    }
+  _pressBack = () => {
+    const {navigation} = this.props;
+    navigation && navigation.pop();
+  }
 
-    render() {
-        return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={this._pressBack}>
-                <Text style={styles.back}>返回{this.navigationParams && this.navigationParams.a}</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}> 商品详情 </Text>
-        </View>
-        )
-    }
+  render() {
+    return (
+    <View style={styles.container}>
+      <Text style={styles.text}>商品详情</Text>
+
+      <TouchableOpacity onPress={this._pressBack}>
+        <Text style={styles.back}>返回</Text>
+        <Text>{this.navigationParams && this.navigationParams.a}</Text>
+      </TouchableOpacity>
+    </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 20
-    },
-    back: {
-        fontSize: 20,
-        color: "yellow"
-    }
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20
+  },
+  back: {
+    fontSize: 20,
+    color: "yellow"
+  }
 })
 ```
 
@@ -795,14 +801,14 @@ export default createStackNavigator(
       screen: Home,
       // 首页不需要header
       navigationOptions: ({navigation, navigationOptions}) => ({
-        header: null,
+      header: null,
       })
     },
     productDetail: {
       screen: ProductDetail,
       // 商品详情需要header，并且需要设置header的标题
       navigationOptions: ({navigation, navigationOptions}) => ({
-        title: "商品详情",
+      title: "商品详情",
       })
     }
   },
@@ -838,14 +844,14 @@ export default GlobalStackNavigator;
 // 此处代码未做任何修改...
 
 render() {
-    return (
-        // 此处代码未做任何修改...
+  return (
+    // 此处代码未做任何修改...
 
-        {/* 商品列表 */}
-        <Products {...this.props}></Products>
+    {/* 商品列表 */}
+    <Products {...this.props}></Products>
 
-        // 此处代码未做任何修改...
-    );
+    // 此处代码未做任何修改...
+  );
 }
 
 // 此处代码未做任何修改...
@@ -862,26 +868,26 @@ push方法第一个参数是配置导航时自定义的名称，第二个参数�
 
 // 跳转到详情页
 _toProductDetail = (item) => {
-    const { navigation } = this.props;
-    navigation && navigation.push("productDetail", item.id);
+  const { navigation } = this.props;
+  navigation && navigation.push("productDetail", item.id);
 }
 
 // FlatList组件渲染列表
 _renderItem = ({item, index}) => {
-    return (
-        <TouchableNativeFeedback onPress={this._toProductDetail.bind(this, item)}>
-            <View style={styles.item}>
-                <Image 
-                    source={item.uri}
-                    style={styles.image}>
-                </Image>
-                <View style={styles.content}>
-                    <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.subTitle}>{item.subTitle}</Text>
-                </View>
-            </View>
-        </TouchableNativeFeedback>
-    )
+  return (
+    <TouchableNativeFeedback onPress={this._toProductDetail.bind(this, item)}>
+      <View style={styles.item}>
+        <Image 
+          source={item.uri}
+          style={styles.image}
+        />
+        <View style={styles.content}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.subTitle}>{item.subTitle}</Text>
+        </View>
+      </View>
+    </TouchableNativeFeedback>
+  )
 }
 
 // 此处代码未做任何修改...
@@ -897,11 +903,9 @@ _renderItem = ({item, index}) => {
 // 此处代码未做任何修改...
 
 export default class Detail extends Component {
-  constructor(props) {  
-    super(props);
-    this.state = {
-      id: props.navigation.state.params
-    }
+
+  state = {
+    id: props.navigation.state.params
   }
 
   // 返回上一页
@@ -913,8 +917,8 @@ export default class Detail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Button title="返回" onPress={this._goBack}></Button>
-        <Text style={styles.content}>{ `当前商品的ID为：${this.state.id}` }</Text>
+      <Button title="返回" onPress={this._goBack}></Button>
+      <Text style={styles.content}>{ `当前商品的ID为：${this.state.id}` }</Text>
       </View>
     )
   }
@@ -937,76 +941,97 @@ export default class Detail extends Component {
 ```jsx
 import React, { Component } from 'react';
 import { 
-    Text, 
-    StyleSheet, 
-    View, 
-    TouchableOpacity,
-    Dimensions,
-    Image
+  Text, 
+  StyleSheet, 
+  View, 
+  TouchableOpacity,
+  Dimensions,
+  Image
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 
 export default class Detail extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            product: {
-                images: [
-                    require("../../image/products/mix3/one.webp"),
-                    require("../../image/products/mix3/two.webp"),
-                    require("../../image/products/mix3/three.webp"),
-                    require("../../image/products/mix3/four.webp"),
-                    require("../../image/products/mix3/five.webp"),
-                ],
-            }
-        }
-    }
+  state = {
+    products: [
+      {
+        id: '1',
+        uri: require("../image/double-11.png"),
+        backgroundColor: "blue"
+      },
+      {
+        id: '2',
+        uri: require("../image/eyes.png"),
+        backgroundColor: "yellow"
+      },
+      {
+        id: '3',
+        uri: require("../image/five-year.png"),
+        backgroundColor: "pink"
+      }
+    ]
+  }
 
-    render() {
-        return (
-        <View style={styles.container}>
-            <View style={styles.SwiperSize}>
-                <Swiper showsButtons={true} autoplay={true}>
-                    {
-                        this.state.product.images.map((image, index) => {
-                            return (
-                                <View style={styles.SwiperItem}>
-                                    // enum('cover', 'contain', 'stretch', 'repeat', 'center')
-                                    <Image 
-                                        style={styles.SwiperImage}
-                                        source={image}
-                                        resizeMode="contain"
-                                    />
-                                </View>
-                            )
-                        })
-                    }
-                </Swiper>
-            </View>
+  render() {
+    return (
+      <View style={styles.container}>
+        {/* 商品Banner */}
+        <View style={styles.SwiperSize}>
+          <Swiper showsButtons={true} autoplay={true}>
+            {
+              this.state.products.images.map((product) => {
+                return (
+                  <View style={styles.SwiperItem} key={product.id}>
+                    // enum('cover', 'contain', 'stretch', 'repeat', 'center')
+                    <Image
+                      style={styles.SwiperImage}
+                      source={image}
+                      resizeMode="contain"
+                    />
+                  </View>
+                )
+              })
+            }
+          </Swiper>
         </View>
-        )
-    }
+
+        {/* 购买商品 */}
+        <View>
+          <Text style={styles.text}>>购买商品</Text>
+        </View>      
+
+        {/* 商品详情 */}
+        <View>
+          <Text style={styles.text}>{ this.state.loadingData }</Text>
+        </View>
+
+        {/* 返回按钮 */}
+        <TouchableOpacity onPress={this._pressBack}>
+          <Text style={styles.back}>返回{this.navigationParams && this.navigationParams.a}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    SwiperSize: {
-        width: Dimensions.get("window").width,
-        height: 400
-    },
-    SwiperItem: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "rgb(246, 246, 246)"
-    },
-    SwiperImage: {
-        width: "100%",
-        height: "100%",
-    },
+  container: {
+    flex: 1,
+  },
+  SwiperSize: {
+    width: Dimensions.get("window").width,
+    height: 400
+  },
+  SwiperItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "rgb(246, 246, 246)"
+  },
+  SwiperImage: {
+    width: "100%",
+    height: "100%",
+  },
 })
 ```
 
@@ -1019,90 +1044,48 @@ const styles = StyleSheet.create({
 **版本三，接口调用与loading处理**
 
 ```jsx
-import React, { Component } from 'react';
-import { 
-    Text, 
-    StyleSheet, 
-    View, 
-    TouchableOpacity,
-    Dimensions,
-    Image
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-import api from '../../api/douban';
+// 此处未作任何修改...
+import { ActivityIndicator } from 'react-native';
 
 export default class Detail extends Component {
 
-    constructor(props) {
-        super(props);
-        this.navigation = this.props.navigation;
-        this.navigationParams = this.navigation.state.params;
-        this.state = {
-            movieIds: [26741061, 26685451, 10759740, 25917789],
-            isLoading: true,
-            images: [
-                require("../../image/products/mix3/one.webp"),
-                require("../../image/products/mix3/two.webp"),
-                require("../../image/products/mix3/three.webp"),
-                require("../../image/products/mix3/four.webp"),
-                require("../../image/products/mix3/five.webp"),
-            ],
-            product: {}
-        }
-    }
+  state = {
+    // 此处未作任何修改...
+    loadingData: '请耐心等待',
+    isLoding: false,
+  }
 
-    componentDidMount() {
-        fetch(api.movie.detail + this.state.movieIds[0])
-            .then(res => res.json())
-            .then(data => {
-                // 数据拿到后，修改loading状态，存储数据列表
-                this.setState({
-                    isLoading: false,
-                    product: data
-                })
-            })
-    }
-    
-    // 获取loading组件
-    _getLoading() {
-        return (
-            <ActivityIndicator size="large" color="hotpink"/>
-        )
-    }
+  componentDidMount() {
+    this.setState({ isLoding: true });
+    setTimeout(() => {
+      this.setState({
+        loadingData: '数据请求完毕',
+        isLoding: false,
+      });
+    }, 1000);
+  }
+  
+  // 获取loading组件
+  _getLoading() {
+    return (
+      <ActivityIndicator size="large" color="hotpink"/>
+    )
+  }
 
-    // 返回上一页
-    _pressBack = () => {
-        const {navigation} = this.props;
-        navigation && navigation.pop();
-    }
+  render() {
+    return (
+    <View style={styles.container}>
+      {/* 此处未作任何修改... */}
 
-    render() {
-        return (
-        <View style={styles.container}>
-            <View style={styles.SwiperSize}>
-                <Swiper showsButtons={true} autoplay={true}>
-                    {
-                        this.state.images.map((image, index) => {
-                            return (
-                                <View style={styles.SwiperItem}>
-                                    <Image 
-                                        style={styles.SwiperImage}
-                                        source={image}
-                                        resizeMode="contain"
-                                    />
-                                </View>
-                            )
-                        })
-                    }
-                </Swiper>
-            </View>
-            <TouchableOpacity onPress={this._pressBack}>
-                <Text style={styles.back}>返回{this.navigationParams && this.navigationParams.a}</Text>
-            </TouchableOpacity>
-            <Text style={styles.text}> 商品详情 </Text>
-        </View>
-        )
-    }
+      {/* 数据加载loading */}
+      {
+        this.state.isLoding 
+        ? <ActivityIndicator size="large" color="hotpink" />
+        : <Text></Text>
+      }
+    </View>
+    )
+  }
 }
 ```
 
@@ -1123,19 +1106,19 @@ import React from "react";
 import { StyleSheet, View, Text } from 'react-native';
 
 export default MovieDetail = (props) => {
-    return (
-        <View style={styles.container}>
-            <Text>个人信息</Text>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Text>个人信息</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    }
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
 ```
 
@@ -1151,21 +1134,21 @@ import Home from '../../app/page/main/Home';
 import Profile from '../../app/page/main/Profile'
 
 export default createBottomTabNavigator(
-    {
-        // 路由配置，key值会作为tabBar的label显示
-        Home: {
-            screen: Home,
-            navigationOptions: () => ({
-                tabBarLabel: "首页"
-            })
-        },
-        Profile: {
-            screen: Profile,
-            navigationOptions: () => ({
-                tabBarLabel: "我的"
-            })
-        },
-    }
+  {
+    // 路由配置，key值会作为tabBar的label显示
+    Home: {
+      screen: Home,
+      navigationOptions: () => ({
+        tabBarLabel: "首页"
+      })
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: () => ({
+        tabBarLabel: "我的"
+      })
+    },
+  }
 )
 ```
 
@@ -1180,19 +1163,19 @@ import ProductDetail from '../../app/page/product/Detail';
 import MainTabNavigator from './MainTab';
 
 export default createStackNavigator(
-    // 导航配置
-    {
-      main: {
-        screen: MainTabNavigator,
-        navigationOptions: ({navigation, navigationOptions}) => ({
-          header: null,
-        })
-      },
-      // 此处代码未做任何改动...
+  // 导航配置
+  {
+    main: {
+    screen: MainTabNavigator,
+    navigationOptions: ({navigation, navigationOptions}) => ({
+      header: null,
+    })
     },
-    {
-      initialRouteName: "main"
-    }
+    // 此处代码未做任何改动...
+  },
+  {
+    initialRouteName: "main"
+  }
 )
 ```
 
@@ -1258,21 +1241,27 @@ import {
   Dimensions,
 } from 'react-native';
 
-export default class index extends Component {
+export default class Entry extends Component {
 
   state = {
     posters: [
-      require("../../image/entry/shiyiyue.png"),
-      require("../../image/entry/shiyiyuedong.png"),
-      require("../../image/entry/daojishi.png"),
-    ]
+      {
+        poster: require("../../image/entry/shiyiyue.png"),
+      },
+      {
+        poster: require("../../image/entry/shiyiyuedong.png"),
+      },
+      {
+        poster: require("../../image/entry/daojishi.png"),
+      },
+    ],
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {/* 隐藏状态栏 */}
-        <StatusBar hidden={true}/>
+        {/* 状态栏 */}
+        <StatusBar hidden={true} />
 
         {/* 宣传海报 */}
         <ViewPagerAndroid style={styles.container}>
@@ -1280,14 +1269,12 @@ export default class index extends Component {
             this.state.posters.map((poster, index) => {
               return (
                 <View style={styles.container} key={index}>
-                  <Image style={styles.poster} source={poster}></Image>
+                  <Image style={styles.poster} source={poster} />
                 </View>
               )
             })
           }
         </ViewPagerAndroid>
-
-        {/* 跳过按钮 */}
       </View>
     )
   }
@@ -1301,77 +1288,57 @@ const styles = StyleSheet.create({
   poster: {
     width: "100%",
     height: "100%",
-  },
+  }
 })
 ```
 
 **版本二：实现倒计时跳过按钮**
 
 ```jsx
-import React, { Component } from 'react'
-import { 
-  Text, 
-  StyleSheet, 
-  View,
-  ViewPagerAndroid,
-  StatusBar,
-  Image,
-  Dimensions,
-} from 'react-native';
+// 此处代码未做任何修改...
 
 export default class index extends Component {
 
   state = {
     isAllowLeave: false,
-    isAllowLeaveTime: 2,
-    posters: [
-      require("../../image/entry/shiyiyue.png"),
-      require("../../image/entry/shiyiyuedong.png"),
-      require("../../image/entry/daojishi.png"),
-    ]
+    isAllowLeaveTime: 3,
+    // 此处代码未做任何修改...
   }
 
   // 在这里我们用timeout-loop的方式每秒倒计时-1，当时间为0时，结束loop
   componentDidMount() {
-    (function loop() {
-      // 时间为0，用户可以离开，停止loop
-      if (this.state.isAllowLeaveTime <= 0) {
-        this.setState({isAllowLeave: true});
-        return;
-      }
 
-      // 倒计时，loop
-      setTimeout(() => {
-        this.setState({isAllowLeaveTime: this.state.isAllowLeaveTime - 1});
-        loop.call(this);
+  (function loop() {
+    const { isAllowLeaveTime } = this.state;
+
+    // 时间为0，用户可以离开，停止loop
+    if (isAllowLeaveTime === 0) {
+      return this.setState({ isAllowLeave: true });
+    }
+
+    // 倒计时，loop
+    setTimeout(() => {
+      this.setState({ isAllowLeaveTime: isAllowLeaveTime - 1 });
+      loop.call(this);
       }, 1000);
+
     }).call(this);
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {/* 隐藏状态栏 */}
-        <StatusBar hidden={true}/>
-
-        {/* 宣传海报 */}
-        <ViewPagerAndroid style={styles.container}>
-          {
-            this.state.posters.map((poster, index) => {
-              return (
-                <View style={styles.container} key={index}>
-                  <Image style={styles.poster} source={poster}></Image>
-                </View>
-              )
-            })
-          }
-        </ViewPagerAndroid>
+        {/* 此处代码未做任何修改... */}
 
         {/* 跳过按钮 */}
-        <View style={[styles.leaveButton, this.state.isAllowLeave? styles.leaveButtonActive : ""]}>
-          <Text style={[styles.leaveText, this.state.isAllowLeave? styles.leaveTextActive : ""]}>
-            <Text>跳过</Text>
-            <Text>({this.state.isAllowLeaveTime}s)</Text>
+        <View style={[styles.leaveButton, this.state.isAllowLeave ? styles.leaveButtonActive : ""]}>
+          <Text style={[styles.leaveText, this.state.isAllowLeave ? styles.leaveTextActive : ""]}>
+          <Text>跳过</Text>
+          {
+            this.state.isAllowLeave
+            ? <Text></Text>
+            : <Text>{ `(${this.state.isAllowLeaveTime})s` }</Text>
+          }
           </Text>
         </View>
       </View>
@@ -1407,98 +1374,45 @@ const styles = StyleSheet.create({
   leaveButtonActive: {
     backgroundColor: "rgba(72, 72, 72, 0.9)"
   },
-  leaveText: {
+    leaveText: {
     textAlign: "center",
     fontSize: 24,
     color: "rgb(144, 144, 144)",
   },
-  leaveTextActive: {
+    leaveTextActive: {
     color: "#fff",
     fontWeight: "bold"
   }
 })
 ```
 
-**版本三：实现不留痕迹跳转**
+**版本三：实现页面跳转**
+
+使用`TouchableNativeFeedback`组件添加点击事件，使用`navigation.replace`方法进行无痕跳转。
 
 ```jsx
-import React, { Component } from 'react'
-import { 
-  Text, 
-  StyleSheet, 
-  View,
-  ViewPagerAndroid,
-  StatusBar,
-  Image,
-  Dimensions,
-  TouchableNativeFeedback,
-} from 'react-native';
+// 此处代码未做任何修改...
+import { TouchableNativeFeedback } from 'react-native';
 
 export default class index extends Component {
 
-  state = {
-    isAllowLeave: false,
-    isAllowLeaveTime: 3,
-    posters: [
-      require("../../image/entry/shiyiyue.png"),
-      require("../../image/entry/shiyiyuedong.png"),
-      require("../../image/entry/daojishi.png"),
-    ]
-  }
-
-  // 在这里我们用timeout-loop的方式每秒倒计时-1，当时间为0时，结束loop
-  componentDidMount() {
-    (function loop() {
-      // 时间为0，用户可以离开，停止loop
-      if (this.state.isAllowLeaveTime <= 0) {
-        this.setState({isAllowLeave: true});
-        return;
-      }
-
-      // 倒计时，loop
-      setTimeout(() => {
-        this.setState({isAllowLeaveTime: this.state.isAllowLeaveTime - 1});
-        loop.call(this);
-      }, 1000);
-    }).call(this);
-  }
+  // 此处代码未做任何修改...
 
   // 离开，跳转到首页
   _leave = () => {
     if (!this.state.isAllowLeave) return;
-    const navigation = this.props.navigation;
-    navigation.replace("main");
+    this.props.navigation.replace("main");
   }
 
   render() {
     return (
       <View style={styles.container}>
-        {/* 隐藏状态栏 */}
-        <StatusBar hidden={true}/>
 
-        {/* 宣传海报 */}
-        <ViewPagerAndroid style={styles.container} initialPage={0}>
-          {
-            this.state.posters.map((poster, index) => {
-              return (
-                <View style={styles.container} key={index}>
-                  <Image style={styles.poster} resizeMode="cover" source={poster}></Image>
-                </View>
-              )
-            })
-          }
-        </ViewPagerAndroid>
+        {/* 此处代码未做任何修改... */}
 
-        {/* 跳过按钮，这里因为View使用了定位，所以不能使用其它两个touchable组件，因为他们俩会有自己的组件层，不一样能够覆盖住定位的元素 */}
+        {/* 备注：View使用了绝对定位，如果使用其它两个touchable组件不一样能够覆盖住定位元素，造成点击位置不正确 */}
         <TouchableNativeFeedback onPress={this._leave}>
-          <View style={[styles.leaveButton, this.state.isAllowLeave? styles.leaveButtonActive : ""]}>
-            <Text style={[styles.leaveText, this.state.isAllowLeave? styles.leaveTextActive : ""]}>
-              <Text>跳过</Text>
-              {
-                !this.state.isAllowLeave? <Text>({this.state.isAllowLeaveTime}s)</Text> : ""
-              }
-            </Text>
-          </View>
+          {/* 此处代码未做任何修改... */}
         </TouchableNativeFeedback>
       </View>
     )
@@ -1509,44 +1423,11 @@ export default class index extends Component {
 **补充：直接在View监听触摸响应事件**
 
 ```jsx
-import React, { Component } from 'react'
-import { 
-  Text, 
-  StyleSheet, 
-  View,
-  Image,
-  ViewPagerAndroid,
-  Dimensions,
-  StatusBar,
-} from 'react-native';
+// 此处代码未做任何修改...
 
 export default class One extends Component {
 
-  state = {
-    isAllowLeave: false,
-    isAllowLeaveTime: 3,
-    posters: [
-      require("../../image/entry/shiyiyue.png"),
-      require("../../image/entry/shiyiyuedong.png"),
-      require("../../image/entry/daojishi.png"),
-    ]
-  }
-
-  componentDidMount() {
-    (function loop() {
-      // 到时间为0的时候允许用户跳过
-      if(this.state.isAllowLeaveTime <= 0) {
-        this.setState({isAllowLeave: true});
-        return;
-      }
-      // 倒计时
-      setTimeout(() => {
-        const isAllowLeaveTime = this.state.isAllowLeaveTime - 1;
-        this.setState({isAllowLeaveTime});
-        loop.call(this);
-      }, 1000);
-    }).call(this);
-  }
+  //此处代码未做任何修改...
 
   // 控制按钮是否应该响应触屏事件
   _hasResponder = () => {
@@ -1567,8 +1448,8 @@ export default class One extends Component {
             style={styles.poster} 
             resizeMode="stretch"
             resizeMethod="scale"
-            source={poster}>
-          </Image>
+            source={poster}
+          />
         </View>
       )
     });
@@ -1577,28 +1458,15 @@ export default class One extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* 隐藏状态栏 */}
-        <StatusBar hidden={true}/>
-
-        {/* 首屏海报 */}
-        <ViewPagerAndroid style={styles.container} initialPage={0}>
-          { this._renderPosterItem() }
-        </ViewPagerAndroid>
-        
+        {/* 此处代码未做任何修改... */}
+      
         {/* 跳过按钮 */}
         <View
-            style={[styles.leaveButton, this.state.isAllowLeave && styles.leaveButtonActive]}
-            onStartShouldSetResponder={this._hasResponder}
-            onResponderGrant={this._leave}
-            color="red">
-            <Text style={[styles.leaveText, this.state.isAllowLeave && styles.leaveTextActive]}>
-              <Text>跳过</Text>
-              {
-                !this.state.isAllowLeave
-                && <Text>{'(' + this.state.isAllowLeaveTime + 's)'}</Text>
-              }
-            </Text>
-          </View>
+          style={[styles.leaveButton, this.state.isAllowLeave && styles.leaveButtonActive]}
+          onStartShouldSetResponder={this._hasResponder}
+          onResponderGrant={this._leave}>
+            {/* 此处代码未做任何修改... */}
+        </View>
       </View>
     )
   }
