@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue-render-function</title>
+</head>
+<body>
+  <script src="../vue.js"></script>
+
+  <div id="app"></div>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        val: "夏天"
+      },
+      render(createElement) {
+        return createElement('h1', { style: "color: red" }, 
+          [
+            createElement("p", { id: "level1" }, this.val),
+            createElement("p", { id: "level1" }, 
+              [1,2,3,4,5].map(v => v ** v + ",")
+            ),
+          ]
+        )
+      }
+    });
+  </script>
+</body>
+</html>

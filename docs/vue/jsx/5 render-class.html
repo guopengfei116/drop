@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue-render-function</title>
+</head>
+<body>
+  <div id="app"></div>
+  <style>
+    .c {
+      font-size: 40px;
+      color: skyblue;
+    }
+  </style>
+
+  <script src="../vue.js"></script>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        val: "夏天",
+      },
+      render(createElement) {
+        return createElement('h1', {}, [
+          // 字符串
+          createElement("p", { class: "a b c" }, "p1"),
+          // 对象
+          createElement("p", { class: { a: true, b: true, c: false } }, "p3"),
+          // 数组可嵌字符串或对象
+          createElement("p", { class: ["a", "b", "c"] }, "p2")
+        ])
+      }
+      
+    });
+  </script>
+</body>
+</html>
