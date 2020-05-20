@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 });
 ```
 
-## feach
+## fetch
 
 RN提供了和web标准一致的网络请求API，XMLHttpRequest与Fetch，Fetch用起来将对比较容易，且支持Promise，所以一般会选用Fetch。
 

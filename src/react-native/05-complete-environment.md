@@ -83,10 +83,6 @@ nvm安装配置成功后，接下来安装node只需一条命令即可。安装�
 安装
 
 ```shell
-# 安装官方推荐的稳定版本
-nvm install 8.11.3
-nvm use 8.11.3
-
 # 安装最新的稳定版本，体验新特性
 nvm install stable
 nvm list
