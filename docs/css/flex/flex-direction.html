@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="guopf">
+  <title>Flex Direction</title>
+</head>
+<body>
+  <!--
+    flex-direction: row | row-reverse | column | column-reverse
+  -->
+  <style type="text/css">
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+    }
+    .container .item {
+      /* flex: 1; */
+      width: 50px;
+      height: 50px;
+      border: 1px solid blue;
+    }
+  </style>
+
+  <div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+  </div>
+</body>
+</html>

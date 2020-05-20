@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="guopf">
+  <title>Justify Content By Row</title>
+</head>
+<body>
+  <!--
+    justify-content: 
+      flex-start | 
+      flex-end | 
+      center | 
+      space-between |
+      space-around |
+      space-evenly |
+  -->
+  <style type="text/css">
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      height: 500px;
+    }
+
+    .container .item {
+      width: 50px;
+      height: 50px;
+      border: 1px solid blue;
+    }
+  </style>
+
+  <div class="container">
+    <div class="item">1</div>
+    <div class="item">2</div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5</div>
+  </div>
+</body>
+</html>
