@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function add(a, b) {
+      console.log(this);
+      const fn = () => console.log(this, a + b);
+      fn(); // 箭头函数内的this与add执行时的this一样
+    }
+
+    add(1, 2);                 // window
+    ({ add }).add(10, 20);     // { add }
+    add.call(Array, 100, 200); // Array
+    new add(1000, 2000);       // add的实例
+  </script>
+</body>
+</html>

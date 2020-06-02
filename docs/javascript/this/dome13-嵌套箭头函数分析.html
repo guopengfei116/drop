@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function getFn() {
+      return () => console.log(this);
+    }
+    // 这种函数调用模式下，getFn内的this为window，
+    // 内部的箭头函数也就是window
+    const arrowFn = getFn(); 
+
+    arrowFn();               // window
+    ({ arrowFn }).arrowFn(); // window
+    arrowFn.call(Array);     // window
+    new arrowFn();           // 报错，箭头函数不能new
+  </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function fn() {
+      console.log(this);
+    }
+    const obj = {
+      fn: fn
+    };
+    
+    fn.call([1]);         // [1]
+    obj.fn.call([2]);     // [2]
+    new obj.fn.call([3]); // call也是函数但不是构造器
+  </script>
+</body>
+</html>

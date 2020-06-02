@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function fn1() {
+      console.log(this);
+    }
+
+    function fn2() {
+      "use strict";
+      console.log(this);
+    }
+
+    fn1.call(1); // es3 this一定是对象，所以this是1的包装类型Nunber(1)
+    fn2.call(1); // es5 this可以任意，this就是1
+  </script>
+</body>
+</html>

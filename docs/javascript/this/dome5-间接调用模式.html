@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function add(a, b) {
+      console.log(this, a + b);
+    }
+
+    // 两种的传参方式不一样，其他一样
+    add.call({a: 1}, 10, 10);
+    add.apply({b: 2}, [20, 20]);
+
+    // 注意：bind返回一个新函数，同时bind可以绑定形参
+    const newFn = add.bind(["a"], 100);
+    newFn(5);
+    newFn(10);
+  </script>
+</body>
+</html>
