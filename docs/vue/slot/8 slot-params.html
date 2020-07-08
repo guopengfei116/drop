@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>slot params</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="../vue.js" defer></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js" defer></script>
+</head>
+<body>
+  <!-- 组件使用方 -->
+  <div id="app">
+    <div>
+      <!-- 指定slot名称 -->
+      <my-button>
+        <template v-slot:default="{ obj }">
+          {{ obj }}
+        </template>
+      </my-button>
+  
+      <!-- 不传slot名称，默认default -->
+      <my-button>
+        <template v-slot="{ a }">
+          {{ a == "a" ? "b" : a }}
+        </template>
+      </my-button>
+
+      <!-- 不传slot，走内部缺省处理 -->
+      <my-button></my-button>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+
+      // 组件封装方
+      // slot标签省略name，默认就是default
+      Vue.component("my-button", {
+        template: `
+          <button type="button" style="padding: 12px 23px; background-color: #67c23a; border: 1px solid #67c23a; border-radius: 20px; color: #fff; outline: none;">
+            <slot a="a" :obj="{a: 1, b: 2}">
+              用按钮不传文字，牛逼！
+            </slot>
+          </button>
+        `
+      });
+
+      const vm = new Vue({
+        el: '#app',
+      });
+    };
+  </script>
+</body>
+</html>

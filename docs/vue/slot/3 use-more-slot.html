@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>use more slot</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="../vue.js" defer></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js" defer></script>
+</head>
+<body>
+  <div id="app">
+    <el-dialog
+      :visible="true"
+      width="30%"
+      type="success">
+
+      <!-- 具名槽位 -->
+      <template v-slot:title>
+        <el-steps :active="1" finish-status="success">
+          <el-step title="已完成"></el-step>
+          <el-step title="进行中"></el-step>
+          <el-step title="步骤 3"></el-step>
+        </el-steps>
+      </template>
+
+      <!-- 默认槽位 -->
+      <template v-slot:default>
+        <ul>
+          <li>插入组件</li>
+          <li>随意内容</li>
+          <li>任意内容</li>
+          <li>任意内容</li>
+        </ul>
+      </template>
+
+      <!-- 具名槽位 -->
+      <template v-slot:footer>
+        <el-button >取 消</el-button>
+        <el-button type="primary" >确 定</el-button>
+      </template>
+    </el-dialog>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const vm = new Vue({
+        el: '#app',
+      });
+    })
+  </script>
+</body>
+</html>

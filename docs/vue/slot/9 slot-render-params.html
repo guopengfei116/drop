@@ -1,0 +1,61 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>slot render params</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="../vue.js" defer></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js" defer></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    window.onload = function() {
+      
+      // 封装一个按钮组件
+      Vue.component("my-button", {
+        template: `
+          <button type="button" style="padding: 12px 23px; background-color: #67c23a; border: 1px solid #67c23a; border-radius: 20px; color: #fff; outline: none;">
+            <slot name="header" str="字符串参数"></slot>
+            <slot :obj="{a: '对象', b: '参数'}">
+              用按钮不传文字，牛逼！  
+            </slot>
+            <slot name="footer" s="1" :n="100" :b="true"></slot>
+          </button>
+        `
+      });
+
+      // render jsx syntax
+      const vm = new Vue({
+        el: '#app',
+        render(createElement) {
+          return (
+            <div style="color: red">
+              <my-button scopedSlots={{
+                header({ str }) {
+                  return <p style="color: blue">头部: {{ str }}</p>
+                },
+                default({ obj }) {
+                  return <span style="color: green">中间默认: {{ obj }}</span>
+                },
+                footer(scope) {
+                  return (
+                    <p style="color: yellow">
+                      底部:
+                      <span>{{ scope.s }}</span>
+                      <span>{{ scope.n }}</span>
+                      <span>{{ scope.b }}</span>
+                    </p>
+                  )
+                }
+              }}
+              ></my-button>
+            </div>
+          );
+        }
+      });
+    };
+  </script>
+</body>
+</html>

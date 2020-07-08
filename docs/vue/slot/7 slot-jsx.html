@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>slot jsx</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="../vue.js" defer></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js" defer></script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    window.onload = function() {
+      // slot标签省略name，默认就是default
+      Vue.component("my-button", {
+        template: `
+          <button type="button" style="padding: 12px 23px; background-color: #67c23a; border: 1px solid #67c23a; border-radius: 20px; color: #fff; outline: none;">
+            <slot name="header"></slot>
+            <slot><i class="el-icon-delete"></i></slot>
+            <slot name="footer"></slot>
+          </button>
+        `
+      });
+
+      // render jsx syntax
+      const vm = new Vue({
+        el: '#app',
+        render(createElement) {
+          return (
+            <div style="color: red">
+              <my-button scopedSlots={{
+                header() {
+                  return <p style="color: blue">头部</p>
+                },
+                default() {
+                  return <span style="color: green">中间默认</span>
+                },
+                footer() {
+                  return <p style="color: yellow">底部</p>
+                }
+              }}
+              ></my-button>
+              <my-button scopedSlots={{ default: () => "按钮"}}></my-button>
+            </div>
+          );
+        }
+      });
+    };
+  </script>
+</body>
+</html>
